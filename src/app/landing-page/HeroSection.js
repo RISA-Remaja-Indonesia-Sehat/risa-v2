@@ -46,7 +46,7 @@ export default function HeroSection() {
         <p className="text-center text-gray-600 leading-6 mb-8 max-w-2xl mx-auto hero-text opacity-0">Belajar tentang pubertas, cinta, dan kesehatan reproduksi dengan cara yang aman dan mudah dipahami</p>
         
         <div className="w-fit mx-auto mb-12 hero-button opacity-0">
-            <Link href="/all-article">
+            <Link href="/articles">
                 <CustomButton className="px-6 py-3 text-base font-semibold" title="Mulai Belajar Sekarang" />
             </Link>
         </div>
