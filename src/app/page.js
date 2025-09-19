@@ -1,5 +1,4 @@
 import Image from "next/image";
-import CustomButton from "./components/ui/CustomButton";
 import HeroSection from "./landing-page/HeroSection";
 import OurStaff from "./landing-page/OurStaff";
 
