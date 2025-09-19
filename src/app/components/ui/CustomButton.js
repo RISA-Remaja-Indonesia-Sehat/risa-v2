@@ -1,12 +1,12 @@
 'use client';
 
-export default function CustomButton({ title }) {
+export default function CustomButton({ title, className = "" }) {
   return (
     <button
-      className="
-        relative inline-block cursor-pointer outline-none align-middle no-underline
+      className={`
+        relative cursor-pointer outline-none align-middle no-underline
         font-inherit touch-manipulation font-semibold text-[#382b22] uppercase
-        py-5 px-8 bg-[#fff0f0] border-2 border-[#b18597] rounded-xl
+        bg-[#fff0f0] border-2 border-[#b18597] rounded-xl
         transform-gpu transition-all duration-150 ease-[cubic-bezier(0,0,0.58,1)]
         before:absolute before:content-[''] before:w-full before:h-full
         before:top-0 before:left-0 before:right-0 before:bottom-0
@@ -19,7 +19,9 @@ export default function CustomButton({ title }) {
         hover:before:transform hover:before:translate3d-[0,0.5em,-1em]
         active:bg-[#ffe9e9] active:translate-y-3
         active:before:shadow-[0_0_0_2px_#b18597,0_0_#ffe3e2]
-        active:before:transform active:before:translate3d-[0,0,-1em]"
+        active:before:transform active:before:translate3d-[0,0,-1em]
+        ${className}
+      `}
       role="button"
     >
       <span className="relative z-10">{title || 'Button'}</span>
