@@ -147,7 +147,7 @@ export default function VaksinHPVPage() {
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <h1 className="text-3xl md:text-5xl font-bold text-[#382b22] mb-6">
+              <h1 className="text-3xl md:text-4xl font-bold text-[#382b22] mb-6">
                 Lindungi Masa Depanmu dengan <span className="text-pink-600">Vaksin HPV</span>
               </h1>
               <p className="md:text-lg text-gray-700 mb-8">
@@ -192,7 +192,7 @@ export default function VaksinHPVPage() {
       {/* Partnership Section */}
       <section className="py-16 px-4 bg-white">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl font-bold text-[#382b22] mb-8">Berkolaborasi dengan</h2>
+          <h2 className="text-3xl font-bold text-[#382b22]">Berkolaborasi dengan</h2>
           <div className="flex justify-center items-center">
             <Image 
               src="/image/Laboratorium_Klinik_Prodia.png" 
@@ -202,7 +202,7 @@ export default function VaksinHPVPage() {
               className='drop-shadow-lg drop-shadow-slate-400'
             />
           </div>
-          <p className="text-gray-600 mt-6 max-w-2xl mx-auto">
+          <p className="text-gray-600 max-w-2xl mx-auto">
             Dipercaya oleh laboratorium terkemuka di Indonesia dengan standar internasional 
             dan pengalaman lebih dari 50 tahun dalam pelayanan kesehatan.
           </p>
@@ -225,7 +225,7 @@ export default function VaksinHPVPage() {
           </div>
           <div className="text-center mt-8">
             <p className="text-gray-600 mb-4">Butuh konsultasi untuk memilih jenis vaksin yang tepat?</p>
-            <button className="px-8 py-4 bg-white text-pink-600 font-semibold rounded-lg border-2 border-pink-500 cursor-pointer hover:bg-pink-50 hover:border-pink-600 transform hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg">
+            <button className="px-4 py-2 bg-white text-pink-600 font-medium rounded-lg border-2 border-pink-500 cursor-pointer hover:bg-pink-50 hover:border-pink-600 transform hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg">
               Konsultasi dengan Dokter
             </button>
           </div>
