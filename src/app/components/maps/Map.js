@@ -1,6 +1,6 @@
 'use client';
 import { MapContainer, TileLayer, useMapEvents, Marker, Popup, useMap } from 'react-leaflet';
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import 'leaflet/dist/leaflet.css';
 import Labs from '@/app/local-data/labs';
 
