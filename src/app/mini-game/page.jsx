@@ -9,9 +9,9 @@ import  Herogame from "../../../public/image/Illustration_hero_gamification.png"
 import Trophy from "../../../public/image/piala.png"
 import CustomButton from "../components/ui/CustomButton";
 import Link from "next/link";
-import { Card, CardContent } from "../../../src/components/ui/card";
+import { Card, CardContent } from "../../components/ui/card"
 import { Star, Timer, TrophyIcon, Users } from "lucide-react";
-import GameCard from "../components/games/GameCard";
+import GameCard from "../components/ui/Cardgame";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -117,11 +117,11 @@ export default function Home() {
             Kumpulin poin, seru-seruan, dan lihat siapa yang juara di leaderboard!
           </p>
           <div ref={addFadeSlide} className="flex gap-4">
-            <Link href="#games">
-              <CustomButton title="Mainkan Sekarang!" className="button-11 px-6 py-4 animate-pulse-slow" />
+            <Link href="/memoryGames">
+              <CustomButton title="Mainkan Sekarang!" className="button-11 text-nowrap px-4 py-2 md:px-6 md:py-4 animate-pulse-slow" />
             </Link>
             <Link href="#leaderboard">
-              <CustomButton title="Leaderboard" className="button-10 px-6 py-4 animate-pulse-slow" />
+              <CustomButton title="Leaderboard" className="button-10 px-4 py-2 md:px-6 md:py-4  animate-pulse-slow" />
             </Link>
           </div>
         </div>
@@ -170,15 +170,15 @@ export default function Home() {
       <main className="max-w-screen mx-auto px-4 md:px-6 lg:px-8 py-8 space-y-16">
         <section className="w-full py-10 px-6 md:px-16 flex flex-col items-center">
           <h2 ref={addFadeSlide} className="text-3xl font-extrabold text-pink-700 mb-3">
-            🎮 Pilih Game Kamu
+            🎮 Game Kamu
           </h2>
           <p className="text-gray-600 text-lg text-center">Belajar sambil bermain! Kumpulan mini games seru untuk menguji dan meningkatkan pengetahuanmu tentang kesehatan reproduksi.</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 lg:gap-16 items-center mt-8">
+          <div className="grid grid-cols-1  gap-8 lg:gap-16 items-center mt-8">
             <GameCard
               title="Memory Cards"
               description="Uji pengetahuanmu dengan mencocokkan pasangan kartu seputar kesehatan reproduksi."
               points={100}
-              timeEstimate="5 menit"
+              timeEstimate="30 detik"
               difficulty="Mudah"
               completedBy={50}
               onPlay={() => console.log("Playing Memory Cards")}
