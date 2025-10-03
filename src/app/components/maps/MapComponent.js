@@ -11,6 +11,6 @@ const MapWithNoSSR = dynamic(() => import('./Map'), {
   ),
 });
 
-export default function MapComponent({ locationPermissionGranted }) {
-  return <MapWithNoSSR locationPermissionGranted={locationPermissionGranted} />;
+export default function MapComponent() {
+  return <MapWithNoSSR />;
 }
