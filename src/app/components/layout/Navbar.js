@@ -42,6 +42,7 @@ export default function Navbar() {
         <li><Link href="/mini-game" className="hover:text-pink-500">Mini Games</Link></li>
         <li><Link href="/siklusku" className="hover:text-pink-500">Siklusku</Link></li>
         <li><Link href="/vaksin-hpv" className="hover:text-pink-500">Vaksin HPV</Link></li>
+        <li><Link href="/missions" className="hover:text-pink-500">Misi Harian</Link></li>
       </ul>
 
       {/** Right Section */}
@@ -55,11 +56,11 @@ export default function Navbar() {
 
 
         {/** Profile Icon (Desktop) */}
-        <Link href="/missions" aria-label="Profile" className="hidden md:block p-2 text-gray-600 hover:text-pink-500 hover:bg-pink-50 rounded-full transition-all duration-200">
+        <button aria-label="Profile" className="hidden md:block p-2 text-gray-600 hover:text-pink-500 hover:bg-pink-50 rounded-full transition-all duration-200">
           <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
           </svg>
-        </Link>
+        </button>
 
         {/** Mobile Toggle */}
         <button id="menu-toggle" className="md:hidden text-gray-600 hover:text-pink-500 cursor-pointer">
@@ -74,15 +75,16 @@ export default function Navbar() {
         <button id="menu-close" className="self-end text-gray-600 hover:text-pink-500">
           ✕
         </button>
-        <Link href="/missions" className="p-2 text-gray-600 hover:text-pink-500 hover:bg-pink-50 rounded-full transition-all duration-200">
+        <button className="p-2 text-gray-600 hover:text-pink-500 hover:bg-pink-50 rounded-full transition-all duration-200">
           <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
           </svg>
-        </Link>
+        </button>
         <Link href="/" className="hover:text-pink-500">Beranda</Link>
         <Link href="/mini-game" className="hover:text-pink-500">Mini Games</Link>
         <Link href="/siklusku" className="hover:text-pink-500">My Cycle</Link>
         <Link href="/vaksin-hpv" className="hover:text-pink-500">Vaksin HPV</Link>
+        <Link href="/missions" className="hover:text-pink-500">Misi Harian</Link>
       </div>
     </nav>
   )
