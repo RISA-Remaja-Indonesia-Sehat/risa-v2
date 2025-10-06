@@ -9,12 +9,7 @@ const nextConfig = {
             },
             {
                 protocol: 'https',
-                hostname: 'logos-world.net',
-                pathname: '/**',
-            },
-            {
-                protocol: 'https',
-                hostname: 'assets.tokopedia.net',
+                hostname: 'www.freepnglogos.com',
                 pathname: '/**',
             },
         ],

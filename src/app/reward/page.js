@@ -3,6 +3,8 @@
 import Image from "next/image";
 import { useState } from 'react';
 import Link from "next/link";
+import RewardGrid from '../components/reward/RewardGrid';
+import ExchangeHistory from '../components/reward/ExchangeHistory';
 
 export default function RewardPage() {
   const [userStickers, setUserStickers] = useState(14);
@@ -15,9 +17,8 @@ export default function RewardPage() {
       title: "Voucher Shopee Rp 10.000",
       cost: 5,
       platform: "Shopee",
-      image: "https://logos-world.net/wp-content/uploads/2020/11/Shopee-Logo.png",
+      image: "/image/shopee.png",
       description: "Voucher belanja untuk semua kategori produk",
-      color: "from-orange-100 to-red-100",
       borderColor: "border-orange-200"
     },
     {
@@ -25,9 +26,8 @@ export default function RewardPage() {
       title: "Voucher Shopee Rp 25.000",
       cost: 10,
       platform: "Shopee",
-      image: "https://logos-world.net/wp-content/uploads/2020/11/Shopee-Logo.png",
+      image: "/image/shopee.png",
       description: "Voucher belanja untuk semua kategori produk",
-      color: "from-orange-100 to-red-100",
       borderColor: "border-orange-200"
     },
     {
@@ -35,9 +35,8 @@ export default function RewardPage() {
       title: "Voucher Tokopedia Rp 10.000",
       cost: 5,
       platform: "Tokopedia",
-      image: "https://logos-world.net/wp-content/uploads/2020/11/Tokopedia-Logo.png",
+      image: "/image/tokopedia.png",
       description: "Voucher belanja untuk semua kategori produk",
-      color: "from-green-100 to-emerald-100",
       borderColor: "border-green-200"
     },
     {
@@ -45,9 +44,8 @@ export default function RewardPage() {
       title: "Voucher Tokopedia Rp 25.000",
       cost: 10,
       platform: "Tokopedia",
-      image: "https://logos-world.net/wp-content/uploads/2020/11/Tokopedia-Logo.png",
+      image: "/image/tokopedia.png",
       description: "Voucher belanja untuk semua kategori produk",
-      color: "from-green-100 to-emerald-100",
       borderColor: "border-green-200"
     },
     {
@@ -55,9 +53,8 @@ export default function RewardPage() {
       title: "Voucher Shopee Rp 50.000",
       cost: 20,
       platform: "Shopee",
-      image: "https://logos-world.net/wp-content/uploads/2020/11/Shopee-Logo.png",
+      image: "/image/shopee.png",
       description: "Voucher belanja untuk semua kategori produk",
-      color: "from-orange-100 to-red-100",
       borderColor: "border-orange-200"
     },
     {
@@ -65,9 +62,8 @@ export default function RewardPage() {
       title: "Voucher Tokopedia Rp 50.000",
       cost: 20,
       platform: "Tokopedia",
-      image: "https://logos-world.net/wp-content/uploads/2020/11/Tokopedia-Logo.png",
+      image: "/image/tokopedia.png",
       description: "Voucher belanja untuk semua kategori produk",
-      color: "from-green-100 to-emerald-100",
       borderColor: "border-green-200"
     }
   ];
@@ -118,116 +114,18 @@ export default function RewardPage() {
               />
               <div>
                 <h2 className="text-2xl font-bold text-pink-600">{userStickers} Stiker</h2>
-                <p className="text-gray-600 text-sm">Stiker tersedia</p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Rewards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          {rewards.map((reward) => (
-            <div key={reward.id} className={`bg-gradient-to-br ${reward.color} rounded-3xl shadow-lg p-6 border-2 ${reward.borderColor} hover:shadow-xl transition-all duration-300 hover:scale-105`}>
-              <div className="text-center mb-4">
-                <div className="bg-white rounded-2xl p-4 mb-4 shadow-md">
-                  <Image 
-                    src={reward.image}
-                    alt={reward.platform}
-                    width={80}
-                    height={40}
-                    className="mx-auto object-contain"
-                  />
-                </div>
-                <h3 className="font-bold text-[#382b22] text-lg mb-2">{reward.title}</h3>
-                <p className="text-gray-600 text-sm mb-4">{reward.description}</p>
-                
-                <div className="bg-white rounded-full px-4 py-2 mb-4 shadow-md">
-                  <span className="text-pink-600 font-bold text-lg">{reward.cost} Stiker</span>
-                </div>
-              </div>
-              
-              <button
-                onClick={() => handleExchange(reward)}
-                disabled={userStickers < reward.cost}
-                className={`w-full py-3 rounded-full font-semibold transition-all duration-300 ${
-                  userStickers >= reward.cost
-                    ? 'bg-pink-500 text-white hover:bg-pink-600 hover:shadow-lg hover:scale-105'
-                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                }`}
-              >
-                {userStickers >= reward.cost ? 'Tukar Sekarang' : 'Stiker Tidak Cukup'}
-              </button>
-            </div>
-          ))}
-        </div>
+        <RewardGrid 
+          rewards={rewards} 
+          userStickers={userStickers} 
+          onExchange={handleExchange} 
+        />
 
-        {/* Exchange History Section */}
-        <div className="bg-white rounded-3xl shadow-xl p-8 mb-8 border-2 border-pink-200">
-          <h2 className="text-2xl font-bold text-[#382b22] text-center mb-6">
-            📜 Riwayat Penukaran
-          </h2>
-          <div className="space-y-4">
-            {/* Sample exchange history - replace with real data */}
-            <div className="bg-gradient-to-r from-pink-50 to-pink-100 rounded-2xl p-4 border border-pink-200">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="bg-orange-100 rounded-full p-2">
-                    <Image 
-                      src="https://logos-world.net/wp-content/uploads/2020/11/Shopee-Logo.png"
-                      alt="Shopee"
-                      width={24}
-                      height={24}
-                      className="object-contain"
-                    />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-[#382b22]">Voucher Shopee Rp 10.000</h3>
-                    <p className="text-sm text-gray-600">23 Desember 2024 • 14:30</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium">
-                    Berhasil
-                  </span>
-                  <p className="text-sm text-gray-600 mt-1">-5 stiker</p>
-                </div>
-              </div>
-            </div>
-            
-            <div className="bg-gradient-to-r from-pink-50 to-pink-100 rounded-2xl p-4 border border-pink-200">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="bg-green-100 rounded-full p-2">
-                    <Image 
-                      src="https://logos-world.net/wp-content/uploads/2020/11/Tokopedia-Logo.png"
-                      alt="Tokopedia"
-                      width={24}
-                      height={24}
-                      className="object-contain"
-                    />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-[#382b22]">Voucher Tokopedia Rp 25.000</h3>
-                    <p className="text-sm text-gray-600">22 Desember 2024 • 09:15</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium">
-                    Berhasil
-                  </span>
-                  <p className="text-sm text-gray-600 mt-1">-10 stiker</p>
-                </div>
-              </div>
-            </div>
-            
-            {/* Empty state when no history */}
-            <div className="text-center py-8 text-gray-500">
-              <span className="text-4xl mb-2 block">📝</span>
-              <p>Belum ada riwayat penukaran lainnya</p>
-              <p className="text-sm mt-1">Tukar stiker dengan voucher untuk melihat riwayat di sini</p>
-            </div>
-          </div>
-        </div>
+        <ExchangeHistory />
 
         {/* How it Works Section */}
         <div className="bg-white rounded-3xl shadow-xl p-8 border-2 border-pink-200">
