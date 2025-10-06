@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState, useEffect } from 'react';
 import CustomButton from "../components/ui/CustomButton";
+import Link from "next/link";
 
 export default function MissionPage() {
   const [stickers, setStickers] = useState(14);
@@ -77,35 +78,29 @@ export default function MissionPage() {
               </h1>
             </div>
             <p className="text-gray-600 mb-3 md:mb-6 text-center">Kumpulkan lebih banyak stiker dengan menyelesaikan misi!</p>
-            <div className="mx-auto w-fit">
+            <Link
+             href='/reward'
+             className="mx-auto w-fit block">
                 <CustomButton
                 title='Tukar Stiker' 
                 className="px-6 py-3" />
-            </div>
+            </Link>
           </div>
         </section>
 
         {/* Section 2: Daily Missions */}
         <section className="bg-white rounded-3xl shadow-xl p-8 border-2 border-pink-200">
-            <h2 className="text-center text-3xl font-bold text-[#382b22] mb-2">Misi Harian</h2>
+            <h2 className="text-center text-3xl font-bold text-[#382b22] mb-6">Misi Hari Ini</h2>
           {/* Countdown Timer */}
-          <div className="bg-gradient-to-r from-pink-100 to-purple-100 rounded-2xl p-6 border border-pink-200 mb-8">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                <p className="text-gray-600 text-center sm:text-left">Waktu tersisa :</p>
-                <div className="flex justify-center gap-4">
-                  {[{value: timeLeft.hours, label: 'JAM'}, {value: timeLeft.minutes, label: 'MENIT'}, {value: timeLeft.seconds, label: 'DETIK'}].map((time, index) => (
-                    <div key={index} className="bg-white rounded-xl px-4 py-3 shadow-md border border-pink-200">
-                      <div className="text-2xl font-bold text-pink-600">{String(time.value).padStart(2, '0')}</div>
-                      <div className="text-xs text-gray-500">{time.label}</div>
-                    </div>
-                  ))}
+          <div className="bg-gradient-to-r from-pink-100 to-purple-100 rounded-2xl p-6 border border-pink-200 mb-8 text-center">
+            <p className="text-gray-600 mb-4">Waktu tersisa untuk menyelesaikan misi:</p>
+            <div className="flex justify-center gap-4">
+              {[{value: timeLeft.hours, label: 'JAM'}, {value: timeLeft.minutes, label: 'MENIT'}, {value: timeLeft.seconds, label: 'DETIK'}].map((time, index) => (
+                <div key={index} className="bg-white rounded-xl px-4 py-3 shadow-md border border-pink-200">
+                  <div className="text-2xl font-bold text-pink-600">{String(time.value).padStart(2, '0')}</div>
+                  <div className="text-xs text-gray-500">{time.label}</div>
                 </div>
-              </div>
-                <button className="bg-white/30 backdrop-blur-md border border-white/20 px-4 py-2 rounded-full font-medium shadow-lg hover:bg-white/40 transition-all duration-300 flex items-center gap-2 mx-auto sm:mx-0">
-                  Riwayat
-                  <Image width="20" height="20" src="https://img.icons8.com/material-rounded/24/forward.png" alt="forward"/>
-                </button>
+              ))}
             </div>
           </div>
 

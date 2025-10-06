@@ -25,7 +25,7 @@ export default function Footer() {
 
         {/** Kanan: Social Media */}
         <div className="space-y-3">
-          <p class="font-semibold text-lg">Klik disini kalau mau tau lebih banyak!</p>
+          <p className="font-semibold text-lg">Klik disini kalau mau tau lebih banyak!</p>
           <div className="flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path d="M7.75 2h8.5A5.75 5.75 0 0122 7.75v8.5A5.75 5.75 0 0116.25 22h-8.5A5.75 5.75 0 012 16.25v-8.5A5.75 5.75 0 017.75 2z" />

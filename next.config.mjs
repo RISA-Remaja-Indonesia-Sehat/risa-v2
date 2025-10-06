@@ -7,6 +7,16 @@ const nextConfig = {
                 hostname: 'img.icons8.com',
                 pathname: '/**',
             },
+            {
+                protocol: 'https',
+                hostname: 'logos-world.net',
+                pathname: '/**',
+            },
+            {
+                protocol: 'https',
+                hostname: 'assets.tokopedia.net',
+                pathname: '/**',
+            },
         ],
     },
 };
