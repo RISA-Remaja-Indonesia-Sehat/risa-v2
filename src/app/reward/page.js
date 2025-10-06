@@ -18,7 +18,7 @@ export default function RewardPage() {
       cost: 5,
       platform: "Shopee",
       image: "/image/shopee.png",
-      description: "Voucher belanja untuk semua kategori produk",
+      description: "Voucher belanja untuk produk Laurier",
       borderColor: "border-orange-200"
     },
     {
@@ -27,7 +27,7 @@ export default function RewardPage() {
       cost: 10,
       platform: "Shopee",
       image: "/image/shopee.png",
-      description: "Voucher belanja untuk semua kategori produk",
+      description: "Voucher belanja untuk produk Laurier",
       borderColor: "border-orange-200"
     },
     {
@@ -36,7 +36,7 @@ export default function RewardPage() {
       cost: 5,
       platform: "Tokopedia",
       image: "/image/tokopedia.png",
-      description: "Voucher belanja untuk semua kategori produk",
+      description: "Voucher belanja untuk produk Laurier",
       borderColor: "border-green-200"
     },
     {
@@ -45,7 +45,7 @@ export default function RewardPage() {
       cost: 10,
       platform: "Tokopedia",
       image: "/image/tokopedia.png",
-      description: "Voucher belanja untuk semua kategori produk",
+      description: "Voucher belanja untuk produk Laurier",
       borderColor: "border-green-200"
     },
     {
@@ -54,7 +54,7 @@ export default function RewardPage() {
       cost: 20,
       platform: "Shopee",
       image: "/image/shopee.png",
-      description: "Voucher belanja untuk semua kategori produk",
+      description: "Voucher belanja untuk produk Laurier",
       borderColor: "border-orange-200"
     },
     {
@@ -63,7 +63,7 @@ export default function RewardPage() {
       cost: 20,
       platform: "Tokopedia",
       image: "/image/tokopedia.png",
-      description: "Voucher belanja untuk semua kategori produk",
+      description: "Voucher belanja untuk produk Laurier",
       borderColor: "border-green-200"
     }
   ];
