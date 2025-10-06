@@ -8,7 +8,7 @@ export default function ExchangeHistory() {
       date: "23 Desember 2024 • 14:30",
       cost: 5,
       platform: "Shopee",
-      image: "/image/shopee.png",
+      image: "/image/laurier.png",
       bgColor: "bg-orange-100"
     },
     {
@@ -17,7 +17,7 @@ export default function ExchangeHistory() {
       date: "22 Desember 2024 • 09:15",
       cost: 10,
       platform: "Tokopedia",
-      image: "/image/tokopedia.png",
+      image: "/image/laurier.png",
       bgColor: "bg-green-100"
     }
   ];

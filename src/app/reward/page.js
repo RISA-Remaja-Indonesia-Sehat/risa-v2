@@ -5,66 +5,76 @@ import { useState } from 'react';
 import Link from "next/link";
 import RewardGrid from '../components/reward/RewardGrid';
 import ExchangeHistory from '../components/reward/ExchangeHistory';
+import ConfirmationModal from '../components/reward/ConfirmationModal';
+import ScratchModal from '../components/reward/ScratchModal';
 
 export default function RewardPage() {
   const [userStickers, setUserStickers] = useState(14);
   const [selectedReward, setSelectedReward] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showScratchModal, setShowScratchModal] = useState(false);
+  const [voucherCode, setVoucherCode] = useState('');
 
   const rewards = [
     {
       id: 1,
-      title: "Voucher Shopee Rp 10.000",
+      title: "Voucher Laurier Rp 15.000",
       cost: 5,
       platform: "Shopee",
-      image: "/image/shopee.png",
-      description: "Voucher belanja untuk produk Laurier",
-      borderColor: "border-orange-200"
+      image: "/image/laurier.png",
+      description: "Voucher khusus produk Laurier di Official Store Shopee",
+      color: "from-pink-100 to-rose-100",
+      borderColor: "border-pink-200"
     },
     {
       id: 2,
-      title: "Voucher Shopee Rp 25.000",
+      title: "Voucher Laurier Rp 30.000",
       cost: 10,
       platform: "Shopee",
-      image: "/image/shopee.png",
-      description: "Voucher belanja untuk produk Laurier",
-      borderColor: "border-orange-200"
+      image: "/image/laurier.png",
+      description: "Voucher khusus produk Laurier di Official Store Shopee",
+      color: "from-pink-100 to-rose-100",
+      borderColor: "border-pink-200"
     },
     {
       id: 3,
-      title: "Voucher Tokopedia Rp 10.000",
-      cost: 5,
-      platform: "Tokopedia",
-      image: "/image/tokopedia.png",
-      description: "Voucher belanja untuk produk Laurier",
-      borderColor: "border-green-200"
+      title: "Voucher Laurier Rp 50.000",
+      cost: 15,
+      platform: "Shopee",
+      image: "/image/laurier.png",
+      description: "Voucher khusus produk Laurier di Official Store Shopee",
+      color: "from-pink-100 to-rose-100",
+      borderColor: "border-pink-200"
     },
     {
       id: 4,
-      title: "Voucher Tokopedia Rp 25.000",
-      cost: 10,
-      platform: "Tokopedia",
-      image: "/image/tokopedia.png",
-      description: "Voucher belanja untuk produk Laurier",
-      borderColor: "border-green-200"
+      title: "Voucher Laurier Rp 75.000",
+      cost: 20,
+      platform: "Shopee",
+      image: "/image/laurier.png",
+      description: "Voucher khusus produk Laurier di Official Store Shopee",
+      color: "from-pink-100 to-rose-100",
+      borderColor: "border-pink-200"
     },
     {
       id: 5,
-      title: "Voucher Shopee Rp 50.000",
-      cost: 20,
+      title: "Voucher Laurier Rp 100.000",
+      cost: 25,
       platform: "Shopee",
-      image: "/image/shopee.png",
-      description: "Voucher belanja untuk produk Laurier",
-      borderColor: "border-orange-200"
+      image: "/image/laurier.png",
+      description: "Voucher khusus produk Laurier di Official Store Shopee",
+      color: "from-pink-100 to-rose-100",
+      borderColor: "border-pink-200"
     },
     {
       id: 6,
-      title: "Voucher Tokopedia Rp 50.000",
-      cost: 20,
-      platform: "Tokopedia",
-      image: "/image/tokopedia.png",
-      description: "Voucher belanja untuk produk Laurier",
-      borderColor: "border-green-200"
+      title: "Voucher Laurier Rp 150.000",
+      cost: 35,
+      platform: "Shopee",
+      image: "/image/laurier.png",
+      description: "Voucher khusus produk Laurier di Official Store Shopee",
+      color: "from-pink-100 to-rose-100",
+      borderColor: "border-pink-200"
     }
   ];
 
@@ -75,13 +85,28 @@ export default function RewardPage() {
     }
   };
 
+  const generateVoucherCode = () => {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let result = 'LAURIER';
+    for (let i = 0; i < 6; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+  };
+
   const confirmExchange = () => {
     if (selectedReward) {
       setUserStickers(prev => prev - selectedReward.cost);
       setShowConfirmModal(false);
-      setSelectedReward(null);
-      alert(`Berhasil menukar ${selectedReward.cost} stiker dengan ${selectedReward.title}!`);
+      setShowScratchModal(true);
+      setVoucherCode(generateVoucherCode());
     }
+  };
+
+  const closeScratchModal = () => {
+    setShowScratchModal(false);
+    setSelectedReward(null);
+    setVoucherCode('');
   };
 
   return (
@@ -99,7 +124,7 @@ export default function RewardPage() {
             🎁 Tukar Stiker Digital
           </h1>
           <p className="text-gray-600 text-lg mb-6">
-            Tukarkan stiker digitalmu dengan voucher belanja menarik!
+            Tukarkan stiker digitalmu dengan voucher Laurier Official Store!
           </p>
           
           {/* User Stickers Display */}
@@ -157,35 +182,19 @@ export default function RewardPage() {
           </div>
         </div>
 
-        {/* Confirmation Modal */}
-        {showConfirmModal && selectedReward && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full border-2 border-pink-200">
-              <div className="text-center">
-                <span className="text-4xl mb-4 block">🎁</span>
-                <h3 className="text-xl font-bold text-[#382b22] mb-4">Konfirmasi Penukaran</h3>
-                <p className="text-gray-600 mb-6">
-                  Apakah kamu yakin ingin menukar <strong>{selectedReward.cost} stiker</strong> dengan <strong>{selectedReward.title}</strong>?
-                </p>
-                
-                <div className="flex gap-4">
-                  <button
-                    onClick={() => setShowConfirmModal(false)}
-                    className="flex-1 py-3 bg-gray-200 text-gray-700 rounded-full font-semibold hover:bg-gray-300 transition-all duration-300"
-                  >
-                    Batal
-                  </button>
-                  <button
-                    onClick={confirmExchange}
-                    className="flex-1 py-3 bg-pink-500 text-white rounded-full font-semibold hover:bg-pink-600 hover:shadow-lg transition-all duration-300"
-                  >
-                    Ya, Tukar!
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+        <ConfirmationModal 
+          show={showConfirmModal}
+          selectedReward={selectedReward}
+          onClose={() => setShowConfirmModal(false)}
+          onConfirm={confirmExchange}
+        />
+
+        <ScratchModal 
+          show={showScratchModal}
+          selectedReward={selectedReward}
+          voucherCode={voucherCode}
+          onClose={closeScratchModal}
+        />
       </div>
     </div>
   );
