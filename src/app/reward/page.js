@@ -21,58 +21,39 @@ export default function RewardPage() {
   const rewards = [
     {
       id: 1,
-      title: "Voucher Laurier Rp 15.000",
+      title: "Voucher Laurier Rp 10.000",
       cost: 150,
       image: "/image/laurier.png",
-      description: "Voucher khusus produk Laurier di Official Store Shopee PT Kao Indonesia",
-      color: "from-pink-100 to-rose-100",
-      borderColor: "border-pink-200"
+      description: "Voucher khusus produk Laurier di Official Store Shopee PT Kao Indonesia"
     },
     {
       id: 2,
       title: "Keychain RISA Eksklusif",
       cost: 150,
       image: "/image/keychain.png",
-      description: "Gantungan kunci eksklusif RISA dengan desain cantik",
-      color: "from-blue-100 to-cyan-100",
-      borderColor: "border-blue-200"
+      description: "Gantungan kunci eksklusif RISA dengan desain cantik"
     },
     {
       id: 3,
       title: "Notebook RISA Premium",
       cost: 400,
       image: "/image/notebook.png",
-      description: "Buku catatan premium dengan cover RISA yang stylish",
-      color: "from-purple-100 to-indigo-100",
-      borderColor: "border-purple-200"
+      description: "Buku catatan premium dengan cover RISA yang stylish"
     },
     {
       id: 4,
       title: "Tote Bag RISA Limited",
       cost: 700,
       image: "/image/totebag.png",
-      description: "Tas tote bag limited edition dengan logo RISA",
-      color: "from-green-100 to-emerald-100",
-      borderColor: "border-green-200"
+      description: "Tas tote bag limited edition dengan logo RISA"
     },
     {
       id: 5,
-      title: "Voucher Laurier Rp 100.000",
-      cost: 175,
-      image: "/image/laurier.png",
-      description: "Voucher khusus produk Laurier di Official Store Shopee PT Kao Indonesia",
-      color: "from-pink-100 to-rose-100",
-      borderColor: "border-pink-200"
-    },
-    {
-      id: 6,
-      title: "Voucher Laurier Rp 150.000",
+      title: "Kipas RISA Cantik",
       cost: 200,
-      image: "/image/laurier.png",
-      description: "Voucher khusus produk Laurier di Official Store Shopee PT Kao Indonesia",
-      color: "from-pink-100 to-rose-100",
-      borderColor: "border-pink-200"
-    }
+      image: "/image/kipas.png",
+      description: "Kipas cantik dengan desain RISA yang praktis dan stylish"
+    },
   ];
 
   const handleExchange = (reward) => {
@@ -120,7 +101,7 @@ export default function RewardPage() {
             Kembali ke Misi
           </Link>
           <h1 className="text-3xl sm:text-4xl font-bold text-[#382b22] mb-4">
-            🎁 Tukar Stiker Digital
+            Tukar Stiker Digital
           </h1>
           <p className="text-gray-600 text-lg mb-6">
             Tukarkan stiker digitalmu dengan voucher Laurier Official Store!
