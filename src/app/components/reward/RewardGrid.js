@@ -5,13 +5,14 @@ export default function RewardGrid({ rewards, onExchange }) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
       {rewards.map((reward) => (
-        <div key={reward.id} className={`bg-gradient-to-br ${reward.color} rounded-3xl shadow-lg p-6 border-2 ${reward.borderColor} hover:shadow-xl transition-all duration-300 hover:scale-105`}>
+        <div key={reward.id} className="bg-gradient-to-br from-pink-50 to-pink-100 rounded-3xl shadow-lg p-6 border-2 border-pink-200 hover:shadow-xl transition-all duration-300 hover:scale-105">
           <div className="text-center mb-4">
             <div 
-              className="bg-white rounded-2xl mb-4 shadow-md h-64 bg-cover bg-center bg-no-repeat"
+              className="bg-white rounded-2xl mb-4 shadow-md h-48 sm:h-56 md:h-64 bg-cover bg-center bg-no-repeat"
               style={{ backgroundImage: `url(${reward.image})` }}
             >
             </div>
+
             <h3 className="font-bold text-[#382b22] text-lg mb-2">{reward.title}</h3>
             <p className="text-gray-600 text-sm mb-4">{reward.description}</p>
             
