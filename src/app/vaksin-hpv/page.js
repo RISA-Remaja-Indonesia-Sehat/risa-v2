@@ -75,7 +75,7 @@ export default function Home() {
       />
       
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-pink-50 via-white to-purple-50 py-20 px-4">
+      <section className="relative bg-gradient-to-br from-pink-50 via-white to-rose-50 py-20 px-4">
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
@@ -138,13 +138,34 @@ export default function Home() {
           <h2 className="text-3xl font-bold text-[#382b22] text-center mb-12">Jenis Vaksin HPV dari Prodia</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {vaccineTypes.map((vaccine, index) => (
-              <div key={index} className="bg-gradient-to-br from-pink-50 to-purple-50 rounded-xl p-6 border-2 border-pink-200 hover:shadow-lg transition-shadow">
-                <h3 className="text-xl font-bold text-[#382b22] mb-3">{vaccine.name}</h3>
-                <p className="text-2xl font-bold text-pink-600 mb-3">{vaccine.price}</p>
+              <div key={index} className="bg-gradient-to-br from-pink-50 to-rose-50 rounded-xl p-6 border-2 border-pink-200 hover:shadow-lg transition-shadow relative">
+                {/* Discount Badge */}
+                <div className="absolute top-4 right-4 bg-pink-500 text-white px-3 py-1 rounded-full text-sm font-bold">
+                  20% OFF
+                </div>
+                
+                <h3 className="text-xl font-bold text-[#382b22] mb-3 pr-16">{vaccine.name}</h3>
+                
+                {/* Price with Discount */}
+                <div className="mb-3">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-lg text-gray-400 line-through">{vaccine.price}</span>
+                    <span className="bg-pink-100 text-pink-600 px-2 py-1 rounded text-xs font-medium">Hemat 20%</span>
+                  </div>
+                  <div className="text-2xl font-bold text-pink-600">
+                    {vaccine.price.includes('Rp') 
+                      ? `Rp ${Math.floor(parseInt(vaccine.price.replace(/[^0-9]/g, '')) * 0.8).toLocaleString('id-ID')}`
+                      : vaccine.price
+                    }
+                  </div>
+                  <p className="text-xs text-pink-500 font-medium mt-1">💰 Harga Spesial RISA</p>
+                </div>
+                
                 <p className="text-gray-600 text-sm mb-4">{vaccine.description}</p>
+                
                 <button 
                   onClick={() => openVaccineInfo(vaccine)}
-                  className="w-full py-3 bg-white text-pink-600 rounded-full font-semibold border-2 border-pink-300 hover:bg-pink-50 hover:border-pink-400 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer group"
+                  className="w-full py-3 bg-gradient-to-r from-pink-500 to-pink-600 text-white rounded-full font-semibold hover:from-pink-600 hover:to-pink-700 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer group shadow-lg hover:shadow-xl transform hover:scale-105"
                 >
                   <span className="group-hover:rotate-45 transition-transform duration-300">✨</span>
                   Pilih Paket
@@ -158,13 +179,13 @@ export default function Home() {
       <FAQ />
 
       {/* Location Finder Section */}
-      <section className="py-16 px-4 bg-gradient-to-br from-pink-50 via-white to-purple-50 relative">
+      <section className="py-16 px-4 bg-gradient-to-br from-pink-50 via-white to-rose-50 relative">
         {/* Decorative elements */}
         
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12 relative">
             <span className="inline-block animate-bounce mb-4">📍</span>
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 bg-gradient-to-r from-pink-500 to-rose-500 bg-clip-text text-transparent">
               Temukan Lab Prodia Terdekat
             </h2>
             <p className="text-gray-600 mb-6 sm:mb-8 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed px-4">
@@ -183,7 +204,7 @@ export default function Home() {
           {locationPermission && (
             <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border-4 border-pink-200 transform hover:scale-[1.01] transition-all duration-300">
                 <MapComponent />
-              <div className="p-4 sm:p-6 lg:p-8 bg-gradient-to-r from-pink-50 to-purple-50">
+              <div className="p-4 sm:p-6 lg:p-8 bg-gradient-to-r from-pink-50 to-rose-50">
                 <div className="flex items-center gap-2 mb-4">
                   <span className="text-2xl">💝</span>
                   <h4 className="text-lg font-bold text-pink-600">Tips Kunjungan Lab</h4>

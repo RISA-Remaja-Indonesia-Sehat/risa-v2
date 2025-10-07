@@ -138,7 +138,7 @@ export default function BookingModal({ show, onClose, onSubmit, selectedVaccine 
               <option value="">Pilih Jenis Vaksin HPV</option>
               {vaccineTypes.map((vaccine, index) => (
                 <option key={index} value={vaccine.name}>
-                  {vaccine.name} - {vaccine.price}
+                  {vaccine.name}
                 </option>
               ))}
             </select>
