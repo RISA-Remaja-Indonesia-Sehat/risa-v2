@@ -4,9 +4,10 @@ import Image from "next/image";
 import { useState, useEffect } from 'react';
 import CustomButton from "../components/ui/CustomButton";
 import Link from "next/link";
+import useStickers from '../store/useStickers';
 
 export default function MissionPage() {
-  const [stickers, setStickers] = useState(14);
+  const { stickers, addStickers } = useStickers();
   const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
   const [missions, setMissions] = useState([
     { id: 1, title: "Baca Artikel", reward: 1, completed: false, progress: 0, target: 2, icon: "📚" },
@@ -46,7 +47,7 @@ export default function MissionPage() {
         const isCompleted = newProgress >= mission.target;
         
         if (isCompleted) {
-          setStickers(prev => prev + mission.reward);
+          addStickers(mission.reward);
         }
         
         return {

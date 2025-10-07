@@ -20,7 +20,7 @@ export default function Footer() {
         <div className="space-y-2">
           <Link href="#" className="block hover:text-pink-500">Terms of Use</Link>
           <Link href="#" className="block hover:text-pink-500">Cookie Settings</Link>
-          <Link href="#" className="block hover:text-pink-500">Join Community</Link>
+          <Link href="https://chat.whatsapp.com/KyGWlPq5sJnAv02AzDc87d" className="block hover:text-pink-500">Join Community</Link>
         </div>
 
         {/** Kanan: Social Media */}
