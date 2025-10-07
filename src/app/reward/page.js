@@ -7,9 +7,12 @@ import RewardGrid from '../components/reward/RewardGrid';
 import ExchangeHistory from '../components/reward/ExchangeHistory';
 import ConfirmationModal from '../components/reward/ConfirmationModal';
 import ScratchModal from '../components/reward/ScratchModal';
+import useStickers from '../store/useStickers';
+import useExchangeHistory from '../store/useExchangeHistory';
 
 export default function RewardPage() {
-  const [userStickers, setUserStickers] = useState(14);
+  const { stickers, deductStickers } = useStickers();
+  const { addExchange } = useExchangeHistory();
   const [selectedReward, setSelectedReward] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showScratchModal, setShowScratchModal] = useState(false);
@@ -19,67 +22,67 @@ export default function RewardPage() {
     {
       id: 1,
       title: "Voucher Laurier Rp 15.000",
-      cost: 5,
+      cost: 150,
       platform: "Shopee",
       image: "/image/laurier.png",
-      description: "Voucher khusus produk Laurier di Official Store Shopee",
+      description: "Voucher khusus produk Laurier di Official Store Shopee PT Kao Indonesia",
       color: "from-pink-100 to-rose-100",
       borderColor: "border-pink-200"
     },
     {
       id: 2,
-      title: "Voucher Laurier Rp 30.000",
-      cost: 10,
+      title: "Keychain RISA Eksklusif",
+      cost: 150,
       platform: "Shopee",
-      image: "/image/laurier.png",
-      description: "Voucher khusus produk Laurier di Official Store Shopee",
-      color: "from-pink-100 to-rose-100",
-      borderColor: "border-pink-200"
+      image: "/image/keychain.png",
+      description: "Gantungan kunci eksklusif RISA dengan desain cantik",
+      color: "from-blue-100 to-cyan-100",
+      borderColor: "border-blue-200"
     },
     {
       id: 3,
-      title: "Voucher Laurier Rp 50.000",
-      cost: 15,
+      title: "Notebook RISA Premium",
+      cost: 400,
       platform: "Shopee",
-      image: "/image/laurier.png",
-      description: "Voucher khusus produk Laurier di Official Store Shopee",
-      color: "from-pink-100 to-rose-100",
-      borderColor: "border-pink-200"
+      image: "/image/notebook.png",
+      description: "Buku catatan premium dengan cover RISA yang stylish",
+      color: "from-purple-100 to-indigo-100",
+      borderColor: "border-purple-200"
     },
     {
       id: 4,
-      title: "Voucher Laurier Rp 75.000",
-      cost: 20,
+      title: "Tote Bag RISA Limited",
+      cost: 700,
       platform: "Shopee",
-      image: "/image/laurier.png",
-      description: "Voucher khusus produk Laurier di Official Store Shopee",
-      color: "from-pink-100 to-rose-100",
-      borderColor: "border-pink-200"
+      image: "/image/totebag.png",
+      description: "Tas tote bag limited edition dengan logo RISA",
+      color: "from-green-100 to-emerald-100",
+      borderColor: "border-green-200"
     },
     {
       id: 5,
       title: "Voucher Laurier Rp 100.000",
-      cost: 25,
+      cost: 175,
       platform: "Shopee",
       image: "/image/laurier.png",
-      description: "Voucher khusus produk Laurier di Official Store Shopee",
+      description: "Voucher khusus produk Laurier di Official Store Shopee PT Kao Indonesia",
       color: "from-pink-100 to-rose-100",
       borderColor: "border-pink-200"
     },
     {
       id: 6,
       title: "Voucher Laurier Rp 150.000",
-      cost: 35,
+      cost: 200,
       platform: "Shopee",
       image: "/image/laurier.png",
-      description: "Voucher khusus produk Laurier di Official Store Shopee",
+      description: "Voucher khusus produk Laurier di Official Store Shopee PT Kao Indonesia",
       color: "from-pink-100 to-rose-100",
       borderColor: "border-pink-200"
     }
   ];
 
   const handleExchange = (reward) => {
-    if (userStickers >= reward.cost) {
+    if (stickers >= reward.cost) {
       setSelectedReward(reward);
       setShowConfirmModal(true);
     }
@@ -87,7 +90,7 @@ export default function RewardPage() {
 
   const generateVoucherCode = () => {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let result = 'LAURIER';
+    let result = 'RISA';
     for (let i = 0; i < 6; i++) {
       result += chars.charAt(Math.floor(Math.random() * chars.length));
     }
@@ -96,10 +99,12 @@ export default function RewardPage() {
 
   const confirmExchange = () => {
     if (selectedReward) {
-      setUserStickers(prev => prev - selectedReward.cost);
+      const newVoucherCode = generateVoucherCode();
+      deductStickers(selectedReward.cost);
       setShowConfirmModal(false);
       setShowScratchModal(true);
-      setVoucherCode(generateVoucherCode());
+      setVoucherCode(newVoucherCode);
+      addExchange(selectedReward, newVoucherCode);
     }
   };
 
@@ -138,7 +143,7 @@ export default function RewardPage() {
                 className="drop-shadow-lg"
               />
               <div>
-                <h2 className="text-2xl font-bold text-pink-600">{userStickers} Stiker</h2>
+                <h2 className="text-2xl font-bold text-pink-600">{stickers} Stiker</h2>
               </div>
             </div>
           </div>
@@ -146,7 +151,6 @@ export default function RewardPage() {
 
         <RewardGrid 
           rewards={rewards} 
-          userStickers={userStickers} 
           onExchange={handleExchange} 
         />
 
