@@ -9,7 +9,7 @@ import  Herogame from "../../../public/image/Illustration_hero_gamification.png"
 import Trophy from "../../../public/image/piala.png"
 import CustomButton from "../components/ui/CustomButton";
 import Link from "next/link";
-import { Card, CardContent } from "../../components/ui/card"
+import { Card, CardContent } from "@/app/components/ui/card"
 import { Star, Timer, TrophyIcon, Users } from "lucide-react";
 import GameCard from "../components/ui/Cardgame";
 

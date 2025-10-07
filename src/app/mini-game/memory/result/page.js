@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import gsap from "gsap";
 import { ArrowLeft, Download, Repeat, Share2 } from "lucide-react";
 import html2canvas from "html2canvas";
-import { useGameStore } from "../../../../lib/usegameStore";
+import { useGameStore } from "../../../../store/usegameStore";
 import Image from "next/image";
 
 export default function MemoryResultPage() {

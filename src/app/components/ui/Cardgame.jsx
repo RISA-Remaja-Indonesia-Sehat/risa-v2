@@ -1,9 +1,9 @@
 "use client";
 
 import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "../../../components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/app/components/ui/card";
 import { EnhancedButton } from "../games/EnchancedBtutton";
-import { Badge } from "../../../components/ui/badge";
+import { Badge } from "@/app/components/ui/badge";
 import { Clock, Target, Trophy, Users } from "lucide-react";
 import Image from "next/image";
 import game from "../../../../public/image/hero-game.png";

@@ -1,10 +1,9 @@
-
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import gsap from "gsap";
-import { useGameStore } from "../../../lib/usegameStore";
+import { useGameStore } from "../../../store/useGameStore";
 import {
   ArrowLeft, Gift,
 
