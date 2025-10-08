@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import gsap from "gsap";
 import { ArrowLeft, Download, Repeat, Share2 } from "lucide-react";
 import html2canvas from "html2canvas";
-import { useGameStore } from "../../../../store/usegameStore";
+import { useGameStore } from "../../../store/useGameStore";
 import Image from "next/image";
 
 export default function MemoryResultPage() {
@@ -272,7 +272,7 @@ export default function MemoryResultPage() {
           <button
             onClick={() => {
               resetGame();
-              router.push("/memoryGames");
+              router.push("/mini-game/memory");
             }}
             className="px-4 py-2 rounded-lg bg-white border hover:shadow-md flex items-center gap-2"
           >

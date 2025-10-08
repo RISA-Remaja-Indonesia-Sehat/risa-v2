@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import gsap from "gsap";
-import { useGameStore } from "../../../store/useGameStore";
+import { useGameStore } from "../../store/useGameStore";
 import {
   ArrowLeft, Gift,
 
