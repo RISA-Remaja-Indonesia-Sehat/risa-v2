@@ -77,9 +77,9 @@ export default function Navbar() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
           </svg>
         </button>
-        <Link href="/" className="hover:text-pink-500">Beranda</Link>
+        <Link href="/" className="hover:text-pink-500">Artikel</Link>
         <Link href="/mini-game" className="hover:text-pink-500">Mini Games</Link>
-        <Link href="/siklusku" className="hover:text-pink-500">My Cycle</Link>
+        <Link href="/siklusku" className="hover:text-pink-500">Siklusku</Link>
         <Link href="/vaksin-hpv" className="hover:text-pink-500">Vaksin HPV</Link>
         <Link href="/missions" className="hover:text-pink-500">Misi Harian</Link>
       </div>
