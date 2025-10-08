@@ -29,7 +29,7 @@ function Tabs({ value, defaultValue = "dashboard", onValueChange, children, clas
 
   return (
     <TabsCtx.Provider value={ctx}>
-      <div data-slot="tabs" className={["flex w-full flex-col gap-4", className || ""].join(" ")}>
+      <div data-slot="tabs" className={`flex w-full flex-col gap-4 ${className || ""}`}>
         {children}
       </div>
     </TabsCtx.Provider>
@@ -43,11 +43,7 @@ export function TabsList({ children, className, ...props }) {
     <div
       role="tablist"
       aria-orientation="horizontal"
-      className={[
-        "mx-auto mb-6 flex max-w-md items-center justify-center rounded-full bg-pink-50 p-1",
-        "dark:bg-slate-800",
-        className || "",
-      ].join(" ")}
+      className={`mx-auto mb-6 flex max-w-md items-center justify-center rounded-full bg-pink-50 p-1 dark:bg-slate-800 ${className || ""}`}
       {...props}
     >
       {children}
@@ -68,13 +64,11 @@ export function TabsTrigger({ value, children, className, ...props }) {
       aria-selected={isActive}
       tabIndex={isActive ? 0 : -1}
       onClick={() => ctx.setValue(value)}
-      className={[
-        "flex-1 rounded-full px-4 py-2 text-sm font-medium transition-colors",
+      className={`flex-1 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
         isActive
           ? "bg-white text-pink-600 shadow-sm"
-          : "text-slate-600 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200",
-        className || "",
-      ].join(" ")}
+          : "text-slate-600 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
+      } ${className || ""}`}
       {...props}
     >
       {children}
@@ -92,7 +86,7 @@ export function TabsContent({ value, children, className, ...props }) {
       role="tabpanel"
       aria-hidden={hidden}
       style={{ display: hidden ? "none" : "block" }}
-      className={["w-full", className || ""].join(" ")}
+      className={`w-full ${className || ""}`}
       {...props}
     >
       {!hidden ? children : null}

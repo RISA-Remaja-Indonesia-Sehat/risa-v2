@@ -1,8 +1,8 @@
 ﻿import React from 'react';
-import useSiklusStore from '@/stores/useSiklusStore';
+import useSiklusStore from '../../store/useSiklusStore';
 
 export default function AchievementsCard() {
-  const achievements = useSiklusStore((state) => state.achievements);
+  const achievements = useSiklusStore((state) => state.achievements || []);
 
   if (!achievements || achievements.length === 0) {
     return (

@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import dynamic from "next/dynamic";
-import useSiklusStore from "@/stores/useSiklusStore";
+import useSiklusStore from "../../store/useSiklusStore";
 import { MOOD_OPTIONS } from "./MoodLogger";
 
 const MoodPieChart = dynamic(() => import("./charts/MoodPieChart"), {

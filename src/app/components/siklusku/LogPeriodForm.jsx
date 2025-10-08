@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { gsap } from "gsap";
-import useSiklusStore from "@/stores/useSiklusStore";
+import useSiklusStore from "../../store/useSiklusStore";
 import CalendarRange from "./CalendarRange";
 import { formatDisplayDate } from "@/lib/siklus/cycleMath";
 

@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import useSiklusStore from "@/stores/useSiklusStore";
+import { useState, useMemo, useEffect, useCallback } from "react";
+import useSiklusStore from "../../store/useSiklusStore";
 
 export const MOOD_OPTIONS = [
   { 
@@ -56,31 +56,25 @@ export default function MoodLogger() {
   );
 
   // set default selected state from existing log
-  if (!selectedMood && todayMood) {
-    const opt = MOOD_OPTIONS.find((o) => o.mood === todayMood.mood);
-    if (opt) setSelectedMood(opt);
-  }
+  useEffect(() => {
+    if (!selectedMood && todayMood) {
+      const opt = MOOD_OPTIONS.find((o) => o.mood === todayMood.mood);
+      if (opt) setSelectedMood(opt);
+    }
+  }, [selectedMood, todayMood]);
 
-  function commitMood(option) {
+  const commitMood = useCallback((option) => {
     const entry = {
       date: todayISO,
       mood: option.mood,
       emoji: option.emoji
     };
 
-    if (todayMood) {
-      // ✅ overwrite: ganti entri hari ini
-      const next = moodLogs.filter((l) => l.date !== todayISO).concat(entry);
-      replaceMoodLogs(next);
-    } else {
-      // tambah baru
-      addMoodLog(entry);
-    }
-
+    addMoodLog(entry); // addMoodLog already handles overwrite logic
     setSelectedMood(option);
     setShowSuccess(true);
-    window.setTimeout(() => setShowSuccess(false), 2000);
-  }
+    setTimeout(() => setShowSuccess(false), 2000);
+  }, [todayISO, addMoodLog]);
 
   return (
     <section className="rounded-3xl border border-pink-100 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">

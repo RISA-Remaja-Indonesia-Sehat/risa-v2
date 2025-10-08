@@ -242,6 +242,16 @@ const useSiklusStore = create((set, get) => ({
       onboardingData
     });
 
+    // Load daily logs
+    const dailyLogs = (() => {
+      try {
+        const saved = localStorage.getItem('risa:dailyLogs');
+        return saved ? JSON.parse(saved) : [];
+      } catch {
+        return [];
+      }
+    })();
+
     set({
       hydrated: true,
       onboardingCompleted,
@@ -254,7 +264,8 @@ const useSiklusStore = create((set, get) => ({
       consistency,
       moodDistribution,
       moodPatterns,
-      achievements
+      achievements,
+      dailyLogs: Array.isArray(dailyLogs) ? dailyLogs : []
     });
   },
 
@@ -578,6 +589,48 @@ const useSiklusStore = create((set, get) => ({
   resetLoveLetter: () => {
     setLocalValue(STORAGE_KEYS.loveLetterShownOnce, false);
     set({ loveLetterShown: false });
+  },
+
+  // Daily tracking functionality
+  dailyLogs: [],
+  
+  addDailyLog: (logData) => {
+    const state = get();
+    const existingIndex = state.dailyLogs.findIndex(log => log.date === logData.date);
+    
+    let updatedLogs;
+    if (existingIndex >= 0) {
+      // Update existing log
+      updatedLogs = [...state.dailyLogs];
+      updatedLogs[existingIndex] = { ...updatedLogs[existingIndex], ...logData };
+    } else {
+      // Add new log
+      updatedLogs = [...state.dailyLogs, logData];
+    }
+    
+    // Sort by date (newest first)
+    updatedLogs.sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+    try {
+      localStorage.setItem('risa:dailyLogs', JSON.stringify(updatedLogs));
+    } catch (error) {
+      console.warn('Failed to save daily logs:', error);
+    }
+    
+    set({ dailyLogs: updatedLogs });
+  },
+  
+  loadDailyLogs: () => {
+    try {
+      const saved = localStorage.getItem('risa:dailyLogs');
+      if (saved) {
+        const logs = JSON.parse(saved);
+        set({ dailyLogs: Array.isArray(logs) ? logs : [] });
+      }
+    } catch (error) {
+      console.warn('Failed to load daily logs:', error);
+      set({ dailyLogs: [] });
+    }
   }
 }));
 

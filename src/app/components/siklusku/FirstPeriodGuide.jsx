@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { gsap } from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
-import useSettingsStore from "@/stores/useSettingsStore";
+import useSettingsStore from "../../store/useSettingsStore";
 import { shallow } from "zustand/shallow";
 
 gsap.registerPlugin(ScrollTrigger);

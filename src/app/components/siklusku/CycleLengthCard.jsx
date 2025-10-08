@@ -1,10 +1,10 @@
 ﻿import React from 'react';
-import useSiklusStore from '@/stores/useSiklusStore';
+import useSiklusStore from '../../store/useSiklusStore';
 
 export default function CycleLengthCard() {
   const cycleSummary = useSiklusStore((state) => state.cycleSummary);
 
-  const { averageCycleLength, averagePeriodLength } = cycleSummary;
+  const { averageCycleLength, averagePeriodLength } = cycleSummary || {};
   
   return (
     <div className="bg-white rounded-lg p-4 shadow-sm">

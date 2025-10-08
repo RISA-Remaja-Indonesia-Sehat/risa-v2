@@ -1,5 +1,5 @@
 ﻿import React, { useMemo } from 'react';
-import useSiklusStore from '@/stores/useSiklusStore';
+import useSiklusStore from '../../store/useSiklusStore';
 
 const MONTHLY_TARGET = 30;
 
@@ -16,24 +16,25 @@ export default function ConsistencyCard() {
   const consistency = useSiklusStore((s) => s.consistency);
 
   const { totalTrackedDays, trackedLast30 } = useMemo(() => {
-    if (!Array.isArray(moodLogs) || moodLogs.length === 0) {
-      return { totalTrackedDays: 0, trackedLast30: 0 };
-    }
+    if (!moodLogs?.length) return { totalTrackedDays: 0, trackedLast30: 0 };
+    
+    const today = new Date();
+    const thirtyDaysAgo = new Date(today.getTime() - 29 * 24 * 60 * 60 * 1000);
+    const todayStr = toLocalDateString(today);
+    const startStr = toLocalDateString(thirtyDaysAgo);
+
     const uniqueAll = new Set();
     const unique30 = new Set();
 
-    const today = new Date();
-    const start = new Date(today);
-    start.setDate(start.getDate() - 29);
-    const todayStr = toLocalDateString(today);
-    const startStr = toLocalDateString(start);
-
-    for (const log of moodLogs) {
-      const ds = typeof log?.date === 'string' ? log.date : null;
-      if (!ds) continue;
-      uniqueAll.add(ds);
-      if (ds >= startStr && ds <= todayStr) unique30.add(ds);
-    }
+    moodLogs.forEach(log => {
+      const dateStr = log?.date;
+      if (!dateStr) return;
+      
+      uniqueAll.add(dateStr);
+      if (dateStr >= startStr && dateStr <= todayStr) {
+        unique30.add(dateStr);
+      }
+    });
 
     return { totalTrackedDays: uniqueAll.size, trackedLast30: unique30.size };
   }, [moodLogs]);

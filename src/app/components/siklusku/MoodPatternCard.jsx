@@ -1,5 +1,5 @@
 ﻿import React from "react";
-import useSiklusStore from "@/stores/useSiklusStore";
+import useSiklusStore from "../../store/useSiklusStore";
 import { MOOD_OPTIONS } from "./MoodLogger";
 import { CYCLE_PHASES, PHASE_NAMES } from "@/lib/siklus/moodPatterns";
 
