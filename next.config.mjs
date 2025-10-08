@@ -7,11 +7,6 @@ const nextConfig = {
                 hostname: 'img.icons8.com',
                 pathname: '/**',
             },
-            {
-                protocol: 'https',
-                hostname: 'www.freepnglogos.com',
-                pathname: '/**',
-            },
         ],
     },
 };
