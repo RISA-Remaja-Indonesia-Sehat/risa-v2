@@ -1,11 +1,10 @@
-"use client";
+'use client';
 
-import { useEffect, useMemo, useRef, useState } from "react";
-import { gsap } from "gsap";
-import useSiklusStore from "../../store/useSiklusStore";
-import useSettingsStore from "../../store/useSiklusStore";
-import CalendarRange from "./CalendarRange";
-import { formatDisplayDate } from "@/lib/siklus/cycleMath";
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { gsap } from 'gsap';
+import useSiklusStore from '../../store/useSiklusStore';
+import CalendarRange from './CalendarRange';
+import { formatDisplayDate } from '@/lib/siklus/cycleMath';
 
 // Helpers
 const todayIso = () => new Date().toISOString().slice(0, 10);
@@ -35,12 +34,12 @@ function UnifiedStep({ values, errors, onChange }) {
   const durationWarning = useMemo(() => {
     const d = calculateDurationDays(values.lastPeriodStart, values.lastPeriodEnd);
     if (!d || d <= 8) return null;
-    return "Durasi haidmu lebih dari 8 hari. Kalau ini baru terjadi, coba diskusikan dengan orang dewasa atau tenaga kesehatan yang kamu percaya.";
+    return 'Durasi haidmu lebih dari 8 hari. Kalau ini baru terjadi, coba diskusikan dengan orang dewasa atau tenaga kesehatan yang kamu percaya.';
   }, [values.lastPeriodStart, values.lastPeriodEnd]);
 
   function handleRangeChange(nextRange) {
-    onChange("lastPeriodStart", nextRange.start || null);
-    onChange("lastPeriodEnd", nextRange.end || null);
+    onChange('lastPeriodStart', nextRange.start || null);
+    onChange('lastPeriodEnd', nextRange.end || null);
   }
 
   const painScale = Array.from({ length: 10 }, (_, i) => i + 1);
@@ -56,23 +55,26 @@ function UnifiedStep({ values, errors, onChange }) {
           onChange={handleRangeChange}
           max={today}
           ariaInvalid={Boolean(errors.lastPeriodStart) || Boolean(errors.lastPeriodEnd)}
-          ariaDescribedBy={[
-            errors.lastPeriodStart ? "lastPeriodStart-error" : null,
-            errors.lastPeriodEnd ? "lastPeriodEnd-error" : null,
-          ]
-            .filter(Boolean)
-            .join(" ") || undefined}
+          ariaDescribedBy={[errors.lastPeriodStart ? 'lastPeriodStart-error' : null, errors.lastPeriodEnd ? 'lastPeriodEnd-error' : null].filter(Boolean).join(' ') || undefined}
         />
 
         <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-500">
-          <span>Mulai: {rangeValue.start ? formatDisplayDate(rangeValue.start) : "Belum dipilih"}</span>
-          <span>{"\u2022"}</span>
-          <span>Selesai: {rangeValue.end ? formatDisplayDate(rangeValue.end) : "Belum dipilih"}</span>
+          <span>Mulai: {rangeValue.start ? formatDisplayDate(rangeValue.start) : 'Belum dipilih'}</span>
+          <span>{'\u2022'}</span>
+          <span>Selesai: {rangeValue.end ? formatDisplayDate(rangeValue.end) : 'Belum dipilih'}</span>
         </div>
 
         <div className="space-y-1 text-xs text-red-500" aria-live="polite">
-          {errors.lastPeriodStart ? <p id="lastPeriodStart-error" role="alert">{errors.lastPeriodStart}</p> : null}
-          {errors.lastPeriodEnd ? <p id="lastPeriodEnd-error" role="alert">{errors.lastPeriodEnd}</p> : null}
+          {errors.lastPeriodStart ? (
+            <p id="lastPeriodStart-error" role="alert">
+              {errors.lastPeriodStart}
+            </p>
+          ) : null}
+          {errors.lastPeriodEnd ? (
+            <p id="lastPeriodEnd-error" role="alert">
+              {errors.lastPeriodEnd}
+            </p>
+          ) : null}
         </div>
 
         {durationWarning ? <p className="text-xs text-amber-600">{durationWarning}</p> : null}
@@ -88,11 +90,9 @@ function UnifiedStep({ values, errors, onChange }) {
               type="button"
               role="radio"
               aria-checked={values.painScale === value}
-              onClick={() => onChange("painScale", value)}
+              onClick={() => onChange('painScale', value)}
               className={`h-9 w-9 rounded-full border text-sm font-medium transition-transform focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-500 hover:scale-105 cursor-pointer ${
-                values.painScale === value
-                  ? "border-pink-500 bg-pink-500 text-white"
-                  : "border-slate-200 bg-white text-slate-600"
+                values.painScale === value ? 'border-pink-500 bg-pink-500 text-white' : 'border-slate-200 bg-white text-slate-600'
               }`}
             >
               {value}
@@ -115,24 +115,24 @@ function getStepErrors(values) {
   const today = todayIso();
 
   if (!values.lastPeriodStart) {
-    nextErrors.lastPeriodStart = "Isi tanggal mulai ya";
+    nextErrors.lastPeriodStart = 'Isi tanggal mulai ya';
   } else if (values.lastPeriodStart > today) {
-    nextErrors.lastPeriodStart = "Tanggal tidak boleh di masa depan";
+    nextErrors.lastPeriodStart = 'Tanggal tidak boleh di masa depan';
   }
 
   if (!values.lastPeriodEnd) {
-    nextErrors.lastPeriodEnd = "Isi tanggal selesai ya";
+    nextErrors.lastPeriodEnd = 'Isi tanggal selesai ya';
   } else if (values.lastPeriodEnd > today) {
-    nextErrors.lastPeriodEnd = "Tanggal tidak boleh di masa depan";
+    nextErrors.lastPeriodEnd = 'Tanggal tidak boleh di masa depan';
   }
 
   if (values.lastPeriodStart && values.lastPeriodEnd && values.lastPeriodEnd < values.lastPeriodStart) {
-    nextErrors.lastPeriodEnd = "Tanggal selesai tidak boleh sebelum tanggal mulai";
+    nextErrors.lastPeriodEnd = 'Tanggal selesai tidak boleh sebelum tanggal mulai';
   }
 
   const pain = Number(values.painScale);
   if (!Number.isFinite(pain) || pain < 1 || pain > 10) {
-    nextErrors.painScale = "Pilih skala nyeri 1–10";
+    nextErrors.painScale = 'Pilih skala nyeri 1–10';
   }
 
   return nextErrors;
@@ -145,22 +145,25 @@ export default function CycleOnboarding({ onComplete }) {
   const commitOnboardingData = useSiklusStore((s) => s.commitOnboardingData);
   const setOnboardingCompleted = useSiklusStore((s) => s.setOnboardingCompleted);
 
-  const settings = useSettingsStore((s) => s.settings);
-  const hydrate = useSettingsStore((s) => s.hydrate);
-
   const [errors, setErrors] = useState({});
   const cardRef = useRef(null);
   const stepHeadingRef = useRef(null);
-  const reducedMotion = settings?.reducedMotion ?? false;
+  const [reducedMotion, setReducedMotion] = useState(false);
 
+  // detect system reduced motion
   useEffect(() => {
-    hydrate?.();
-  }, [hydrate]);
+    if (typeof window === 'undefined') return;
+    const media = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const update = () => setReducedMotion(media.matches);
+    update();
+    media.addEventListener('change', update);
+    return () => media.removeEventListener('change', update);
+  }, []);
 
   useEffect(() => {
     if (!cardRef.current || reducedMotion) return;
     const ctx = gsap.context(() => {
-      gsap.fromTo(cardRef.current, { autoAlpha: 0, y: 12 }, { autoAlpha: 1, y: 0, duration: 0.4, ease: "power2.out" });
+      gsap.fromTo(cardRef.current, { autoAlpha: 0, y: 12 }, { autoAlpha: 1, y: 0, duration: 0.4, ease: 'power2.out' });
     }, cardRef);
     return () => ctx?.revert();
   }, [reducedMotion]);
@@ -192,7 +195,7 @@ export default function CycleOnboarding({ onComplete }) {
     commitOnboardingData?.();
     setOnboardingCompleted?.(true);
     try {
-      localStorage.setItem("risa:loveLetterEligible", "true");
+      localStorage.setItem('risa:loveLetterEligible', 'true');
     } catch {}
     onComplete?.();
   }
@@ -200,7 +203,7 @@ export default function CycleOnboarding({ onComplete }) {
   // ✅ Cancel: DO NOT mark complete, DO NOT set eligibility
   function handleBack() {
     try {
-      localStorage.removeItem("risa:loveLetterEligible"); // ensure no popup
+      localStorage.removeItem('risa:loveLetterEligible'); // ensure no popup
     } catch {}
     onComplete?.();
   }
@@ -209,12 +212,12 @@ export default function CycleOnboarding({ onComplete }) {
     setErrors((prev) => ({ ...prev, [field]: undefined }));
     let nextValue = value;
 
-    if (field === "lastPeriodStart" || field === "lastPeriodEnd") {
+    if (field === 'lastPeriodStart' || field === 'lastPeriodEnd') {
       nextValue = value || null;
-    } else if (field === "painScale") {
-      if (value === null || value === undefined || value === "") {
+    } else if (field === 'painScale') {
+      if (value === null || value === undefined || value === '') {
         nextValue = null;
-      } else if (typeof value === "number") {
+      } else if (typeof value === 'number') {
         nextValue = Number.isFinite(value) ? value : null;
       } else {
         const parsed = Number.parseInt(value, 10);
@@ -225,8 +228,8 @@ export default function CycleOnboarding({ onComplete }) {
     updateOnboardingDraft?.({ [field]: nextValue });
   }
 
-  const liveErrorMessage = Object.values(errors).find(Boolean) || "";
-  const errorMessageId = liveErrorMessage ? "onboarding-error-message" : undefined;
+  const liveErrorMessage = Object.values(errors).find(Boolean) || '';
+  const errorMessageId = liveErrorMessage ? 'onboarding-error-message' : undefined;
 
   return (
     <div className="space-y-6" ref={cardRef}>
@@ -260,7 +263,7 @@ export default function CycleOnboarding({ onComplete }) {
         <button
           type="button"
           data-ripple="true"
-          className="relative rounded-full bg-pink-500 px-6 py-2 text-sm font-semibold text-white shadow-sm transition-transform duration-200 ease-out hover:shadow-lg motion-safe:hover:scale-[1.03] motion-reduce:transform-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-500 cursor-pointer disabled:opacity-40 overflow-hidden"
+          className="relative rounded-full bg-pink-500 px-6 py-2 text-sm font-semibold text-white shadow-sm transition-transform duration-200 ease-out hover:shadow-lg motion-safe:hover:scale-[1.03] motion-reduce:transform-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-pink-500 cursor-pointer disabled:opacity-40 overflow-hidden"
           onClick={handleNext}
           disabled={Object.keys(stepValidation).length > 0}
           aria-disabled={Object.keys(stepValidation).length > 0}

@@ -19,7 +19,6 @@ import DailyTracker from '../components/siklusku/DailyTracker';
 import DailyLogsViewer from '../components/siklusku/DailyLogsViewer';
 
 import useSiklusStore from '../store/useSiklusStore';
-import useSettingsStore from '../store/useSettingsStore';
 
 import { gsap } from 'gsap';
 import { attachRipple } from '@/lib/siklus/microInteractions';
@@ -243,18 +242,13 @@ export default function SikluskuPage() {
   // ---- stores ----
   const onboardingCompleted = useSiklusStore((s) => s.onboardingCompleted);
   const onboardingData = useSiklusStore((s) => s.onboardingData);
-  const moodLogs = useSiklusStore((s) => s.moodLogs); // kept for nudge eligibility
+  const moodLogs = useSiklusStore((s) => s.moodLogs || []); // for nudge eligibility if you still keep it
   const dailyLogs = useSiklusStore((s) => s.dailyLogs || []);
   const cycleSummary = useSiklusStore((s) => s.cycleSummary);
   const achievements = useSiklusStore((s) => s.achievements ?? []);
 
   const setOnboardingCompletedAction = useSiklusStore((s) => s.setOnboardingCompleted);
   const resetOnboardingDataAction = useSiklusStore((s) => s.resetOnboardingData);
-
-  const nudgesEnabled = useSettingsStore((s) => s.nudgesEnabled);
-  const settingsHydrated = useSettingsStore((s) => s.hydrated ?? true);
-
-  const goals = onboardingData?.goals || [];
 
   // ---- helpers ----
   function markLoveLetterShown() {
@@ -265,13 +259,10 @@ export default function SikluskuPage() {
     setLoveLetterShown(true);
   }
 
-  // hydrate both stores once + load love letter flags
+  // hydrate store once + load love letter flags
   useEffect(() => {
     try {
       useSiklusStore.getState().hydrate?.();
-    } catch {}
-    try {
-      useSettingsStore.getState().hydrate?.();
     } catch {}
     setHydrated(true);
     try {
@@ -295,7 +286,7 @@ export default function SikluskuPage() {
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
   }, []);
 
-  // reduced motion
+  // reduced motion (system)
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const media = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -305,13 +296,21 @@ export default function SikluskuPage() {
     return () => media.removeEventListener('change', update);
   }, []);
 
-  // === Flow initialization with eligibility check ===
+  // === Initial flow
   useEffect(() => {
     if (!hydrated || hasInitializedFlowRef.current) return;
     hasInitializedFlowRef.current = true;
     setFlow(onboardingCompleted ? 'dashboard' : 'gate');
     if (onboardingCompleted && loveLetterEligible && !loveLetterShown) setLoveLetterOpen(true);
   }, [hydrated, onboardingCompleted, loveLetterEligible, loveLetterShown]);
+
+  // ✅ Keep flow synced if onboardingCompleted flips later
+  useEffect(() => {
+    if (!hydrated) return;
+    if (onboardingCompleted && flow !== 'dashboard') {
+      setFlow('dashboard');
+    }
+  }, [hydrated, onboardingCompleted, flow]);
 
   // Keep tab on dashboard if onboarding not completed
   useEffect(() => {
@@ -331,14 +330,15 @@ export default function SikluskuPage() {
     return cleanupAll;
   }, [prefersReducedMotion, flow, loveLetterOpen, showDailyNudge, hydrated]);
 
-  // daily mood nudge
+  // daily mood nudge (settings removed → default to enabled)
   useEffect(() => {
-    if (!settingsHydrated || !hydrated || flow !== 'dashboard') {
+    if (!hydrated || flow !== 'dashboard') {
       if (showDailyNudge) setShowDailyNudge(false);
       return;
     }
     const evaluate = () => {
       const now = new Date();
+      const nudgesEnabled = true;
       const eligible = shouldShowDailyMoodNudge({ now, moodLogs, nudgesEnabled });
       if (!eligible) return setShowDailyNudge(false);
       const todayKey = getTodayKey(now);
@@ -349,17 +349,15 @@ export default function SikluskuPage() {
     evaluate();
     const id = window.setInterval(evaluate, 60 * 1000);
     return () => window.clearInterval(id);
-  }, [settingsHydrated, hydrated, flow, moodLogs, nudgesEnabled, lastNudgeShownDate, showDailyNudge]);
+  }, [hydrated, flow, moodLogs, lastNudgeShownDate, showDailyNudge]);
 
   // ---- derivations ----
   const isHydrating = !hydrated || flow === 'loading';
   const placeholderState = isHydrating ? 'loading' : flow !== 'dashboard' ? flow : null;
   const showPlaceholder = Boolean(placeholderState);
 
-  // ⬇️ replaced summarizeMoodTrend with local helper on dailyLogs
   const moodSummary = useMemo(() => summarizeMoodFromDailyLogs(dailyLogs), [dailyLogs]);
 
-  // Build legend for export from dailyLogs
   const exportLegend = useMemo(() => {
     const counts = dailyLogs.reduce((acc, log) => {
       const key = typeof log.mood === 'string' ? log.mood.toLowerCase() : null;
@@ -429,9 +427,9 @@ export default function SikluskuPage() {
       : phaseMeta.description ?? 'Data siklus lengkap bantu kami menyesuaikan tips khusus untukmu.';
 
     const Icon = phaseMeta.icon;
+    const goals = onboardingData?.goals || [];
     const fertilityEnabled = Array.isArray(goals) && goals.includes('fertility');
     const psaMessage = phaseMeta.psaMessage;
-    the_showPSA:;
     const showPSA = Boolean(psaMessage && cycleInsight.phaseKey === 'ovulation');
     const psaClass = fertilityEnabled
       ? 'bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-900/30 dark:text-amber-200 dark:border-amber-800/60'
@@ -689,7 +687,7 @@ export default function SikluskuPage() {
                       averageCycleLength: cycleSummary.averageCycleLength,
                       averagePeriodLength: cycleSummary.averagePeriodLength,
                       dominantMood: moodSummary.dominantMood,
-                      moodEntries: dailyLogs.length, // ⬅️ use daily logs here
+                      moodEntries: dailyLogs.length,
                     }}
                     legend={exportLegend}
                   />
@@ -710,14 +708,8 @@ export default function SikluskuPage() {
 
       {hydrated ? <OnboardingGate open={flow === 'gate'} onBelum={() => setFlow('guide')} onSudah={() => setFlow('form')} reducedMotion={prefersReducedMotion} /> : null}
 
-      {flow === 'guide' ? (
-        <FirstPeriodGuide
-          onComplete={() => {
-            resetOnboardingDataAction?.();
-            setOnboardingCompletedAction?.(true);
-          }}
-        />
-      ) : null}
+      {/* ✅ Fix: go straight to dashboard when the guide completes */}
+      {flow === 'guide' ? <FirstPeriodGuide onComplete={() => setFlow('dashboard')} /> : null}
 
       {flow === 'form' ? <CycleOnboarding onComplete={() => setFlow('dashboard')} /> : null}
       {flow === 'dashboard' ? renderDashboard() : null}
