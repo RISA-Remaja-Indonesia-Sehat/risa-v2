@@ -7,6 +7,7 @@ import useArticleStore from '@/app/store/useArticleStore';
 import { useParams } from 'next/navigation';
 import CommentSection from '@/app/components/articles/CommentSection';
 import CommentForm from '@/app/components/articles/CommentForm';
+import Link from 'next/link';
 
 export default function ArticlePage() {
   const params = useParams();
@@ -43,14 +44,14 @@ export default function ArticlePage() {
           </div>
 
           {/*  Game */}
-          <aside className="bg-white rounded-sm shadow-lg h-fit max-w-72 lg:max-w-1/5 p-6 ml-4">
+          <aside className="bg-white rounded-sm shadow-lg h-fit max-w-72 lg:w-1/2 p-6 ml-4">
               <div>
                   <h4 className="mb-2 font-medium">Drag & Drop Challenge</h4>
-                  <Image src="/image/game-item.png" width={100} height={100} alt="Game Item" className="mb-4" />
+                  <Image src="/image/game-item.png" width={300} height={300} alt="Game Item" className="mb-4" />
 
-                  <a href="dragNdrop.html">
+                  <Link href="/drag-drop-game" target="_blank" rel="noopener noreferrer">
                       <CustomButton title='Coba Sekarang' className="text-xs px-4 py-2" role="button" />
-                  </a>
+                  </Link>
               </div>
           </aside>
 

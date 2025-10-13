@@ -1,12 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
 
-export default function ArticleCard() {
+export default function ArticleCard({ article }) {
+    if (!article) {
+        return <div className="text-center py-10">Tidak ada artikel tersedia.</div>;
+    }
+    
   return (
     <div className="bg-white rounded-xl overflow-hidden border border-gray-100 hover:border-pink-200 transition-all duration-300 group">
         <Link href={`/article/${article.id}`} className="block">
             <div className="aspect-video overflow-hidden">
-                <Image src={article.img} alt={article.imgAlt} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                <Image src={article.img} alt={article.imgAlt} width={400} height={225} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
             </div>
             <div className="p-6">
                 <h3 className="font-bold text-lg text-gray-800 mb-3 group-hover:text-pink-600 transition-colors">
