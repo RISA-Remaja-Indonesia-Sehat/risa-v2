@@ -23,7 +23,7 @@ export default function RewardPage() {
       id: 1,
       title: "Voucher Laurier Rp 10.000",
       cost: 150,
-      image: "/image/laurier.png",
+      image: "/image/Laurier.png",
       description: "Voucher khusus produk Laurier di Official Store Shopee PT Kao Indonesia"
     },
     {
