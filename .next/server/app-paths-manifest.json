@@ -1,5 +1,17 @@
 {
+  "/_not-found/page": "app/_not-found/page.js",
   "/article/[id]/page": "app/article/[id]/page.js",
   "/article/page": "app/article/page.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js"
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/login/page": "app/login/page.js",
+  "/mini-game/drag-drop/page": "app/mini-game/drag-drop/page.js",
+  "/mini-game/memory/page": "app/mini-game/memory/page.js",
+  "/mini-game/memory/result/page": "app/mini-game/memory/result/page.js",
+  "/mini-game/page": "app/mini-game/page.js",
+  "/missions/page": "app/missions/page.js",
+  "/page": "app/page.js",
+  "/register/page": "app/register/page.js",
+  "/reward/page": "app/reward/page.js",
+  "/siklusku/page": "app/siklusku/page.js",
+  "/vaksin-hpv/page": "app/vaksin-hpv/page.js"
 }

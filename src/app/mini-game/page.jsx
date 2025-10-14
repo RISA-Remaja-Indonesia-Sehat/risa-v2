@@ -80,7 +80,6 @@ export default function Home() {
           {
             opacity: 1,
             scale: 1,
-            rotation: 360,
             duration: 1.2,
             ease: "power2.out",
             scrollTrigger: {
@@ -132,6 +131,7 @@ export default function Home() {
             width={400}
             height={400}
             className="max-h-80 drop-shadow-xl"
+            priority={false}
           />
         </div>
       </section>
@@ -193,7 +193,7 @@ export default function Home() {
                 <path id="curveSelamat" d="M 0,300 A 300,200 0 0 1 400,300" />
               </defs>
               <text fill="black" fontSize="80" fontWeight="bold" textAnchor="middle">
-                <textPath startOffset="50%" href="#curveSelamat">Selamat</textPath>
+                <textPath startOffset="50%" href="#curveSelamat">SELAMAT</textPath>
               </text>
             </svg>
             <Image
@@ -202,9 +202,9 @@ export default function Home() {
               alt="Trophy"
               width={200}
               height={200}
-              className="relative mt-6"
+              className="relative mt-4"
             />
-            <p className="mt-4 text-lg font-semibold text-black bg-pink-300 px-4 py-1 border-2 border-black shadow-md">
+            <p className="mt-4 text-lg font-semibold px-4 py-1">
               Kamu mendapatkan peringkat ke-1 minggu ini
             </p>
           </div>
@@ -213,7 +213,7 @@ export default function Home() {
         {/* LEADERBOARD */}
         <section id="leaderboard" className="py-10 px-6 md:px-16">
           <h2 ref={addFadeSlide} className="text-3xl font-bold text-pink-600 mb-6">
-            🏆 Leaderboard
+            Leaderboard
           </h2>
           <div className="overflow-x-auto">
             <table className="w-full bg-white rounded-xl shadow-lg overflow-hidden">

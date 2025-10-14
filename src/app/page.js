@@ -1,6 +1,7 @@
 import Image from "next/image";
 import HeroSection from "./landing-page/HeroSection";
 import OurStaff from "./landing-page/OurStaff";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -59,25 +60,25 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-4">
             <div className="mb-6 hover:text-pink-600 transition-colors duration-300 cursor-pointer">
-              <a href="article-hiv.html">
+              <Link href="/article/1">
                 <div className="bg-[url('/image/article-image-1.png')] bg-cover bg-center w-full h-56 mb-3 rounded-lg shadow-md hover:shadow-lg transition-shadow"></div>
                 <span className="font-medium">HIV? Gak Usah Panik, Yuk Kenalan Dulu!</span>
                 <p className="text-sm leading-relaxed text-gray-600">Kenalan sama HIV biar gak salah paham dan tetap bisa jaga diri.</p>
-              </a>
+              </Link>
             </div>
             <div className="mb-6 hover:text-pink-600 transition-colors duration-300 cursor-pointer">
-              <a href="./article-seks.html">
+              <Link href="/article/2">
                 <div className="bg-[url('/image/article-image-2.png')] bg-cover bg-center w-full h-56 mb-3 rounded-lg shadow-md hover:shadow-lg transition-shadow"></div>
                 <span className="font-medium">Seks Itu Apa Sih? Biar Gak Salah Paham dan Bisa Jaga Diri!</span>
                 <p className="text-gray-600 leading-relaxed text-sm">Belajar soal seks biar gak salah langkah dan bisa jaga diri.</p>
-              </a>
+              </Link>
             </div>
             <div className="mb-6 hover:text-pink-600 transition-colors duration-300 cursor-pointer">
-              <a href="article-menstruasi.html">
+              <Link href="/article/3">
                 <div className="bg-[url('/image/article-image-3.png')] bg-cover bg-center w-full h-56 mb-3 rounded-lg shadow-md hover:shadow-lg transition-shadow"></div>
                 <span className="font-medium">Menstruasi Pertama: Kenapa Bisa Terjadi dan Gak Usah Takut!</span>
                 <p className="text-gray-600 leading-relaxed text-sm">Menstruasi pertama itu alami, yuk siapin diri biar gak panik.</p>
-              </a>
+              </Link>
             </div>
           </div>
         </div>

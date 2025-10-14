@@ -33,7 +33,7 @@ export default function Navbar() {
       {/** Logo */}
       <div className="flex items-center gap-2">
         <Link href="/">
-          <Image src="/image/LogoRisa.png" width={100} height={32} alt="RISA Logo"/>
+          <Image src="/image/LogoRisa.png" width={100} height={32} alt="RISA Logo" priority={true} />
         </Link>
       </div>
 

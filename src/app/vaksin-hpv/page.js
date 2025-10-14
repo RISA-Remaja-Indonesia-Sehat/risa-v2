@@ -86,7 +86,7 @@ export default function Home() {
                 Bergabunglah dengan <strong>ribuan remaja cerdas</strong> yang sudah melindungi diri dari kanker serviks. 
                 Vaksinasi HPV adalah investasi terbaik untuk kesehatan reproduksimu di masa depan!
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 mb-8">
+              <div className="flex flex-col sm:flex-row gap-4 mb-8 w-fit">
                 <CustomButton title="Daftar Vaksin Sekarang" className="px-4 py-2 md:px-6 md:py-3 md:text-lg" />
               </div>
               <div className="flex items-center gap-4">
@@ -106,6 +106,7 @@ export default function Home() {
                 alt="Vaksin HPV" 
                 width={1000} 
                 height={800}
+                priority={false}
               />
             </div>
           </div>
@@ -123,6 +124,7 @@ export default function Home() {
               width={300} 
               height={120}
               className='drop-shadow-sm drop-shadow-slate-400'
+              priority={false}
             />
           </div>
           <p className="text-gray-600 max-w-2xl mx-auto">

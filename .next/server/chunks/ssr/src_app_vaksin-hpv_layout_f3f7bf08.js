@@ -1,0 +1,3 @@
+module.exports=[35620,a=>{"use strict";a.s(["default",()=>d,"metadata",()=>c]);var b=a.i(7997);let c={title:"RISA | Temukan Lokasi Vaksinasi HPV Terdekat",description:"Temukan lokasi vaksinasi HPV terdekat untuk Anda dan keluarga. Lindungi diri dari kanker serviks dengan vaksinasi HPV di laboratorium klinik terpercaya.",keywords:"vaksin HPV, kanker serviks, kesehatan wanita, vaksinasi remaja, laboratorium klinik, Gardasil, Cervarix"};function d({children:a}){return(0,b.jsx)("div",{children:a})}}];
+
+//# sourceMappingURL=src_app_vaksin-hpv_layout_f3f7bf08.js.map
