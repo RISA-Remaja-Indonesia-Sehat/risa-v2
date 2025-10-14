@@ -98,7 +98,7 @@ export default function Home() {
             <span className="text-center text-sm text-gray-600 font-medium">PT Prodia Widyahusada Tbk</span>
           </div>
           <div className="flex flex-col items-center p-4">
-            <Image src="/image/laurier.png" width={120} height={80} className="w-30 h-20 object-contain mb-2" alt="Laurier" />
+            <Image src="/image/Laurier.png" width={120} height={80} className="w-30 h-20 object-contain mb-2" alt="Laurier" />
             <span className="text-center text-sm text-gray-600 font-medium">PT Kao Indonesia</span>
           </div>
         </div>
