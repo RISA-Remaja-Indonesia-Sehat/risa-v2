@@ -39,7 +39,7 @@ export default function Navbar() {
 
       {/** Menu Desktop */}
       <ul className="hidden md:flex gap-6 text-gray-700 font-medium">
-        <li><Link href="/articles" className="hover:text-pink-500">Artikel</Link></li>
+        <li><Link href="/article" className="hover:text-pink-500">Artikel</Link></li>
         <li><Link href="/mini-game" className="hover:text-pink-500">Mini Games</Link></li>
         <li><Link href="/siklusku" className="hover:text-pink-500">Siklusku</Link></li>
         <li><Link href="/vaksin-hpv" className="hover:text-pink-500">Vaksin HPV</Link></li>
@@ -77,7 +77,7 @@ export default function Navbar() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
           </svg>
         </button>
-        <Link href="/" className="hover:text-pink-500">Artikel</Link>
+        <Link href="/article" className="hover:text-pink-500">Artikel</Link>
         <Link href="/mini-game" className="hover:text-pink-500">Mini Games</Link>
         <Link href="/siklusku" className="hover:text-pink-500">Siklusku</Link>
         <Link href="/vaksin-hpv" className="hover:text-pink-500">Vaksin HPV</Link>
