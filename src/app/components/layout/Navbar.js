@@ -2,6 +2,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import SearchBox from './SearchBox';
 
 export default function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -31,25 +32,24 @@ export default function Navbar() {
     <nav className="w-full bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between shadow-sm relative">
       {/** Logo */}
       <div className="flex items-center gap-2">
-         <Image src="/image/LogoRisa.png" width={100} height={32} alt="RISA Logo"/>
+        <Link href="/">
+          <Image src="/image/LogoRisa.png" width={100} height={32} alt="RISA Logo" priority={true} />
+        </Link>
       </div>
 
       {/** Menu Desktop */}
       <ul className="hidden md:flex gap-6 text-gray-700 font-medium">
-        <li><Link href="/" className="hover:text-pink-500">Beranda</Link></li>
+        <li><Link href="/articles" className="hover:text-pink-500">Artikel</Link></li>
         <li><Link href="/mini-game" className="hover:text-pink-500">Mini Games</Link></li>
-        <li><Link href="/siklusku" className="hover:text-pink-500">My Cycle</Link></li>
+        <li><Link href="/siklusku" className="hover:text-pink-500">Siklusku</Link></li>
         <li><Link href="/vaksin-hpv" className="hover:text-pink-500">Vaksin HPV</Link></li>
+        <li><Link href="/missions" className="hover:text-pink-500">Misi Harian</Link></li>
       </ul>
 
       {/** Right Section */}
       <div className="flex items-center gap-4">
         {/** Search */}
-        <button aria-label="Cari" className="text-gray-600 hover:text-pink-500">
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-        </button>
+        <SearchBox />
 
 
         {/** Profile Icon (Desktop) */}
@@ -60,7 +60,7 @@ export default function Navbar() {
         </button>
 
         {/** Mobile Toggle */}
-        <button id="menu-toggle" className="md:hidden text-gray-600 hover:text-pink-500">
+        <button id="menu-toggle" className="md:hidden text-gray-600 hover:text-pink-500 cursor-pointer">
           <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
           </svg>
@@ -77,10 +77,11 @@ export default function Navbar() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
           </svg>
         </button>
-        <Link href="/" className="hover:text-pink-500">Beranda</Link>
+        <Link href="/" className="hover:text-pink-500">Artikel</Link>
         <Link href="/mini-game" className="hover:text-pink-500">Mini Games</Link>
-        <Link href="/siklusku" className="hover:text-pink-500">My Cycle</Link>
+        <Link href="/siklusku" className="hover:text-pink-500">Siklusku</Link>
         <Link href="/vaksin-hpv" className="hover:text-pink-500">Vaksin HPV</Link>
+        <Link href="/missions" className="hover:text-pink-500">Misi Harian</Link>
       </div>
     </nav>
   )
