@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/app/components/ui/card";
-import { EnhancedButton } from "../games/EnchancedBtutton";
+import { EnhancedButton } from "@/app/components/games/EnhancedButton";
 import { Badge } from "@/app/components/ui/badge";
 import { Clock, Target, Trophy, Users } from "lucide-react";
 import Image from "next/image";
@@ -35,9 +35,6 @@ const GameCard = ({
             {title}
           </CardTitle>
           <Image src={game} width={40} height={40} alt="game"></Image>
-          {isCompleted && (
-            <Trophy className="h-6 w-6 text-yellow-500 animate-bounce" />
-          )}
         </div>
       </CardHeader>
 

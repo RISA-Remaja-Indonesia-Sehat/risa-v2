@@ -52,7 +52,7 @@ export default function HeroSection() {
         </div>
 
         <div className="w-fit mx-auto">
-            <Image src="/image/hero-image.png" width={600} height={400} alt="Hero" className="hero-image opacity-0 max-w-full h-auto" priority={true} />
+            <Image src="/image/hero-image.png" width={600} height={400} alt="Hero" className="hero-image opacity-0 max-w-full h-auto" />
         </div>
         </div>
     </section>
