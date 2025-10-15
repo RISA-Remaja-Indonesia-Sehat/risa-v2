@@ -491,7 +491,7 @@ export default function SikluskuPage() {
 
             <div className="relative hidden h-64 w-64 md:block">
               <div className="absolute inset-0 rounded-full bg-white/70 blur-3xl dark:bg-white/10" aria-hidden="true" />
-              <img src={phaseMeta.imageSrc} alt={phaseMeta.imageAlt} className="relative z-10 h-full w-full object-contain" />
+              <Image src={phaseMeta.imageSrc} alt={phaseMeta.imageAlt} className="relative z-10 h-full w-full object-contain" />
             </div>
           </div>
         </section>

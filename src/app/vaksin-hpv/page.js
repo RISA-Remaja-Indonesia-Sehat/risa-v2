@@ -75,9 +75,9 @@ export default function Home() {
       />
       
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-pink-50 via-white to-rose-50 py-20 px-4">
+      <section className="bg-gradient-to-br from-pink-50 via-white to-rose-50 py-20 px-4">
         <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
+          <div className="grid md:grid-cols-2 justify-center items-center">
             <div>
               <h1 className="text-3xl md:text-4xl font-bold text-[#382b22] mb-6">
                 Lindungi Masa Depanmu dengan <span className="text-pink-600">Vaksin HPV</span>
@@ -100,7 +100,7 @@ export default function Home() {
                 </p>
               </div>
             </div>
-            <div className="relative">
+            <div>
               <Image 
                 src="/image/vaksin-hpv.png" 
                 alt="Vaksin HPV" 

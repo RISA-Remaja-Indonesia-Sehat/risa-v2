@@ -13,7 +13,16 @@ export default function ETicket({ show, onClose, bookingData }) {
       const canvas = await html2canvas(ticketRef.current, {
         backgroundColor: '#ffffff',
         scale: 2,
-        useCORS: true
+        useCORS: true,
+        allowTaint: true,
+        ignoreElements: (element) => {
+          return element.tagName === 'STYLE' || element.classList?.contains('ignore-html2canvas');
+        },
+        onclone: (clonedDoc) => {
+          // Remove all stylesheets to avoid oklch issues
+          const stylesheets = clonedDoc.querySelectorAll('link[rel="stylesheet"], style');
+          stylesheets.forEach(sheet => sheet.remove());
+        }
       });
       
       const link = document.createElement('a');
@@ -22,14 +31,35 @@ export default function ETicket({ show, onClose, bookingData }) {
       link.click();
     } catch (error) {
       console.error('Error generating ticket:', error);
+      alert('Gagal mengunduh e-ticket. Silakan coba lagi.');
     }
   };
 
   if (!show) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md mx-auto border-2 border-pink-200 max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
+    <div style={{
+      position: 'fixed',
+      inset: '0',
+      zIndex: '50',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      padding: '16px'
+    }}>
+      <div style={{
+        backgroundColor: '#ffffff',
+        borderRadius: '16px',
+        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+        padding: '32px',
+        width: '100%',
+        maxWidth: '448px',
+        margin: '0 auto',
+        border: '2px solid #fbcfe8',
+        maxHeight: '95vh',
+        overflowY: 'auto'
+      }}>
         <div ref={ticketRef} style={{
           background: '#ffffff',
           padding: '24px',
@@ -96,16 +126,38 @@ export default function ETicket({ show, onClose, bookingData }) {
           </div>
         </div>
 
-        <div className="space-y-4">
+        <div style={{display: 'flex', flexDirection: 'column', gap: '16px'}}>
           <button
             onClick={onClose}
-            className="w-full py-3 bg-white text-pink-600 rounded-full font-semibold border-2 border-pink-300 hover:bg-pink-50 hover:border-pink-400 transition-all duration-300"
+            style={{
+              width: '100%',
+              padding: '12px 0',
+              backgroundColor: '#ffffff',
+              color: '#ec4899',
+              borderRadius: '9999px',
+              fontWeight: '600',
+              border: '2px solid #f9a8d4',
+              cursor: 'pointer'
+            }}
           >
             Tutup
           </button>
           <button
             onClick={handleDownloadJPG}
-            className="w-full py-3 bg-pink-500 text-white rounded-full font-semibold hover:shadow-lg hover:from-pink-600 hover:to-purple-600 transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2"
+            style={{
+              width: '100%',
+              padding: '12px 0',
+              backgroundColor: '#ec4899',
+              color: '#ffffff',
+              borderRadius: '9999px',
+              fontWeight: '600',
+              border: 'none',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px'
+            }}
           >
             Download E-Ticket
           </button>
