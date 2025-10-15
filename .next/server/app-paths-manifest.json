@@ -1,7 +1,0 @@
-{
-  "/missions/page": "app/missions/page.js",
-  "/article/[id]/page": "app/article/[id]/page.js",
-  "/siklusku/page": "app/siklusku/page.js",
-  "/article/page": "app/article/page.js",
-  "/vaksin-hpv/page": "app/vaksin-hpv/page.js"
-}
