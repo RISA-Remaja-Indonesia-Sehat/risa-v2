@@ -150,7 +150,7 @@ export default function OnboardingGate({ open, onBelum, onSudah, reducedMotion =
                 aria-label="Belum pernah haid"
                 data-gate-button
                 data-ripple="true"
-                className="relative inline-flex min-h-[52px] w-full items-center justify-center rounded-full bg-pink-500 px-6 py-3 text-base font-semibold text-white shadow-lg shadow-pink-200/60 transition-transform duration-200 ease-out hover:shadow-xl motion-safe:hover:scale-[1.03] motion-reduce:transform-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-600 sm:flex-1 overflow-hidden"
+                className="relative inline-flex min-h-[52px] w-full items-center justify-center rounded-full bg-pink-500 px-6 py-3 text-base font-semibold text-white shadow-lg shadow-pink-200/60 transition-transform duration-200 ease-out hover:shadow-xl motion-safe:hover:scale-[1.03] motion-reduce:transform-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-600 sm:flex-1 overflow-hidden"
                 onClick={() => handleChoice(onBelum)}
               >
                 Belum
@@ -161,7 +161,7 @@ export default function OnboardingGate({ open, onBelum, onSudah, reducedMotion =
                 aria-label="Sudah haid"
                 data-gate-button
                 data-ripple="true"
-                className="relative inline-flex min-h-[52px] w-full items-center justify-center rounded-full border border-pink-200 bg-white px-6 py-3 text-base font-semibold text-pink-600 shadow-md transition-transform duration-200 ease-out hover:shadow-lg motion-safe:hover:scale-[1.03] motion-reduce:transform-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-600 sm:flex-1 overflow-hidden"
+                className="relative inline-flex min-h-[52px] w-full items-center justify-center rounded-full border border-pink-200 bg-white px-6 py-3 text-base font-semibold text-pink-600 shadow-md transition-transform duration-200 ease-out hover:shadow-lg motion-safe:hover:scale-[1.03] motion-reduce:transform-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-600 sm:flex-1 overflow-hidden"
                 onClick={() => handleChoice(onSudah)}
               >
                 Sudah
