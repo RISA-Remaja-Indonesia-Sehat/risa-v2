@@ -98,7 +98,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-white px-4 py-12 sm:bg-[#ffe6f1]">
+    <div className="flex min-h-screen items-start justify-center bg-white px-4 pt-6 pb-12 sm:items-center sm:bg-[#ffe6f1]">
       <div className="w-full max-w-lg rounded-none bg-white px-6 py-10 shadow-none sm:rounded-3xl sm:shadow-xl sm:px-10">
         <div className="mx-auto w-full space-y-8">
           <div className="flex items-center justify-between">
