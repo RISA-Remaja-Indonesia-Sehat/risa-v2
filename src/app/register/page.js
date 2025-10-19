@@ -12,13 +12,13 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formValues, setFormValues] = useState({
-    username: '',
+    name: '',
     email: '',
     password: '',
     confirmPassword: '',
   });
   const [errors, setErrors] = useState({
-    username: '',
+    name: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -49,21 +49,19 @@ export default function RegisterPage() {
 
   const validate = () => {
     const nextErrors = {
-      username: '',
+      name: '',
       email: '',
       password: '',
       confirmPassword: '',
     };
 
-    const username = formValues.username.trim();
+    const name = formValues.name.trim();
     const email = formValues.email.trim();
     const password = formValues.password.trim();
     const confirmPassword = formValues.confirmPassword.trim();
 
-    if (!username) {
-      nextErrors.username = 'Username wajib diisi';
-    } else if (username.length < 8) {
-      nextErrors.username = 'Username minimal 8 karakter';
+    if (!name) {
+      nextErrors.name = 'Nama wajib diisi';
     }
 
     if (!email) {
@@ -116,12 +114,12 @@ export default function RegisterPage() {
 
           <form className="space-y-5" onSubmit={handleSubmit} noValidate>
             <label className="block">
-              <span className="sr-only">Username</span>
+              <span className="sr-only">Name</span>
               <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm shadow-sm transition focus-within:border-pink-300 focus-within:ring-2 focus-within:ring-pink-100">
                 <User className="h-5 w-5 text-slate-400" aria-hidden="true" />
-                <input type="text" required placeholder="Username" className="w-full border-0 bg-transparent text-slate-700 placeholder:text-slate-400 focus:outline-none" value={formValues.username} onChange={handleChange('username')} />
+                <input type="text" required placeholder="Name" className="w-full border-0 bg-transparent text-slate-700 placeholder:text-slate-400 focus:outline-none" value={formValues.name} onChange={handleChange('name')} />
               </div>
-              {errors.username ? <p className="mt-2 text-xs text-rose-500">{errors.username}</p> : null}
+              {errors.name ? <p className="mt-2 text-xs text-rose-500">{errors.name}</p> : null}
             </label>
 
             <label className="block">
@@ -178,7 +176,7 @@ export default function RegisterPage() {
 
             <p className="text-xs text-slate-400">Dengan melanjutkan Anda menyetujui ketentuan penggunaan & kebijakan privasi RISA</p>
 
-            <CustomButton type="submit" title="Daftar" className="w-full py-3 text-base text-[#382b22]" />
+            <CustomButton type="submit" title="Daftar" className="w-full py-3 text-base text-[#382b22] flex items-center justify-center" />
           </form>
 
           <p className="text-center text-sm text-slate-500">

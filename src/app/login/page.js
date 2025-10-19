@@ -116,7 +116,7 @@ export default function LoginPage() {
               </Link>
             </div>
 
-            <CustomButton type="submit" title="Masuk" className="w-full py-3 text-base text-[#382b22]" />
+            <CustomButton type="submit" title="Masuk" className="w-full py-3 text-base text-[#382b22] flex items-center justify-center" />
 
           </form>
 
