@@ -8,34 +8,40 @@ import { useParams } from 'next/navigation';
 import CommentSection from '@/app/components/articles/CommentSection';
 import CommentForm from '@/app/components/articles/CommentForm';
 import Link from 'next/link';
+import { useEffect } from 'react';
 
 export default function ArticlePage() {
-  const params = useParams();
-  const { getArticleById } = useArticleStore();
-  const article = getArticleById(params.id);
+   const { id } = useParams();
+  const { selectedArticle, fetchArticleById, loading, error } = useArticleStore();
 
-  if (!article) {
-    return <div className="container mx-auto px-4 py-8">Artikel tidak ditemukan</div>;
-  }
+  useEffect(() => {
+    fetchArticleById(id);
+  }, [id, fetchArticleById]);
+
+  if (loading) return <p className="p-6">Loading...</p>;
+  if (error) return <p className="p-6 text-red-600">Error: {error}</p>;
+  if (!selectedArticle) return <p className="p-6">Artikel tidak ditemukan</p>;
+
+  const { title, imageUrl, imageAlt, content, opinion } = selectedArticle;
 
   return (
     <>
       <section className="container my-12 mx-auto lg:flex items-center gap-6 overflow-hidden" id="article">
           <div className="p-6">
-            <Image src={article.img} width={500} height={500} className="w-full lg:w-4xl mb-4" alt={article.imgAlt} />
+            <Image src={imageUrl} width={500} height={500} priority={true} className="w-full lg:w-4xl mb-4" alt={imageAlt} />
 
-            <h1 className="mt-12 font-bold text-2xl md:text-3xl">{article.title}</h1>
+            <h1 className="mt-12 font-bold text-2xl md:text-3xl">{title}</h1>
 
             <div className="prose max-w-none mt-4">
               {/* Opinion Section */}
-              {article.opinion && (
-                <div className="mb-8" dangerouslySetInnerHTML={{ __html: article.opinion }} />
+              {opinion && (
+                <div className="mb-8" dangerouslySetInnerHTML={{ __html: opinion }} />
               )}
             </div>
 
             <div className="mt-12">
               {/* Main Content */}
-              <div dangerouslySetInnerHTML={{ __html: article.content }} />
+              <div dangerouslySetInnerHTML={{ __html: content }} />
             </div>
 
             <div className="p-6">
@@ -56,7 +62,7 @@ export default function ArticlePage() {
           </aside>
 
           {/* Initialize quiz for HIV article */}
-          {article.id === 1 && <HIVQuiz />}
+          {id === 1 && <HIVQuiz />}
       </section>
 
       <section className="container my-12 pt-12 border-1 border-transparent border-t-gray-200 mx-auto px-4">
