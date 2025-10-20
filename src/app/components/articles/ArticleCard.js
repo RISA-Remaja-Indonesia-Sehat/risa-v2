@@ -1,12 +1,19 @@
 'use client';
 
+import { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import useArticleStore from "@/app/store/useArticleStore";
 
 export default function ArticleCard() {
-    const { getAllArticles } = useArticleStore();
-    const articles = getAllArticles();
+   const { articles, fetchArticles, loading, error } = useArticleStore();
+
+    useEffect(() => {
+        fetchArticles();
+    }, [fetchArticles]);
+
+    if (loading) return <p className="p-6 text-gray-600">Loading articles...</p>;
+    if (error) return <p className="p-6 text-red-600">Error: {error}</p>;
   
     if (!articles || articles.length === 0) {
         return <div className="text-center py-10">Tidak ada artikel tersedia.</div>;
@@ -18,7 +25,7 @@ export default function ArticleCard() {
                 <div key={article.id} className="bg-white rounded-xl overflow-hidden border border-gray-100 hover:border-pink-200 transition-all duration-300 group">
                     <Link href={`/article/${article.id}`} className="block">
                         <div className="aspect-video overflow-hidden">
-                            <Image src={article.img} alt={article.imgAlt} width={400} height={225} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                            <Image src={article.imageUrl} alt={article.imageAlt} width={400} height={225} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                         </div>
                         <div className="p-6">
                             <h3 className="font-bold text-lg text-gray-800 mb-3 group-hover:text-pink-600 transition-colors">
