@@ -52,8 +52,8 @@ export default function Navbar() {
 
       {/** Menu Desktop */}
       <ul className="hidden md:flex gap-6 text-gray-700 font-medium">
-        <li><Link href="/article" className="hover:text-pink-500">Artikel</Link></li>
         <li><Link href="/mini-game" className="hover:text-pink-500">Mini Games</Link></li>
+        <li><Link href="/article" className="hover:text-pink-500">Artikel</Link></li>
         <li><Link href="/siklusku" className="hover:text-pink-500">Siklusku</Link></li>
         <li><Link href="/vaksin-hpv" className="hover:text-pink-500">Vaksin HPV</Link></li>
         <li><Link href="/missions" className="hover:text-pink-500">Misi Harian</Link></li>
@@ -127,7 +127,7 @@ export default function Navbar() {
                 localStorage.removeItem('user');
                 setIsLoggedIn(false);
                 setUser(null);
-                router.push('/');
+                router.push('/login');
               }}
               className="w-full px-4 py-2 text-sm font-medium text-pink-600 hover:text-pink-700 hover:bg-pink-50 rounded-full transition-all duration-200"
             >
@@ -145,8 +145,8 @@ export default function Navbar() {
           </div>
         )}
         
-        <Link href="/article" className="hover:text-pink-500">Artikel</Link>
         <Link href="/mini-game" className="hover:text-pink-500">Mini Games</Link>
+        <Link href="/article" className="hover:text-pink-500">Artikel</Link>
         <Link href="/siklusku" className="hover:text-pink-500">Siklusku</Link>
         <Link href="/vaksin-hpv" className="hover:text-pink-500">Vaksin HPV</Link>
         <Link href="/missions" className="hover:text-pink-500">Misi Harian</Link>
