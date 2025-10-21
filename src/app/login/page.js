@@ -8,9 +8,11 @@ import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
 
 import CustomButton from '../components/ui/CustomButton';
+import useAuthStore from '../store/useAuthStore';
 
 export default function LoginPage() {
   const router = useRouter();
+  const { login } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
   const [formValues, setFormValues] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState({ email: '', password: '' });
@@ -78,6 +80,7 @@ export default function LoginPage() {
       if (data.data?.token) {
         localStorage.setItem('token', data.data.token);
         localStorage.setItem('user', JSON.stringify(data.data.user));
+        login(data.data.user, data.data.token);
         router.push('/');
       } else {
         setErrors({ email: '', password: 'Email atau password salah' });
@@ -106,6 +109,7 @@ export default function LoginPage() {
       if (data.data?.token) {
         localStorage.setItem('token', data.data.token);
         localStorage.setItem('user', JSON.stringify(data.data.user));
+        login(data.data.user, data.data.token);
         router.push('/');
       } else {
         alert('Akun tidak ditemukan. Silakan daftar terlebih dahulu.');

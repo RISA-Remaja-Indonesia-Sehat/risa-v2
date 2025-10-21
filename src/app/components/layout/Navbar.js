@@ -4,22 +4,15 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import SearchBox from './SearchBox';
+import useAuthStore from '../../store/useAuthStore';
 
 export default function Navbar() {
     const router = useRouter();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [user, setUser] = useState(null);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const { user, isLoggedIn, logout, initAuth } = useAuthStore();
 
     useEffect(() => {
-        // Check authentication status
-        const token = localStorage.getItem('token');
-        const userData = localStorage.getItem('user');
-        
-        if (token && userData && userData !== 'undefined') {
-            setIsLoggedIn(true);
-            setUser(JSON.parse(userData));
-        }
+        initAuth();
 
         const menu = document.getElementById("mobile-menu");
         
@@ -39,7 +32,7 @@ export default function Navbar() {
         return () => {
             document.removeEventListener("click", handleClick);
         };
-    }, []);  
+    }, [initAuth]);  
     
     return (
     <nav className="w-full bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between shadow-sm relative">
@@ -76,10 +69,7 @@ export default function Navbar() {
             </div>
             <button 
               onClick={() => {
-                localStorage.removeItem('token');
-                localStorage.removeItem('user');
-                setIsLoggedIn(false);
-                setUser(null);
+                logout();
                 router.push('/');
               }}
               className="px-4 py-2 text-sm font-medium text-pink-600 hover:text-pink-700 hover:bg-pink-50 rounded-full transition-all duration-200"
@@ -123,11 +113,8 @@ export default function Navbar() {
             </div>
             <button 
               onClick={() => {
-                localStorage.removeItem('token');
-                localStorage.removeItem('user');
-                setIsLoggedIn(false);
-                setUser(null);
-                router.push('/login');
+                logout();
+                router.push('/');
               }}
               className="w-full px-4 py-2 text-sm font-medium text-pink-600 hover:text-pink-700 hover:bg-pink-50 rounded-full transition-all duration-200"
             >
