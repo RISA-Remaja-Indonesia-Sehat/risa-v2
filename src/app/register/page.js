@@ -5,11 +5,13 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Eye, EyeOff, Lock, Mail, User } from 'lucide-react';
 import CustomButton from '../components/ui/CustomButton';
+import useAuthStore from '../store/useAuthStore';
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
 
 export default function RegisterPage() {
   const router = useRouter();
+  const { login } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -144,8 +146,10 @@ export default function RegisterPage() {
       const data = await response.json();
       
       if (response.ok) {
+        const userData = data.user || { name: decoded.name, email: decoded.email };
         localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user || { name: decoded.name, email: decoded.email }));
+        localStorage.setItem('user', JSON.stringify(userData));
+        login(userData, data.token);
         router.push('/');
       } else {
         alert(data.message || 'Email sudah terdaftar');
