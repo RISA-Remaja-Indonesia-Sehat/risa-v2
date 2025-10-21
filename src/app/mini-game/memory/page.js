@@ -241,8 +241,8 @@ useEffect(() => {
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
         <button
-          onClick={() => router.back()}
-          className="p-2 rounded-full bg-white/60 hover:bg-white shadow-sm"
+          onClick={() => router.push('/mini-game')}
+          className="p-2 rounded-full bg-white/60 hover:bg-white shadow-sm cursor-pointer"
         >
           <ArrowLeft className="w-5 h-5 text-pink-600" />
         </button>
