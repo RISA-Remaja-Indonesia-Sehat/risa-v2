@@ -1,41 +1,56 @@
-'use client';
-
 import Image from 'next/image';
 import HIVQuiz from '@/app/components/articles/HIV-Quiz';
 import CustomButton from '@/app/components/ui/CustomButton';
-import useArticleStore from '@/app/store/useArticleStore';
-import { useParams } from 'next/navigation';
 import CommentSection from '@/app/components/articles/CommentSection';
 import CommentForm from '@/app/components/articles/CommentForm';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 
-export default function ArticlePage() {
-  const params = useParams();
-  const { getArticleById } = useArticleStore();
-  const article = getArticleById(params.id);
+async function getArticle(id) {
+  try {
+    const response = await fetch(`https://server-risa.vercel.app/api/article/${id}`, {
+      cache: 'force-cache'
+    });
+    
+    if (!response.ok) {
+      return null;
+    }
+    
+    const data = await response.json();
+    return Array.isArray(data) ? data[0] : (data.data || data);
+  } catch (error) {
+    console.error('Error fetching article:', error);
+    return null;
+  }
+}
 
+export default async function ArticlePage({ params }) {
+  const { id } = await params;
+  const article = await getArticle(id);
+  
   if (!article) {
-    return <div className="container mx-auto px-4 py-8">Artikel tidak ditemukan</div>;
+    notFound();
   }
 
+  const { title, imageUrl, imageAlt, content, opinion } = article;
   return (
     <>
       <section className="container my-12 mx-auto lg:flex items-center gap-6 overflow-hidden" id="article">
           <div className="p-6">
-            <Image src={article.img} width={500} height={500} className="w-full lg:w-4xl mb-4" alt={article.imgAlt} />
+            <Image src={imageUrl} width={500} height={500} priority={true} className="w-full lg:w-4xl mb-4" alt={imageAlt} />
 
-            <h1 className="mt-12 font-bold text-2xl md:text-3xl">{article.title}</h1>
+            <h1 className="mt-12 font-bold text-2xl md:text-3xl">{title}</h1>
 
             <div className="prose max-w-none mt-4">
               {/* Opinion Section */}
-              {article.opinion && (
-                <div className="mb-8" dangerouslySetInnerHTML={{ __html: article.opinion }} />
+              {opinion && (
+                <div className="mb-8" dangerouslySetInnerHTML={{ __html: opinion }} />
               )}
             </div>
 
             <div className="mt-12">
               {/* Main Content */}
-              <div dangerouslySetInnerHTML={{ __html: article.content }} />
+              <div dangerouslySetInnerHTML={{ __html: content }} />
             </div>
 
             <div className="p-6">
@@ -56,7 +71,7 @@ export default function ArticlePage() {
           </aside>
 
           {/* Initialize quiz for HIV article */}
-          {article.id === 1 && <HIVQuiz />}
+          {id === '1' && <HIVQuiz />}
       </section>
 
       <section className="container my-12 pt-12 border-1 border-transparent border-t-gray-200 mx-auto px-4">
