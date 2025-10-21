@@ -149,7 +149,7 @@ export default function RegisterPage() {
               <span className="sr-only">Name</span>
               <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm shadow-sm transition focus-within:border-pink-300 focus-within:ring-2 focus-within:ring-pink-100">
                 <User className="h-5 w-5 text-slate-400" aria-hidden="true" />
-                <input type="text" required placeholder="Name" className="w-full border-0 bg-transparent text-slate-700 placeholder:text-slate-400 focus:outline-none" value={formValues.name} onChange={handleChange('name')} />
+                <input type="text" required placeholder="Name" className="w-full border-0 bg-transparent text-slate-700 placeholder:text-slate-400 focus:outline-none" name='name' autocomplete="on" value={formValues.name} onChange={handleChange('name')} />
               </div>
               {errors.name ? <p className="mt-2 text-xs text-rose-500">{errors.name}</p> : null}
             </label>
@@ -158,7 +158,7 @@ export default function RegisterPage() {
               <span className="sr-only">Email</span>
               <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm shadow-sm transition focus-within:border-pink-300 focus-within:ring-2 focus-within:ring-pink-100">
                 <Mail className="h-5 w-5 text-slate-400" aria-hidden="true" />
-                <input type="email" required placeholder="Email" className="w-full border-0 bg-transparent text-slate-700 placeholder:text-slate-400 focus:outline-none" value={formValues.email} onChange={handleChange('email')} />
+                <input type="email" required placeholder="Email" className="w-full border-0 bg-transparent text-slate-700 placeholder:text-slate-400 focus:outline-none" name='email' autocomplete="on" value={formValues.email} onChange={handleChange('email')} />
               </div>
               {errors.email ? <p className="mt-2 text-xs text-rose-500">{errors.email}</p> : null}
             </label>

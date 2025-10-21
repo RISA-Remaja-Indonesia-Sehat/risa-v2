@@ -1,29 +1,38 @@
-'use client';
-
 import Image from 'next/image';
 import HIVQuiz from '@/app/components/articles/HIV-Quiz';
 import CustomButton from '@/app/components/ui/CustomButton';
-import useArticleStore from '@/app/store/useArticleStore';
-import { useParams } from 'next/navigation';
 import CommentSection from '@/app/components/articles/CommentSection';
 import CommentForm from '@/app/components/articles/CommentForm';
 import Link from 'next/link';
-import { useEffect } from 'react';
+import { notFound } from 'next/navigation';
 
-export default function ArticlePage() {
-   const { id } = useParams();
-  const { selectedArticle, fetchArticleById, loading, error } = useArticleStore();
+async function getArticle(id) {
+  try {
+    const response = await fetch(`https://server-risa.vercel.app/api/article/${id}`, {
+      cache: 'force-cache'
+    });
+    
+    if (!response.ok) {
+      return null;
+    }
+    
+    const data = await response.json();
+    return Array.isArray(data) ? data[0] : (data.data || data);
+  } catch (error) {
+    console.error('Error fetching article:', error);
+    return null;
+  }
+}
 
-  useEffect(() => {
-    fetchArticleById(id);
-  }, [id, fetchArticleById]);
+export default async function ArticlePage({ params }) {
+  const { id } = await params;
+  const article = await getArticle(id);
+  
+  if (!article) {
+    notFound();
+  }
 
-  if (loading) return <p className="p-6">Loading...</p>;
-  if (error) return <p className="p-6 text-red-600">Error: {error}</p>;
-  if (!selectedArticle) return <p className="p-6">Artikel tidak ditemukan</p>;
-
-  const { title, imageUrl, imageAlt, content, opinion } = selectedArticle;
-
+  const { title, imageUrl, imageAlt, content, opinion } = article;
   return (
     <>
       <section className="container my-12 mx-auto lg:flex items-center gap-6 overflow-hidden" id="article">
@@ -62,7 +71,7 @@ export default function ArticlePage() {
           </aside>
 
           {/* Initialize quiz for HIV article */}
-          {id === 1 && <HIVQuiz />}
+          {id === '1' && <HIVQuiz />}
       </section>
 
       <section className="container my-12 pt-12 border-1 border-transparent border-t-gray-200 mx-auto px-4">
