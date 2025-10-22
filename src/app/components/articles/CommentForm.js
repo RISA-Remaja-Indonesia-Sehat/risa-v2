@@ -11,6 +11,12 @@ export default function CommentForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    const token = localStorage.getItem('token');
+    if (!token) {
+      window.location.href = '/login';
+      return;
+    }
+    
     if (!userComment.trim()) {
       alert('Tulis sesuatu dulu ya!');
       return;

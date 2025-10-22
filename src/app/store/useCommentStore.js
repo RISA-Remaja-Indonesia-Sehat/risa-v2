@@ -21,17 +21,17 @@ const useCommentStore = create((set, get) => ({
   },
   
   addComment: async (commentText) => {
-    const { currentArticleId } = get();
-    if (!currentArticleId || !commentText.trim()) return;
-
     const token = localStorage.getItem('token');
     const userData = localStorage.getItem('user');
     const user = userData ? JSON.parse(userData) : null;
-    
+    const { currentArticleId } = get();
+
+    if (!currentArticleId || !commentText.trim()) return;
+
     const newComment = {
       id: `temp-${Date.now()}`,
       user: {
-        name: user?.name || 'Anonim'
+        name: user?.name
       },
       comment: commentText.trim(),
       isUserComment: true
@@ -52,7 +52,7 @@ const useCommentStore = create((set, get) => ({
         body: JSON.stringify({
           comment: commentText.trim()
         })
-      });
+      });      
       
       if (!response.ok) {
         throw new Error('Failed to post comment');
