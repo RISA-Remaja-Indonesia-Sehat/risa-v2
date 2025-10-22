@@ -71,7 +71,7 @@ export default async function ArticlePage({ params }) {
           </aside>
 
           {/* Initialize quiz for HIV article */}
-          {id === '1' && <HIVQuiz />}
+          {(id === '1' || id === '4') && <HIVQuiz articleId={id} />}
       </section>
 
       <section className="container my-12 pt-12 border-1 border-transparent border-t-gray-200 mx-auto px-4">

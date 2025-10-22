@@ -1,7 +1,7 @@
 'use client';
 import { useEffect } from 'react';
 
-export function initHivQuiz() {
+export function initHivQuiz(articleId) {
   const form = document.getElementById('hiv-quiz');
   const loadingScreen = document.getElementById('loading-screen');
   const feedback = document.getElementById('feedback');
@@ -9,7 +9,7 @@ export function initHivQuiz() {
 
   if (!form) return;
 
-  const feedbacks = {
+  const hivFeedbacks = {
     '1': {
       text: 'Kalau dicuekin, kamu malah bisa tetap bingung. Yuk, kita bahas bareng-bareng soal HIV supaya kamu nggak termakan mitos.',
       style: 'border-yellow-400 bg-yellow-50 text-yellow-800'
@@ -23,6 +23,23 @@ export function initHivQuiz() {
       style: 'border-green-400 bg-green-50 text-green-800'
     }
   };
+
+  const hpvFeedbacks = {
+    '1': {
+      text: 'Kalau dicuekin, kamu malah bisa tetap bingung. Yuk, kita bahas bareng-bareng soal HPV supaya kamu nggak termakan mitos.',
+      style: 'border-yellow-400 bg-yellow-50 text-yellow-800'
+    },
+    '2': {
+      text: 'Hmm, hati-hati ya. Kalau cuma percaya cerita orang tanpa cek kebenarannya, bisa bikin kamu salah paham tentang HPV. Yuk, kita bahas bareng-bareng soal HPV supaya kamu makin paham dan bisa jaga diri.',
+      style: 'border-red-400 bg-red-50 text-red-800'
+    },
+    '3': {
+      text: 'Keren! kamu udah langkah yang tepat! Yuk, kita bahas bareng-bareng soal HPV supaya kamu makin paham dan bisa jaga diri.',
+      style: 'border-green-400 bg-green-50 text-green-800'
+    }
+  };
+
+  const feedbacks = articleId === '4' ? hpvFeedbacks : hivFeedbacks;
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -53,10 +70,10 @@ export function initHivQuiz() {
   });
 }
 
-export default function HIVQuiz() {
+export default function HIVQuiz({ articleId }) {
   useEffect(() => {
-    initHivQuiz();
-  }, []);
+    initHivQuiz(articleId);
+  }, [articleId]);
 
   return null; // This component only handles logic
 }
