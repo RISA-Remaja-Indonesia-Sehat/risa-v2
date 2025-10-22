@@ -3,7 +3,7 @@ import TooltipHandler from '@/app/components/articles/TooltipHandler';
 async function getArticle(id) {
   try {
     const response = await fetch(`https://server-risa.vercel.app/api/article/${id}`, {
-      cache: 'force-cache'
+      cache: 'no-store'
     });
     
     if (!response.ok) {
