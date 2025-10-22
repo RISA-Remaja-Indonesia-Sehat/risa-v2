@@ -24,8 +24,8 @@ export default function CommentList() {
 
   return (
     <div className="space-y-3">
-      {comments.map(comment => (
-        <CommentItem key={comment.id} comment={comment} />
+      {comments.map((comment, index) => (
+        <CommentItem key={comment.id || `comment-${index}-${Date.now()}`} comment={comment} />
       ))}
     </div>
   );

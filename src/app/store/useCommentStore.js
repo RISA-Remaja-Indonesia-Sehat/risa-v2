@@ -12,7 +12,8 @@ const useCommentStore = create((set, get) => ({
     try {
       const response = await fetch(`https://server-risa.vercel.app/api/article/${articleId}/comment`);
       const data = await response.json();
-      set({ comments: data.data || [], loading: false });
+      const sortedComments = (data.data || []).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      set({ comments: sortedComments, loading: false });
     } catch (error) {
       console.error('Error loading comments:', error);
       set({ comments: [], loading: false });
@@ -28,6 +29,7 @@ const useCommentStore = create((set, get) => ({
     const user = userData ? JSON.parse(userData) : null;
     
     const newComment = {
+      id: `temp-${Date.now()}`,
       user: {
         name: user?.name || 'Anonim'
       },
