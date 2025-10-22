@@ -4,12 +4,11 @@ import useCommentStore from '../../store/useCommentStore';
 import CustomButton from '../ui/CustomButton';
 
 export default function CommentForm() {
-  const [userName, setUserName] = useState('');
   const [userComment, setUserComment] = useState('');
   const [showSuccess, setShowSuccess] = useState(false);
   const { addComment } = useCommentStore();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (!userComment.trim()) {
@@ -17,8 +16,7 @@ export default function CommentForm() {
       return;
     }
     
-    addComment(userName, userComment);
-    setUserName('');
+    await addComment(userComment);
     setUserComment('');
     setShowSuccess(true);
     
@@ -28,15 +26,6 @@ export default function CommentForm() {
   return (
     <>
       <form onSubmit={handleSubmit} className="mb-6">
-        <div className="mb-3">
-          <input
-            type="text"
-            value={userName}
-            onChange={(e) => setUserName(e.target.value)}
-            placeholder="Nama (opsional)"
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent text-sm"
-          />
-        </div>
         <div className="mb-3">
           <textarea
             value={userComment}

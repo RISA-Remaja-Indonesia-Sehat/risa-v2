@@ -26,15 +26,15 @@ export function initHivQuiz(articleId) {
 
   const hpvFeedbacks = {
     '1': {
-      text: 'Kalau dicuekin, kamu malah bisa tetap bingung. Yuk, kita bahas bareng-bareng soal HPV supaya kamu nggak termakan mitos.',
+      text: 'Kalau dicuekin, kamu mungkin melewatkan kesempatan cegah risiko HPV yang bisa berkembang jadi masalah serius. Yuk, kita bahas bareng-bareng soal vaksin HPV supaya kamu makin paham dan bisa jaga diri.',
       style: 'border-yellow-400 bg-yellow-50 text-yellow-800'
     },
     '2': {
-      text: 'Hmm, hati-hati ya. Kalau cuma percaya cerita orang tanpa cek kebenarannya, bisa bikin kamu salah paham tentang HPV. Yuk, kita bahas bareng-bareng soal HPV supaya kamu makin paham dan bisa jaga diri.',
+      text: 'Hmm, hati-hati ya. Kalau cuma percaya cerita temen tanpa cek kebenarannya, bisa bikin kamu salah paham tentang vaksin HPV dan risikonya. Yuk, kita bahas bareng-bareng soal HPV supaya kamu makin paham dan bisa jaga diri.',
       style: 'border-red-400 bg-red-50 text-red-800'
     },
     '3': {
-      text: 'Keren! kamu udah langkah yang tepat! Yuk, kita bahas bareng-bareng soal HPV supaya kamu makin paham dan bisa jaga diri.',
+      text: 'Keren! Kamu udah langkah yang tepat! Yuk, kita bahas bareng-bareng soal HPV dan vaksinnya supaya kamu makin paham dan bisa jaga diri dari risiko kanker leher rahim.',
       style: 'border-green-400 bg-green-50 text-green-800'
     }
   };
