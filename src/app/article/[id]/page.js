@@ -9,7 +9,7 @@ import { notFound } from 'next/navigation';
 async function getArticle(id) {
   try {
     const response = await fetch(`https://server-risa.vercel.app/api/article/${id}`, {
-      cache: 'force-cache'
+      cache: 'no-store'
     });
     
     if (!response.ok) {
@@ -75,6 +75,9 @@ export default async function ArticlePage({ params }) {
       </section>
 
       <section className="container my-12 pt-12 border-1 border-transparent border-t-gray-200 mx-auto px-4">
+        <h3 className="text-xl font-semibold text-gray-800 mb-4">💬 Bagikan Pengalamanmu</h3>
+        <p className="text-gray-600 mb-6">Ceritakan apa yang sudah kamu pelajari atau hal yang masih ingin kamu tahu</p>
+        
         <CommentForm />
         <CommentSection />
       </section>
