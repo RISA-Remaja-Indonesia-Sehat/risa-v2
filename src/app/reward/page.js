@@ -104,7 +104,7 @@ export default function RewardPage() {
             Tukar Stiker Digital
           </h1>
           <p className="text-gray-600 text-lg mb-6">
-            Tukarkan stiker digitalmu dengan voucher Laurier Official Store!
+            Tukarkan stiker digitalmu dengan item favoritmu!
           </p>
           
           {/* User Stickers Display */}
@@ -156,7 +156,7 @@ export default function RewardPage() {
                 <span className="text-2xl">3️⃣</span>
               </div>
               <h3 className="font-bold text-[#382b22] mb-2">Terima Voucher</h3>
-              <p className="text-gray-600 text-sm">Voucher akan dikirim ke email atau nomor HP yang terdaftar</p>
+              <p className="text-gray-600 text-sm">Kode voucher akan muncul ketika digosok</p>
             </div>
           </div>
         </div>

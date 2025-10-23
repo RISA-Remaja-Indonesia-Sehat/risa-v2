@@ -132,13 +132,13 @@ export default function MissionPage() {
                   </div>
                   
                   {mission.completed ? (
-                    <div className="bg-green-500 text-white px-3 sm:px-4 py-2 rounded-full font-semibold text-xs sm:text-base">
+                    <div className="bg-green-500 text-white px-3 sm:px-4 py-2 rounded-lg font-semibold text-xs sm:text-base">
                       Selesai
                     </div>
                   ) : (
                     <button 
                       onClick={() => completeMission(mission.id)}
-                      className="bg-pink-500 text-white px-4 sm:px-6 py-2 rounded-full font-semibold hover:shadow-lg hover:scale-105 transition-all duration-300 text-xs sm:text-base"
+                      className="bg-pink-500 text-white px-4 sm:px-6 py-2 rounded-lg font-semibold hover:shadow-lg hover:scale-105 transition-all duration-300 text-xs sm:text-base"
                     >
                       Mulai
                     </button>
