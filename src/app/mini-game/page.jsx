@@ -9,9 +9,11 @@ import  Herogame from "../../../public/image/Illustration_hero_gamification.png"
 import Trophy from "../../../public/image/piala.png"
 import CustomButton from "../components/ui/CustomButton";
 import Link from "next/link";
-import { Card, CardContent } from "@/app/components/ui/card"
+import {CardContent } from "@/app/components/ui/card"
 import { Star, Timer, TrophyIcon, Users } from "lucide-react";
 import GameCard from "../components/ui/Cardgame";
+import CardSwap from "../components/games/CardSwap";
+import MemoIcon from "../../../public/image/hero-game.png"
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -173,7 +175,7 @@ export default function Home() {
             🎮 Game Kamu
           </h2>
           <p className="text-gray-600 text-lg text-center">Belajar sambil bermain! Kumpulan mini games seru untuk menguji dan meningkatkan pengetahuanmu tentang kesehatan reproduksi.</p>
-          <div className="grid grid-cols-1  gap-8 lg:gap-16 items-center mt-8">
+          <div className="grid grid-cols-2  gap-8 lg:gap-16 items-center mt-8">
             <GameCard
               title="Memory Cards"
               description="Uji pengetahuanmu dengan mencocokkan pasangan kartu seputar kesehatan reproduksi."
@@ -181,10 +183,23 @@ export default function Home() {
               timeEstimate="30 detik"
               difficulty="Mudah"
               completedBy={50}
+              icon={MemoIcon}
               onPlay={() => console.log("Playing Memory Cards")}
             />
+            <GameCard
+              title="Mitos VS Fakta"
+              description="Jawab pertanyaan seputar kesehatan reproduksi dalam waktu terbatas."
+              points={150}
+              timeEstimate="45 detik"
+              difficulty="Sedang"
+              completedBy={30}
+              icon={MemoIcon}
+              onPlay={() => console.log("Playing Quick Quiz")}
+            />
           </div>
+          <CardSwap></CardSwap>
         </section>
+        
 
         <section className="py-10 px-6 md:px-16 text-center">
           <div className="mb-2 flex flex-col justify-center items-center">
