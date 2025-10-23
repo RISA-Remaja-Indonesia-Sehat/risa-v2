@@ -192,11 +192,11 @@ export default function ETicket({ show, onClose, bookingId }) {
                 </div>
                 <div>
                   <p style={{color: '#6b7280', margin: '0 0 4px 0'}}>Tanggal</p>
-                  <p style={{fontWeight: 'bold', color: '#382b22', margin: '0'}}>{new Date(bookingData?.date_time).toLocaleDateString('id-ID')}</p>
+                  <p style={{fontWeight: 'bold', color: '#382b22', margin: '0'}}>{new Date(bookingData?.date_time).toLocaleDateString('id-ID', { timeZone: 'Asia/Jakarta' })}</p>
                 </div>
                 <div>
                   <p style={{color: '#6b7280', margin: '0 0 4px 0'}}>Jam</p>
-                  <p style={{fontWeight: 'bold', color: '#382b22', margin: '0'}}>{new Date(bookingData?.date_time).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}</p>
+                  <p style={{fontWeight: 'bold', color: '#382b22', margin: '0'}}>{new Date(bookingData?.date_time).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jakarta' })} WIB</p>
                 </div>
               </div>
             </div>
