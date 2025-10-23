@@ -1,10 +1,37 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import html2canvas from 'html2canvas';
+import useBookingData from '../../store/useBookingData';
 
-export default function ETicket({ show, onClose, bookingData }) {
+export default function ETicket({ show, onClose, bookingId }) {
   const ticketRef = useRef();
+  const [bookingData, setBookingData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const { getBookingById } = useBookingData();
+
+  useEffect(() => {
+    if (show && bookingId) {
+      fetchBookingData();
+    }
+  }, [show, bookingId]);
+
+  const fetchBookingData = async () => {
+    setLoading(true);
+    try {
+      const result = await getBookingById(bookingId);
+      if (result.success) {
+        setBookingData(result.data);
+      } else {
+        alert('Gagal memuat data booking');
+      }
+    } catch (error) {
+      console.error('Error fetching booking:', error);
+      alert('Terjadi kesalahan saat memuat data');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleDownloadJPG = async () => {
     if (!ticketRef.current || !bookingData) return;
@@ -26,7 +53,7 @@ export default function ETicket({ show, onClose, bookingData }) {
       });
       
       const link = document.createElement('a');
-      link.download = `e-ticket-vaksin-hpv-${bookingData.nama || 'user'}.jpg`;
+      link.download = `e-ticket-vaksin-hpv-${bookingData?.user?.name || bookingData?.user_name}.jpg`;
       link.href = canvas.toDataURL('image/jpeg', 0.9);
       link.click();
     } catch (error) {
@@ -36,6 +63,61 @@ export default function ETicket({ show, onClose, bookingData }) {
   };
 
   if (!show) return null;
+
+  if (loading) {
+    return (
+      <div style={{
+        position: 'fixed',
+        inset: '0',
+        zIndex: '50',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)'
+      }}>
+        <div style={{
+          backgroundColor: '#ffffff',
+          borderRadius: '16px',
+          padding: '32px',
+          textAlign: 'center'
+        }}>
+          <p>Memuat data booking...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!bookingData) {
+    return (
+      <div style={{
+        position: 'fixed',
+        inset: '0',
+        zIndex: '50',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)'
+      }}>
+        <div style={{
+          backgroundColor: '#ffffff',
+          borderRadius: '16px',
+          padding: '32px',
+          textAlign: 'center'
+        }}>
+          <p>Data booking tidak ditemukan</p>
+          <button onClick={onClose} style={{
+            marginTop: '16px',
+            padding: '8px 16px',
+            backgroundColor: '#ec4899',
+            color: 'white',
+            border: 'none',
+            borderRadius: '8px',
+            cursor: 'pointer'
+          }}>Tutup</button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div style={{
@@ -82,11 +164,11 @@ export default function ETicket({ show, onClose, bookingData }) {
               </div>
               <div>
                 <p style={{color: '#6b7280', margin: '0 0 4px 0'}}>Nama</p>
-                <p style={{fontWeight: 'bold', color: '#382b22', margin: '0'}}>{bookingData?.nama}</p>
+                <p style={{fontWeight: 'bold', color: '#382b22', margin: '0'}}>{bookingData?.user?.name || bookingData?.user_name}</p>
               </div>
               <div>
                 <p style={{color: '#6b7280', margin: '0 0 4px 0'}}>Usia</p>
-                <p style={{fontWeight: 'bold', color: '#382b22', margin: '0'}}>{bookingData?.usia} tahun</p>
+                <p style={{fontWeight: 'bold', color: '#382b22', margin: '0'}}>{bookingData?.age} tahun</p>
               </div>
               <div>
                 <p style={{color: '#6b7280', margin: '0 0 4px 0'}}>Gender</p>
@@ -98,7 +180,7 @@ export default function ETicket({ show, onClose, bookingData }) {
               </div>
               <div>
                 <p style={{color: '#6b7280', margin: '0 0 4px 0'}}>Vaksin</p>
-                <p style={{fontWeight: 'bold', color: '#382b22', margin: '0'}}>{bookingData?.vaccineType}</p>
+                <p style={{fontWeight: 'bold', color: '#382b22', margin: '0'}}>{bookingData?.vaccine?.name}</p>
               </div>
             </div>
             
@@ -106,21 +188,21 @@ export default function ETicket({ show, onClose, bookingData }) {
               <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px'}}>
                 <div>
                   <p style={{color: '#6b7280', margin: '0 0 4px 0'}}>Lab Tujuan</p>
-                  <p style={{fontWeight: 'bold', color: '#382b22', margin: '0'}}>{bookingData?.lab}</p>
+                  <p style={{fontWeight: 'bold', color: '#382b22', margin: '0'}}>{bookingData?.lab?.name}</p>
                 </div>
                 <div>
                   <p style={{color: '#6b7280', margin: '0 0 4px 0'}}>Tanggal</p>
-                  <p style={{fontWeight: 'bold', color: '#382b22', margin: '0'}}>{bookingData?.tanggal}</p>
+                  <p style={{fontWeight: 'bold', color: '#382b22', margin: '0'}}>{new Date(bookingData?.date_time).toLocaleDateString('id-ID')}</p>
                 </div>
                 <div>
                   <p style={{color: '#6b7280', margin: '0 0 4px 0'}}>Jam</p>
-                  <p style={{fontWeight: 'bold', color: '#382b22', margin: '0'}}>{bookingData?.jam}</p>
+                  <p style={{fontWeight: 'bold', color: '#382b22', margin: '0'}}>{new Date(bookingData?.date_time).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}</p>
                 </div>
               </div>
             </div>
             
             <div style={{textAlign: 'center', paddingTop: '16px', borderTop: '1px solid #f9a8d4', marginTop: '16px'}}>
-              <p style={{fontSize: '12px', color: '#6b7280', margin: '0'}}>Booking ID: #{Math.random().toString(36).substr(2, 9).toUpperCase()}</p>
+              <p style={{fontSize: '12px', color: '#6b7280', margin: '0'}}>Booking ID: #{bookingData?.id}</p>
               <p style={{fontSize: '12px', color: '#ec4899', fontWeight: '500', marginTop: '8px', margin: '8px 0 0 0'}}>💝 Terima kasih telah mempercayai RISA</p>
             </div>
           </div>
