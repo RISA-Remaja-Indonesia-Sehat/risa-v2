@@ -94,9 +94,7 @@ export default function Map() {
                   <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 sm:gap-0">
                     <div className="flex-1">
                       <h3 className="font-bold text-pink-600 mb-1 text-sm sm:text-base">{lab.name}</h3>
-                      <p className="text-xs sm:text-sm text-gray-600 flex items-center gap-1 sm:gap-2">
-                        <span>📞</span> <span className="truncate">{lab.phone}</span>
-                      </p>
+
                       <p className="text-xs sm:text-sm text-gray-600 flex items-start gap-1 sm:gap-2 mt-1">
                         <span className="mt-0.5">📍</span> <span className="line-clamp-2">{lab.address}</span>
                       </p>
@@ -108,7 +106,7 @@ export default function Map() {
                     </div>
                   </div>
                   <button 
-                    onClick={() => window.open(`https://www.google.com/maps/dir/?api=1&destination=${lab.latitude},${lab.longitude}`)}
+                    onClick={() => window.open(lab.gmaps, '_blank')}
                     className="mt-2 sm:mt-3 w-full bg-white text-pink-600 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium border-2 border-pink-200 hover:bg-pink-50 transition-all duration-300 flex items-center justify-center gap-1 sm:gap-2"
                   >
                     <span>🗺️</span> <span className="hidden sm:inline">Lihat </span>Rute

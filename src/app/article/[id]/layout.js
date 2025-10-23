@@ -37,11 +37,30 @@ export async function generateMetadata({ params }) {
 
   return {
     title: `${article.title} - RISA`,
-    description: article.description || article.title,
+    description: article.description || `Pelajari tentang ${article.title} - artikel kesehatan reproduksi untuk remaja Indonesia`,
+    keywords: ['kesehatan reproduksi', 'remaja', 'HIV', 'HPV', 'edukasi kesehatan', 'RISA'],
+    authors: [{ name: 'Tim Sulianti Saroso' }],
     openGraph: {
       title: article.title,
-      description: article.description || article.title,
+      description: article.description || `Pelajari tentang ${article.title} - artikel kesehatan reproduksi untuk remaja perempuan Indonesia`,
+      images: [{
+        url: article.imageUrl,
+        width: 1200,
+        height: 630,
+        alt: article.imageAlt || article.title
+      }],
+      type: 'article',
+      siteName: 'RISA - Remaja Indonesia Sehat'
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: article.title,
+      description: article.description || `Pelajari tentang ${article.title}`,
       images: [article.imageUrl]
+    },
+    robots: {
+      index: true,
+      follow: true
     }
   };
 }

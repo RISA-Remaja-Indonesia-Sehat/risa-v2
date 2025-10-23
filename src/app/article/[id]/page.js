@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import HIVQuiz from '@/app/components/articles/HIV-Quiz';
 import CustomButton from '@/app/components/ui/CustomButton';
+import ShareButton from '@/app/components/articles/ShareButton';
 import CommentSection from '@/app/components/articles/CommentSection';
 import CommentForm from '@/app/components/articles/CommentForm';
 import Link from 'next/link';
@@ -54,7 +55,7 @@ export default async function ArticlePage({ params }) {
             </div>
 
             <div className="p-6">
-                <CustomButton id="share-btn" title="Bagikan" className="text-sm px-5 py-3" role="button"/>            
+                <ShareButton title={title} articleId={id} />            
             </div>
           </div>
 
