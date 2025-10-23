@@ -8,7 +8,7 @@ import useBookingData from '@/app/store/useBookingData';
 export default function BookingModal({ show, onClose, onSubmit, selectedVaccine }) {
   const { labs, fetchLabs } = useLabsLocation();
   const { vaccineTypes } = useVaccineTypes();
-  const { bookingData, updateBookingField } = useBookingData();
+  const { bookingData, updateBookingField, submitBooking } = useBookingData();
 
   useEffect(() => {
     fetchLabs();
@@ -26,10 +26,24 @@ export default function BookingModal({ show, onClose, onSubmit, selectedVaccine 
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(bookingData);   
+    submitBooking(bookingData); 
+    
+    const userData = localStorage.getItem('user');
+    const user = userData ? JSON.parse(userData) : null;
+    
+    // Prepare final form data with user name
+    const finalData = {
+      ...bookingData,
+      nama: user?.name || bookingData.nama
+    };
+    
+    onSubmit(finalData);
   };
 
   if (!show) return null;
+
+  const userData = localStorage.getItem('user');
+  const user = JSON.parse(userData);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-2 sm:p-4">
@@ -57,7 +71,7 @@ export default function BookingModal({ show, onClose, onSubmit, selectedVaccine 
               name="nama" 
               required 
               onChange={handleChange} 
-              value={bookingData.nama} 
+              value={ user ? user.name : bookingData.nama } 
               placeholder="Sesuai KTP" 
               className="w-full px-4 py-2 rounded-lg border border-pink-300 focus:outline-none focus:ring-2 focus:ring-pink-400"
             />

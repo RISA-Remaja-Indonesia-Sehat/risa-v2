@@ -19,7 +19,7 @@ export default function Home() {
   const { showToast, setShowToast } = useLocationToast();
   const { locationPermission, setLocationPermission } = useLocationPermission();
   const { vaccineTypes, fetchVaccineTypes } = useVaccineTypes();
-  const { bookingData } = useBookingData();
+  const currentBookingId = useBookingData(state => state.currentBookingId);
   const { 
     showVaccineInfo, 
     showBooking, 
@@ -59,8 +59,20 @@ export default function Home() {
 
 
 
-  const handleBookingSubmit = (data) => {
-    showTicketAfterBooking();
+  const handleBookingSubmit = async (formData) => {
+    const { submitBooking } = useBookingData.getState();
+    const result = await submitBooking(formData);
+    console.log('Booking result:', result);
+    
+    if (result.success) {
+      const { currentBookingId: newBookingId } = useBookingData.getState();
+      console.log('Current booking ID:', newBookingId);
+      console.log('Before showTicketAfterBooking - showTicket:', showTicket);
+      showTicketAfterBooking();
+      console.log('After showTicketAfterBooking - showTicket should be true');
+    } else {
+      alert(`Error: ${result.error}`);
+    }
   };
 
 
@@ -253,7 +265,7 @@ export default function Home() {
       <ETicket
         show={showTicket}
         onClose={closeTicket}
-        bookingData={bookingData}
+        bookingId={currentBookingId}
       />
     </div>
   )

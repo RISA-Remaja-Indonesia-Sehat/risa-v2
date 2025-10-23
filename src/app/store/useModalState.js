@@ -31,10 +31,13 @@ const useModalState = create((set) => ({
     showBooking: false 
   }),
   
-  showTicketAfterBooking: () => set({ 
-    showBooking: false, 
-    showTicket: true 
-  }),
+  showTicketAfterBooking: () => {
+    console.log('showTicketAfterBooking called - setting showTicket to true');
+    set({ 
+      showBooking: false, 
+      showTicket: true 
+    });
+  },
   
   closeTicket: () => set({ 
     showTicket: false 
