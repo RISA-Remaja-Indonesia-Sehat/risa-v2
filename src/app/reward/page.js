@@ -1,7 +1,7 @@
 'use client';
 
 import Image from "next/image";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from "next/link";
 import RewardGrid from '../components/reward/RewardGrid';
 import ExchangeHistory from '../components/reward/ExchangeHistory';
@@ -17,44 +17,21 @@ export default function RewardPage() {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showScratchModal, setShowScratchModal] = useState(false);
   const [voucherCode, setVoucherCode] = useState('');
+  const [ rewards, setRewards] = useState([]);
 
-  const rewards = [
-    {
-      id: 1,
-      title: "Voucher Laurier Rp 10.000",
-      cost: 150,
-      image: "/image/laurier.png",
-      description: "Voucher khusus produk Laurier di Official Store Shopee PT Kao Indonesia"
-    },
-    {
-      id: 2,
-      title: "Keychain RISA Eksklusif",
-      cost: 150,
-      image: "/image/keychain.png",
-      description: "Gantungan kunci eksklusif RISA dengan desain cantik"
-    },
-    {
-      id: 3,
-      title: "Notebook RISA Premium",
-      cost: 400,
-      image: "/image/notebook.png",
-      description: "Buku catatan premium dengan cover RISA yang stylish"
-    },
-    {
-      id: 4,
-      title: "Tote Bag RISA Limited",
-      cost: 700,
-      image: "/image/totebag.png",
-      description: "Tas tote bag limited edition dengan logo RISA"
-    },
-    {
-      id: 5,
-      title: "Kipas RISA Cantik",
-      cost: 200,
-      image: "/image/kipas.png",
-      description: "Kipas cantik dengan desain RISA yang praktis dan stylish"
-    },
-  ];
+  useEffect(() => {
+    const fetchRewards = async () => {
+      try {
+        const response = await fetch('http://localhost:3001/api/reward');
+        const data = await response.json();
+        setRewards(data.data);
+      } catch (error) {
+        console.error('Error fetching rewards:', error);
+      }
+    };
+
+    fetchRewards();
+  }, []);
 
   const handleExchange = (reward) => {
     if (stickers >= reward.cost) {
