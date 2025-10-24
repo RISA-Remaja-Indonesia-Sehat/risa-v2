@@ -5,16 +5,16 @@ import { useState, useEffect } from 'react';
 import CustomButton from "../components/ui/CustomButton";
 import Link from "next/link";
 import useStickers from '../store/useStickers';
+import useMissions from '../store/useMissions';
 
 export default function MissionPage() {
-  const { stickers, addStickers } = useStickers();
+  const { stickers, addStickers, initStickers } = useStickers();
+  const { missions, startMission } = useMissions();
   const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
-  const [missions, setMissions] = useState([
-    { id: 1, title: "Baca Artikel", reward: 1, completed: false, progress: 0, target: 2, icon: "📚" },
-    { id: 2, title: "Main Game", reward: 1, completed: false, progress: 0, target: 1, icon: "🎮" },
-    { id: 3, title: "Isi Siklusku", reward: 1, completed: false, progress: 0, target: 1, icon: "📅" },
-    { id: 4, title: "Share ke Teman", reward: 1, completed: false, progress: 0, target: 2, icon: "💕" }
-  ]);
+  
+  useEffect(() => {
+    initStickers();
+  }, [initStickers]);
 
   useEffect(() => {
     const calculateTimeLeft = () => {
@@ -40,24 +40,31 @@ export default function MissionPage() {
     return () => clearInterval(timer);
   }, []);
 
-  const completeMission = (missionId) => {
-    setMissions(prev => prev.map(mission => {
-      if (mission.id === missionId && !mission.completed) {
-        const newProgress = mission.progress + 1;
-        const isCompleted = newProgress >= mission.target;
-        
-        if (isCompleted) {
-          addStickers(mission.reward);
-        }
-        
-        return {
-          ...mission,
-          progress: newProgress,
-          completed: isCompleted
-        };
+  const handleMissionClick = (mission) => {
+    if (mission.status === 'idle') {
+      startMission(mission.id);
+      
+      // Redirect based on mission type
+      if (mission.id === 1) { // Baca Artikel
+        window.location.href = '/article';
+      } else if (mission.id === 4) { // Share ke Teman
+        window.location.href = '/article';
+      } else if (mission.id === 5) { // Beri Komentar
+        window.location.href = '/article';
       }
-      return mission;
-    }));
+    }
+  };
+  
+  const getButtonText = (mission) => {
+    if (mission.completed) return 'Selesai';
+    if (mission.status === 'in-progress') return 'Dikerjakan';
+    return 'Mulai';
+  };
+  
+  const getButtonClass = (mission) => {
+    if (mission.completed) return 'bg-green-500 text-white';
+    if (mission.status === 'in-progress') return 'bg-transparent border-2 border-pink-500 text-pink-500';
+    return 'bg-pink-500 text-white hover:shadow-lg hover:scale-105';
   };
 
   return (
@@ -73,6 +80,7 @@ export default function MissionPage() {
                 width={120}
                 height={120}
                 className="drop-shadow-lg"
+                priority={true}
               />
               <h1 className="text-xl md:text-3xl font-bold">
                 {stickers} Stiker
@@ -115,7 +123,7 @@ export default function MissionPage() {
               }`}>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3 sm:gap-4">
-                    <div className="text-xl sm:text-3xl">{mission.icon}</div>
+                    <Image width="48" height="48" src={mission.icon} alt={mission.title} />
                     <div className="flex-1">
                       <h3 className="font-bold text-[#382b22] text-sm sm:text-lg">{mission.title}</h3>
                       <div className="flex items-center gap-2 mt-1">
@@ -131,18 +139,13 @@ export default function MissionPage() {
                     </div>
                   </div>
                   
-                  {mission.completed ? (
-                    <div className="bg-green-500 text-white px-3 sm:px-4 py-2 rounded-full font-semibold text-xs sm:text-base">
-                      Selesai
-                    </div>
-                  ) : (
-                    <button 
-                      onClick={() => completeMission(mission.id)}
-                      className="bg-pink-500 text-white px-4 sm:px-6 py-2 rounded-full font-semibold hover:shadow-lg hover:scale-105 transition-all duration-300 text-xs sm:text-base"
-                    >
-                      Mulai
-                    </button>
-                  )}
+                  <button 
+                    onClick={() => handleMissionClick(mission)}
+                    disabled={mission.completed}
+                    className={`${getButtonClass(mission)} px-4 sm:px-6 py-2 rounded-lg font-semibold transition-all duration-300 text-xs sm:text-base disabled:cursor-not-allowed`}
+                  >
+                    {getButtonText(mission)}
+                  </button>
                 </div>
                 
                 {/* Progress Bar */}

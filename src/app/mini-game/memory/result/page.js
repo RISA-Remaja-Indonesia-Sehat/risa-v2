@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import gsap from "gsap";
 import { ArrowLeft, Download, Repeat, Share2 } from "lucide-react";
 import html2canvas from "html2canvas";
-import { useGameStore } from "../../../../store/usegameStore";
+import { useGameStore } from "../../../store/useGameStore";
 import Image from "next/image";
 
 export default function MemoryResultPage() {
@@ -272,7 +272,7 @@ export default function MemoryResultPage() {
           <button
             onClick={() => {
               resetGame();
-              router.push("/memoryGames");
+              router.push("/mini-game/memory");
             }}
             className="px-4 py-2 rounded-lg bg-white border hover:shadow-md flex items-center gap-2"
           >
@@ -307,15 +307,15 @@ export default function MemoryResultPage() {
               </div>
             </a>
             <a className="group block hover:scale-[1.03] transition shadow-lg rounded-lg overflow-hidden">
-              <div className="h-50 bg-[linear-gradient(180deg,#eef2ff,#f5f7ff)] flex flex-col items-center p-2">
+              <div className="h-50 bg-[linear-gradient(180deg,#ffedf2,#fff1f6)] flex flex-col items-center p-2">
                 <Image src="/image/article-image-2.png" width={200} height={100} alt="game" />
-                <h4 className="font-semibold text-gray-800 group-hover:text-blue-600">Seks Itu Apa Sih? Biar Gak Salah Paham</h4>
+                <h4 className="font-semibold text-gray-800 group-hover:text-pink-600">Seks Itu Apa Sih? Biar Gak Salah Paham</h4>
               </div>
             </a>
             <a className="group block hover:scale-[1.03] transition shadow-lg rounded-lg overflow-hidden">
-              <div className="h-50 bg-[linear-gradient(180deg,#fff0f6,#fff7fa)] flex flex-col items-center p-2">
+              <div className="h-50 bg-[linear-gradient(180deg,#ffedf2,#fff1f6)] flex flex-col items-center p-2">
                 <Image src={"/image/article-image-3.png"} width={200} height={200} alt="aricle mens"></Image>
-                <h4 className="font-semibold text-gray-800 group-hover:text-red-600">Menstruasi Pertama: Kenapa dan Gak Usah Takut</h4>
+                <h4 className="font-semibold text-gray-800 group-hover:text-pink-600">Menstruasi Pertama: Kenapa dan Gak Usah Takut</h4>
               </div>
             </a>
           </div>

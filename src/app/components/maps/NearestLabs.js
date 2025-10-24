@@ -26,7 +26,6 @@ export default function NearestLabs() {
         <Popup>
           <div>
             <div className="flex items-center gap-1 sm:gap-2 mb-2">
-              <span className="text-lg sm:text-xl">🏥</span>
               <h3 className="font-bold text-pink-600 text-sm sm:text-base truncate">{lab.name}</h3>
             </div>
             <div className="space-y-1 sm:space-y-2">
@@ -34,16 +33,12 @@ export default function NearestLabs() {
                 <span className="text-pink-500 mt-0.5">📍</span>
                 <span className="line-clamp-2">{lab.address}</span>
               </p>
-              <p className="text-xs sm:text-sm text-gray-600 flex items-center gap-1 sm:gap-2">
-                <span className="text-pink-500">📞</span>
-                <span className="truncate">{lab.phone}</span>
-              </p>
               <p className="text-xs sm:text-sm font-medium bg-pink-50 text-pink-600 p-1.5 sm:p-2 rounded-md">
                 Jarak: {(lab.distance / 1000).toFixed(2)} km
               </p>
             </div>
             <button 
-              onClick={() => window.open(`https://www.google.com/maps/dir/?api=1&destination=${lab.latitude},${lab.longitude}`)}
+              onClick={() => window.open(lab.gmaps, '_blank')}
               className="mt-2 sm:mt-3 w-full bg-gradient-to-r from-pink-500 to-purple-500 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium hover:from-pink-600 hover:to-purple-600 transition-all duration-300 flex items-center justify-center gap-1 sm:gap-2"
             >
               <span className="hidden sm:inline">Buka di </span>Google Maps

@@ -46,13 +46,13 @@ export default function HeroSection() {
         <p className="text-center text-gray-600 leading-6 mb-8 max-w-2xl mx-auto hero-text opacity-0">Belajar tentang pubertas, cinta, dan kesehatan reproduksi dengan cara yang aman dan mudah dipahami</p>
         
         <div className="w-fit mx-auto mb-12 hero-button opacity-0">
-            <Link href="/articles">
+            <Link href="/article">
                 <CustomButton className="px-6 py-3 text-base font-semibold" title="Mulai Belajar Sekarang" />
             </Link>
         </div>
 
         <div className="w-fit mx-auto">
-            <Image src="/image/hero-image.png" width={600} height={400} alt="Hero" className="hero-image opacity-0 max-w-full h-auto" />
+            <Image src="/image/hero-image.png" width={600} height={400} alt="Hero" className="hero-image opacity-0 max-w-full h-auto" priority={true} />
         </div>
         </div>
     </section>

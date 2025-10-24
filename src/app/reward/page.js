@@ -11,7 +11,11 @@ import useStickers from '../store/useStickers';
 import useExchangeHistory from '../store/useExchangeHistory';
 
 export default function RewardPage() {
-  const { stickers, deductStickers } = useStickers();
+  const { stickers, deductStickers, updateStickersToServer, initStickers } = useStickers();
+  
+  useEffect(() => {
+    initStickers();
+  }, [initStickers]);
   const { addExchange } = useExchangeHistory();
   const [selectedReward, setSelectedReward] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -22,7 +26,7 @@ export default function RewardPage() {
   useEffect(() => {
     const fetchRewards = async () => {
       try {
-        const response = await fetch('http://localhost:3001/api/reward');
+        const response = await fetch('https://server-risa.vercel.app/api/reward');
         const data = await response.json();
         setRewards(data.data);
       } catch (error) {
@@ -49,14 +53,26 @@ export default function RewardPage() {
     return result;
   };
 
-  const confirmExchange = () => {
+  const confirmExchange = async () => {
     if (selectedReward) {
       const newVoucherCode = generateVoucherCode();
-      deductStickers(selectedReward.cost);
-      setShowConfirmModal(false);
-      setShowScratchModal(true);
-      setVoucherCode(newVoucherCode);
-      addExchange(selectedReward, newVoucherCode);
+      console.log('Generated voucher code:', newVoucherCode);
+      console.log('Selected reward:', selectedReward);
+      
+      const result = await addExchange(selectedReward, newVoucherCode);
+      console.log('Exchange result:', result);
+      
+      if (result.success) {
+        deductStickers(selectedReward.cost);
+        const newStickerCount = stickers - selectedReward.cost;
+        await updateStickersToServer(newStickerCount);
+        setShowConfirmModal(false);
+        setShowScratchModal(true);
+        setVoucherCode(newVoucherCode);
+      } else {
+        console.log('Exchange failed:', result.error);
+        alert(`Gagal menyimpan riwayat penukaran: ${result.error}`);
+      }
     }
   };
 
@@ -81,7 +97,7 @@ export default function RewardPage() {
             Tukar Stiker Digital
           </h1>
           <p className="text-gray-600 text-lg mb-6">
-            Tukarkan stiker digitalmu dengan voucher Laurier Official Store!
+            Tukarkan stiker digitalmu dengan item favoritmu!
           </p>
           
           {/* User Stickers Display */}
@@ -133,7 +149,7 @@ export default function RewardPage() {
                 <span className="text-2xl">3️⃣</span>
               </div>
               <h3 className="font-bold text-[#382b22] mb-2">Terima Voucher</h3>
-              <p className="text-gray-600 text-sm">Voucher akan dikirim ke email atau nomor HP yang terdaftar</p>
+              <p className="text-gray-600 text-sm">Kode voucher akan muncul ketika digosok</p>
             </div>
           </div>
         </div>
