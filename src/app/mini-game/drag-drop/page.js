@@ -263,9 +263,7 @@ export default function MythFactGame() {
         };
     }, []); 
 
-    const handleBack = () => {
-         alert("Kembali ke Halaman Game (Simulasi navigasi)");
-    };
+ 
 
     return (
         <DndContext 

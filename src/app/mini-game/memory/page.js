@@ -17,6 +17,7 @@ import {
 
   RotateCcw
 } from "lucide-react";
+import BackButton from "../../components/games/BackButton";
 
 
 // Data terms
@@ -240,12 +241,7 @@ useEffect(() => {
     <div className="p-6 max-w-6xl mx-auto relative z-10">
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
-        <button
-          onClick={() => router.push('/mini-game')}
-          className="p-2 rounded-full bg-white/60 hover:bg-white shadow-sm cursor-pointer"
-        >
-          <ArrowLeft className="w-5 h-5 text-pink-600" />
-        </button>
+       < BackButton />
         <button>
          
           <div
