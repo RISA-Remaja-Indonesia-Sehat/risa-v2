@@ -4,13 +4,17 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Eye, EyeOff, Lock, Mail, User } from 'lucide-react';
-
 import CustomButton from '../components/ui/CustomButton';
+import useAuthStore from '../store/useAuthStore';
+import { GoogleLogin } from '@react-oauth/google';
+import { jwtDecode } from 'jwt-decode';
 
 export default function RegisterPage() {
   const router = useRouter();
+  const { login } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [formValues, setFormValues] = useState({
     name: '',
     email: '',
@@ -88,10 +92,70 @@ export default function RegisterPage() {
     return Object.values(nextErrors).every((message) => !message);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    if (validate()) {
-      router.push('/');
+    if (!validate()) return;
+
+    setLoading(true);
+    try {
+      const { name, email, password } = formValues;
+      const response = await fetch('https://server-risa.vercel.app/api/users/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password })
+      });
+      
+      const data = await response.json();
+
+      if (response.ok) {
+        alert('Registrasi berhasil! Silakan login.');
+        router.push('/login');
+      } else {
+        setErrors({ 
+          name: '', 
+          email: data.message || 'Email sudah terdaftar', 
+          password: '', 
+          confirmPassword: '' 
+        });
+      }
+    } catch (error) {
+      setErrors({ 
+        name: '', 
+        email: '', 
+        password: '', 
+        confirmPassword: 'Terjadi kesalahan, coba lagi' 
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      const decoded = jwtDecode(credentialResponse.credential);
+      const response = await fetch('https://server-risa.vercel.app/api/users/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          name: decoded.name, 
+          email: decoded.email, 
+          password: 'google-oauth-' + decoded.sub 
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        const userData = data.user || { name: decoded.name, email: decoded.email };
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(userData));
+        login(userData, data.token);
+        router.push('/');
+      } else {
+        alert(data.message || 'Email sudah terdaftar');
+      }
+    } catch (error) {
+      alert('Terjadi kesalahan saat mendaftar dengan Google');
     }
   };
 
@@ -117,7 +181,7 @@ export default function RegisterPage() {
               <span className="sr-only">Name</span>
               <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm shadow-sm transition focus-within:border-pink-300 focus-within:ring-2 focus-within:ring-pink-100">
                 <User className="h-5 w-5 text-slate-400" aria-hidden="true" />
-                <input type="text" required placeholder="Name" className="w-full border-0 bg-transparent text-slate-700 placeholder:text-slate-400 focus:outline-none" value={formValues.name} onChange={handleChange('name')} />
+                <input type="text" placeholder="Name" className="w-full border-0 bg-transparent text-slate-700 placeholder:text-slate-400 focus:outline-none" name='name' autoComplete="on" value={formValues.name} onChange={handleChange('name')} />
               </div>
               {errors.name ? <p className="mt-2 text-xs text-rose-500">{errors.name}</p> : null}
             </label>
@@ -126,7 +190,7 @@ export default function RegisterPage() {
               <span className="sr-only">Email</span>
               <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm shadow-sm transition focus-within:border-pink-300 focus-within:ring-2 focus-within:ring-pink-100">
                 <Mail className="h-5 w-5 text-slate-400" aria-hidden="true" />
-                <input type="email" required placeholder="Email" className="w-full border-0 bg-transparent text-slate-700 placeholder:text-slate-400 focus:outline-none" value={formValues.email} onChange={handleChange('email')} />
+                <input type="email" placeholder="Email" className="w-full border-0 bg-transparent text-slate-700 placeholder:text-slate-400 focus:outline-none" name='email' autoComplete="on" value={formValues.email} onChange={handleChange('email')} />
               </div>
               {errors.email ? <p className="mt-2 text-xs text-rose-500">{errors.email}</p> : null}
             </label>
@@ -137,7 +201,6 @@ export default function RegisterPage() {
                 <Lock className="h-5 w-5 text-slate-400" aria-hidden="true" />
                 <input
                   type={showPassword ? 'text' : 'password'}
-                  required
                   placeholder="Password"
                   className="w-full border-0 bg-transparent text-slate-700 placeholder:text-slate-400 focus:outline-none"
                   value={formValues.password}
@@ -156,7 +219,6 @@ export default function RegisterPage() {
                 <Lock className="h-5 w-5 text-slate-400" aria-hidden="true" />
                 <input
                   type={showConfirmPassword ? 'text' : 'password'}
-                  required
                   placeholder="Konfirmasi password"
                   className="w-full border-0 bg-transparent text-slate-700 placeholder:text-slate-400 focus:outline-none"
                   value={formValues.confirmPassword}
@@ -176,8 +238,31 @@ export default function RegisterPage() {
 
             <p className="text-xs text-slate-400">Dengan melanjutkan Anda menyetujui ketentuan penggunaan & kebijakan privasi RISA</p>
 
-            <CustomButton type="submit" title="Daftar" className="w-full py-3 text-base text-[#382b22] flex items-center justify-center" />
+            <CustomButton type="submit" title={loading ? "Memproses..." : "Daftar"}  className="w-full py-3 text-base text-[#382b22] flex items-center justify-center" disabled={loading} />
           </form>
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-200"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white text-gray-500">atau</span>
+            </div>
+          </div>
+
+          <div className="w-full">
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={() => alert('Gagal mendaftar dengan Google')}
+              theme="outline"
+              size="large"
+              text="signup_with"
+              shape="rectangular"
+              width="100%"
+              locale="id"
+              use_fedcm_for_prompt
+            />
+          </div>
 
           <p className="text-center text-sm text-slate-500">
             Sudah punya akun?{' '}

@@ -1,15 +1,21 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
+import PropTypes from 'prop-types';
 import { gsap } from 'gsap';
 import useSiklusStore from '../../store/useSiklusStore';
 import CalendarRange from './CalendarRange';
 import { formatDisplayDate } from '@/lib/siklus/cycleMath';
 
-// Helpers
-const todayIso = () => new Date().toISOString().slice(0, 10);
+const toJakartaYMD = (date = new Date()) =>
+  new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Jakarta',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(date);
 
-function calculateDurationDays(start, end) {
+const calculateDurationDays = (start, end) => {
   if (!start || !end) return null;
   const s = new Date(start);
   const e = new Date(end);
@@ -17,11 +23,24 @@ function calculateDurationDays(start, end) {
   const diff = e.getTime() - s.getTime();
   if (!Number.isFinite(diff) || diff < 0) return null;
   return Math.floor(diff / (1000 * 60 * 60 * 24)) + 1;
-}
+};
 
-/** ================== Step ================== */
+const mapSubmitError = (err) => {
+  const msg = (err?.message ?? '').toLowerCase();
+  if (msg.includes('overlap')) {
+    return 'Tanggal haid tumpang tindih dengan siklus lain. Cek kembali rentangnya.';
+  }
+  if (msg.includes('unauthorized')) {
+    return 'Silakan login terlebih dahulu.';
+  }
+  if (msg.includes('invalid') || msg.includes('format') || msg.includes('range')) {
+    return 'Tanggal tidak valid. Periksa kembali ya.';
+  }
+  return 'Gagal menyimpan data. Coba lagi ya.';
+};
+
 function UnifiedStep({ values, errors, onChange }) {
-  const today = todayIso();
+  const today = toJakartaYMD();
 
   const rangeValue = useMemo(
     () => ({
@@ -37,19 +56,14 @@ function UnifiedStep({ values, errors, onChange }) {
     return 'Durasi haidmu lebih dari 8 hari. Kalau ini baru terjadi, coba diskusikan dengan orang dewasa atau tenaga kesehatan yang kamu percaya.';
   }, [values.lastPeriodStart, values.lastPeriodEnd]);
 
-  function handleRangeChange(nextRange) {
+  const handleRangeChange = (nextRange) => {
     onChange('lastPeriodStart', nextRange.start || null);
     onChange('lastPeriodEnd', nextRange.end || null);
-  }
-
-  const painScale = Array.from({ length: 10 }, (_, i) => i + 1);
+  };
 
   return (
     <fieldset className="space-y-6">
-      {/* Date Range */}
       <div className="space-y-2">
-        <legend className="text-lg font-semibold text-slate-800">Tanggal haid terakhirmu</legend>
-
         <CalendarRange
           value={rangeValue}
           onChange={handleRangeChange}
@@ -79,40 +93,25 @@ function UnifiedStep({ values, errors, onChange }) {
 
         {durationWarning ? <p className="text-xs text-amber-600">{durationWarning}</p> : null}
       </div>
-
-      {/* Pain Scale */}
-      <div className="space-y-3">
-        <span className="text-sm font-medium text-slate-700">Skala nyeri haidmu</span>
-        <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Skala nyeri haid 1 sampai 10">
-          {painScale.map((value) => (
-            <button
-              key={value}
-              type="button"
-              role="radio"
-              aria-checked={values.painScale === value}
-              onClick={() => onChange('painScale', value)}
-              className={`h-9 w-9 rounded-full border text-sm font-medium transition-transform focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-500 hover:scale-105 cursor-pointer ${
-                values.painScale === value ? 'border-pink-500 bg-pink-500 text-white' : 'border-slate-200 bg-white text-slate-600'
-              }`}
-            >
-              {value}
-            </button>
-          ))}
-        </div>
-        {errors.painScale ? (
-          <span id="painScale-error" role="alert" className="text-xs text-red-500">
-            {errors.painScale}
-          </span>
-        ) : null}
-      </div>
     </fieldset>
   );
 }
 
-/** ============== Validation ============== */
-function getStepErrors(values) {
+UnifiedStep.propTypes = {
+  values: PropTypes.shape({
+    lastPeriodStart: PropTypes.string,
+    lastPeriodEnd: PropTypes.string,
+  }).isRequired,
+  errors: PropTypes.shape({
+    lastPeriodStart: PropTypes.string,
+    lastPeriodEnd: PropTypes.string,
+  }).isRequired,
+  onChange: PropTypes.func.isRequired,
+};
+
+const getStepErrors = (values) => {
   const nextErrors = {};
-  const today = todayIso();
+  const today = toJakartaYMD();
 
   if (!values.lastPeriodStart) {
     nextErrors.lastPeriodStart = 'Isi tanggal mulai ya';
@@ -130,30 +129,27 @@ function getStepErrors(values) {
     nextErrors.lastPeriodEnd = 'Tanggal selesai tidak boleh sebelum tanggal mulai';
   }
 
-  const pain = Number(values.painScale);
-  if (!Number.isFinite(pain) || pain < 1 || pain > 10) {
-    nextErrors.painScale = 'Pilih skala nyeri 1–10';
-  }
-
   return nextErrors;
-}
+};
 
-/** ============== Container ============== */
 export default function CycleOnboarding({ onComplete }) {
-  const onboardingData = useSiklusStore((s) => s.onboardingData);
-  const updateOnboardingDraft = useSiklusStore((s) => s.updateOnboardingDraft);
-  const commitOnboardingData = useSiklusStore((s) => s.commitOnboardingData);
+  const addCycle = useSiklusStore((s) => s.addCycle);
+  const loadAll = useSiklusStore((s) => s.loadAll);
   const setOnboardingCompleted = useSiklusStore((s) => s.setOnboardingCompleted);
 
+  const [values, setValues] = useState({ lastPeriodStart: null, lastPeriodEnd: null });
   const [errors, setErrors] = useState({});
+  const [submitError, setSubmitError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+
   const cardRef = useRef(null);
   const stepHeadingRef = useRef(null);
   const [reducedMotion, setReducedMotion] = useState(false);
 
-  // detect system reduced motion
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const media = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const media = globalThis?.matchMedia?.('(prefers-reduced-motion: reduce)');
+    if (!media) return undefined;
+
     const update = () => setReducedMotion(media.matches);
     update();
     media.addEventListener('change', update);
@@ -161,74 +157,59 @@ export default function CycleOnboarding({ onComplete }) {
   }, []);
 
   useEffect(() => {
-    if (!cardRef.current || reducedMotion) return;
+    if (!cardRef.current || reducedMotion) return undefined;
     const ctx = gsap.context(() => {
       gsap.fromTo(cardRef.current, { autoAlpha: 0, y: 12 }, { autoAlpha: 1, y: 0, duration: 0.4, ease: 'power2.out' });
     }, cardRef);
-    return () => ctx?.revert();
+    return () => ctx.revert();
   }, [reducedMotion]);
 
   useEffect(() => {
     stepHeadingRef.current?.focus();
   }, []);
 
-  const currentValues = useMemo(
-    () => ({
-      lastPeriodStart: onboardingData.lastPeriodStart ?? null,
-      lastPeriodEnd: onboardingData.lastPeriodEnd ?? null,
-      painScale: onboardingData.painScale ?? 5,
-    }),
-    [onboardingData]
-  );
+  const stepValidation = useMemo(() => getStepErrors(values), [values]);
 
-  const stepValidation = useMemo(() => getStepErrors(currentValues), [currentValues]);
-
-  function validateNow() {
-    const nextErrors = getStepErrors(currentValues);
+  const validateNow = () => {
+    const nextErrors = getStepErrors(values);
     setErrors(nextErrors);
     return Object.keys(nextErrors).length === 0;
-  }
+  };
 
-  // ✅ Finish: commit + mark complete + set love letter eligibility (shown later by page)
-  function handleNext() {
+  const handleNext = async () => {
+    setSubmitError('');
     if (!validateNow()) return;
-    commitOnboardingData?.();
-    setOnboardingCompleted?.(true);
+
+    setSubmitting(true);
     try {
-      localStorage.setItem('risa:loveLetterEligible', 'true');
-    } catch {}
-    onComplete?.();
-  }
-
-  // ✅ Cancel: DO NOT mark complete, DO NOT set eligibility
-  function handleBack() {
-    try {
-      localStorage.removeItem('risa:loveLetterEligible'); // ensure no popup
-    } catch {}
-    onComplete?.();
-  }
-
-  function handleChange(field, value) {
-    setErrors((prev) => ({ ...prev, [field]: undefined }));
-    let nextValue = value;
-
-    if (field === 'lastPeriodStart' || field === 'lastPeriodEnd') {
-      nextValue = value || null;
-    } else if (field === 'painScale') {
-      if (value === null || value === undefined || value === '') {
-        nextValue = null;
-      } else if (typeof value === 'number') {
-        nextValue = Number.isFinite(value) ? value : null;
-      } else {
-        const parsed = Number.parseInt(value, 10);
-        nextValue = Number.isFinite(parsed) ? parsed : null;
-      }
+      await addCycle({
+        start: values.lastPeriodStart,
+        end: values.lastPeriodEnd,
+      });
+      setOnboardingCompleted?.(true);
+      const storage = globalThis?.localStorage;
+      storage?.setItem('risa:loveLetterEligible', 'true');
+      await loadAll();
+      onComplete?.();
+    } catch (err) {
+      setSubmitError(mapSubmitError(err));
+    } finally {
+      setSubmitting(false);
     }
+  };
 
-    updateOnboardingDraft?.({ [field]: nextValue });
-  }
+  const handleBack = () => {
+    const storage = globalThis?.localStorage;
+    storage?.removeItem('risa:loveLetterEligible');
+    onComplete?.();
+  };
 
-  const liveErrorMessage = Object.values(errors).find(Boolean) || '';
+  const handleChange = (field, value) => {
+    setErrors((prev) => ({ ...prev, [field]: undefined }));
+    setValues((prev) => ({ ...prev, [field]: value || null }));
+  };
+
+  const liveErrorMessage = Object.values(errors).find(Boolean) || submitError || '';
   const errorMessageId = liveErrorMessage ? 'onboarding-error-message' : undefined;
 
   return (
@@ -242,12 +223,13 @@ export default function CycleOnboarding({ onComplete }) {
       <header className="space-y-2">
         <p className="text-xs font-semibold uppercase tracking-wide text-pink-500">Informasi Haid Terakhir</p>
         <h3 ref={stepHeadingRef} tabIndex={-1} className="text-2xl font-semibold text-slate-800">
-          Tanggal & Skala Nyeri
+          Tanggal Haid Terakhir
         </h3>
       </header>
 
       <div className="rounded-3xl border border-pink-100 bg-white p-6 shadow-sm">
-        <UnifiedStep values={currentValues} errors={errors} onChange={handleChange} />
+        <UnifiedStep values={values} errors={errors} onChange={handleChange} />
+        {submitError ? <p className="mt-3 text-sm text-rose-500">{submitError}</p> : null}
       </div>
 
       <div className="flex flex-col items-center justify-end gap-3 sm:flex-row sm:justify-end">
@@ -255,7 +237,8 @@ export default function CycleOnboarding({ onComplete }) {
           type="button"
           data-ripple="true"
           onClick={handleBack}
-          className="rounded-full border border-pink-300 bg-white px-6 py-2 text-sm font-medium text-pink-600 hover:bg-pink-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-400 transition"
+          className="rounded-full border border-pink-300 bg-white px-6 py-2 text-sm font-medium text-pink-600 hover:bg-pink-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-400 transition"
+          disabled={submitting}
         >
           Batal
         </button>
@@ -263,15 +246,19 @@ export default function CycleOnboarding({ onComplete }) {
         <button
           type="button"
           data-ripple="true"
-          className="relative rounded-full bg-pink-500 px-6 py-2 text-sm font-semibold text-white shadow-sm transition-transform duration-200 ease-out hover:shadow-lg motion-safe:hover:scale-[1.03] motion-reduce:transform-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-pink-500 cursor-pointer disabled:opacity-40 overflow-hidden"
+          className="relative rounded-full bg-pink-500 px-6 py-2 text-sm font-semibold text-white shadow-sm transition-transform duration-200 ease-out hover:shadow-lg motion-safe:hover:scale-[1.03] motion-reduce:transform-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-500 cursor-pointer disabled:opacity-40 overflow-hidden"
           onClick={handleNext}
-          disabled={Object.keys(stepValidation).length > 0}
-          aria-disabled={Object.keys(stepValidation).length > 0}
+          disabled={submitting || Object.keys(stepValidation).length > 0}
+          aria-disabled={submitting || Object.keys(stepValidation).length > 0}
           aria-describedby={errorMessageId}
         >
-          Selesai
+          {submitting ? 'Menyimpan...' : 'Selesai'}
         </button>
       </div>
     </div>
   );
 }
+
+CycleOnboarding.propTypes = {
+  onComplete: PropTypes.func,
+};

@@ -4,14 +4,19 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Eye, EyeOff, Lock, Mail } from 'lucide-react';
+import { GoogleLogin } from '@react-oauth/google';
+import { jwtDecode } from 'jwt-decode';
 
 import CustomButton from '../components/ui/CustomButton';
+import useAuthStore from '../store/useAuthStore';
 
 export default function LoginPage() {
   const router = useRouter();
+  const { login } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
   const [formValues, setFormValues] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState({ email: '', password: '' });
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const nav = document.querySelector('nav');
@@ -57,10 +62,60 @@ export default function LoginPage() {
     setErrors((prev) => ({ ...prev, [field]: '' }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    if (validate()) {
-      router.push('/');
+    if (!validate()) return;
+    
+    setLoading(true);
+    try {
+      const { email, password } = formValues;
+      const response = await fetch('https://server-risa.vercel.app/api/users/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      
+      const data = await response.json();
+      
+      if (data.data?.token) {
+        localStorage.setItem('token', data.data.token);
+        localStorage.setItem('user', JSON.stringify(data.data.user));
+        login(data.data.user, data.data.token);
+        router.push('/');
+      } else {
+        setErrors({ email: '', password: 'Email atau password salah' });
+      }
+    } catch (error) {
+      setErrors({ email: '', password: 'Terjadi kesalahan, coba lagi' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      const decoded = jwtDecode(credentialResponse.credential);
+      const response = await fetch('https://server-risa.vercel.app/api/users/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          email: decoded.email, 
+          password: 'google-oauth-' + decoded.sub 
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (data.data?.token) {
+        localStorage.setItem('token', data.data.token);
+        localStorage.setItem('user', JSON.stringify(data.data.user));
+        login(data.data.user, data.data.token);
+        router.push('/');
+      } else {
+        alert('Akun tidak ditemukan. Silakan daftar terlebih dahulu.');
+      }
+    } catch (error) {
+      alert('Terjadi kesalahan saat masuk dengan Google');
     }
   };
 
@@ -86,7 +141,7 @@ export default function LoginPage() {
               <span className="sr-only">Email</span>
               <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm shadow-sm transition focus-within:border-pink-300 focus-within:ring-2 focus-within:ring-pink-100">
                 <Mail className="h-5 w-5 text-slate-400" aria-hidden="true" />
-                <input type="email" required placeholder="Email" className="w-full border-0 bg-transparent text-slate-700 placeholder:text-slate-400 focus:outline-none" value={formValues.email} onChange={handleChange('email')} />
+                <input type="email" placeholder="Email" className="w-full border-0 bg-transparent text-slate-700 placeholder:text-slate-400 focus:outline-none" name='email' autoComplete="on" value={formValues.email} onChange={handleChange('email')} />
               </div>
               {errors.email ? <p className="mt-2 text-xs text-rose-500">{errors.email}</p> : null}
             </label>
@@ -97,7 +152,6 @@ export default function LoginPage() {
                 <Lock className="h-5 w-5 text-slate-400" aria-hidden="true" />
                 <input
                   type={showPassword ? 'text' : 'password'}
-                  required
                   placeholder="Password"
                   className="w-full border-0 bg-transparent text-slate-700 placeholder:text-slate-400 focus:outline-none"
                   value={formValues.password}
@@ -116,9 +170,36 @@ export default function LoginPage() {
               </Link>
             </div>
 
-            <CustomButton type="submit" title="Masuk" className="w-full py-3 text-base text-[#382b22] flex items-center justify-center" />
-
+            <CustomButton 
+              type="submit" 
+              title={loading ? "Memproses..." : "Masuk"} 
+              className="w-full py-3 text-base text-[#382b22] flex items-center justify-center" 
+              disabled={loading}
+            />
           </form>
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-200"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white text-gray-500">atau</span>
+            </div>
+          </div>
+
+          <div className="w-full">
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={() => alert('Gagal masuk dengan Google')}
+              theme="outline"
+              size="large"
+              text="signin_with"
+              shape="rectangular"
+              width="100%"
+              locale="id"
+              use_fedcm_for_prompt
+            />
+          </div>
 
           <p className="text-center text-sm text-slate-500">
             Belum memiliki akun?{' '}

@@ -19,7 +19,7 @@ export default function Home() {
   const { showToast, setShowToast } = useLocationToast();
   const { locationPermission, setLocationPermission } = useLocationPermission();
   const { vaccineTypes, fetchVaccineTypes } = useVaccineTypes();
-  const { bookingData } = useBookingData();
+  const currentBookingId = useBookingData(state => state.currentBookingId);
   const { 
     showVaccineInfo, 
     showBooking, 
@@ -59,8 +59,20 @@ export default function Home() {
 
 
 
-  const handleBookingSubmit = (data) => {
-    showTicketAfterBooking();
+  const handleBookingSubmit = async (formData) => {
+    const { submitBooking } = useBookingData.getState();
+    const result = await submitBooking(formData);
+    console.log('Booking result:', result);
+    
+    if (result.success) {
+      const { currentBookingId: newBookingId } = useBookingData.getState();
+      console.log('Current booking ID:', newBookingId);
+      console.log('Before showTicketAfterBooking - showTicket:', showTicket);
+      showTicketAfterBooking();
+      console.log('After showTicketAfterBooking - showTicket should be true');
+    } else {
+      alert(`Error: ${result.error}`);
+    }
   };
 
 
@@ -139,8 +151,8 @@ export default function Home() {
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold text-[#382b22] text-center mb-12">Jenis Vaksin HPV dari Prodia</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            {vaccineTypes.map((vaccine, index) => (
-              <div key={index} className="bg-gradient-to-br from-pink-50 to-rose-50 rounded-xl p-6 border-2 border-pink-200 hover:shadow-lg transition-shadow relative">
+            {vaccineTypes.map((vaccine) => (
+              <div key={vaccine.id} className="bg-gradient-to-br from-pink-50 to-rose-50 rounded-xl p-6 border-2 border-pink-200 hover:shadow-lg transition-shadow relative">
                 {/* Discount Badge */}
                 <div className="absolute top-4 right-4 bg-pink-500 text-white px-3 py-1 rounded-full text-sm font-bold">
                   20% OFF
@@ -253,7 +265,7 @@ export default function Home() {
       <ETicket
         show={showTicket}
         onClose={closeTicket}
-        bookingData={bookingData}
+        bookingId={currentBookingId}
       />
     </div>
   )
