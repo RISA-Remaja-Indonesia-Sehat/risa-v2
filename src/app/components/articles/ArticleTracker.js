@@ -7,7 +7,7 @@ import StickerRewardAnimation from '../ui/StickerRewardAnimation';
 
 export default function ArticleTracker() {
   const { trackArticleRead } = useMissions();
-  const { addStickers } = useStickers();
+  const { addStickers, updateStickersToServer } = useStickers();
   const [showAnimation, setShowAnimation] = useState(false);
 
   useEffect(() => {
@@ -18,7 +18,7 @@ export default function ArticleTracker() {
 
       // When user reaches 90% of article, count as read
       if (scrollPercentage >= 90) {
-        trackArticleRead(addStickers, () => setShowAnimation(true));
+        trackArticleRead(addStickers, () => setShowAnimation(true), updateStickersToServer);
         window.removeEventListener('scroll', handleScroll);
       }
     };

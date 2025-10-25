@@ -12,7 +12,7 @@ export default function CommentForm() {
   const [showAnimation, setShowAnimation] = useState(false);
   const { addComment } = useCommentStore();
   const { trackComment } = useMissions();
-  const { addStickers } = useStickers();
+  const { addStickers, updateStickersToServer } = useStickers();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -29,7 +29,7 @@ export default function CommentForm() {
     }
     
     await addComment(userComment);
-    trackComment(addStickers, () => setShowAnimation(true));
+    trackComment(addStickers, () => setShowAnimation(true), updateStickersToServer);
     setUserComment('');
     setShowSuccess(true);
     

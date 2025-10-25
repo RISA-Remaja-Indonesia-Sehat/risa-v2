@@ -8,13 +8,26 @@ const useStickers = create((set, get) => {
   
   return {
     stickers: initialStickers,
+    initialized: false,
     
-    initStickers: async () => {
+    initStickers: async (forceRefresh = false) => {
+      // Use localStorage cache if not forcing refresh
+      // if (!forceRefresh && get().initialized) {
+      //   const userData = localStorage.getItem('user');
+      //   if (userData) {
+      //     const user = JSON.parse(userData);
+      //     if (user.stickers !== undefined) {
+      //       set({ stickers: user.stickers });
+      //       return;
+      //     }
+      //   }
+      // }
+      
       const token = localStorage.getItem('token');
       const userData = localStorage.getItem('user');
       
       if (!token || !userData) {
-        set({ stickers: 0 });
+        set({ stickers: 0, initialized: true });
         return;
       }
       
@@ -30,14 +43,24 @@ const useStickers = create((set, get) => {
         
         if (response.ok) {
           const result = await response.json();
-          set({ stickers: result.data.stickers || 0 });
+          const newStickers = result.data.stickers || 0;
+          
+          // Update localStorage
+          const updatedUser = { ...user, stickers: newStickers };
+          localStorage.setItem('user', JSON.stringify(updatedUser));
+          
+          set({ stickers: newStickers, initialized: true });
         } else {
-          set({ stickers: 0 });
+          set({ stickers: 0, initialized: true });
         }
       } catch (error) {
         console.error('Error fetching user stickers:', error);
-        set({ stickers: 0 });
+        set({ stickers: 0, initialized: true });
       }
+    },
+    
+    refreshStickers: async () => {
+      return get().initStickers(true);
     },
     
     addStickers: (amount) => set((state) => ({ stickers: state.stickers + amount })),

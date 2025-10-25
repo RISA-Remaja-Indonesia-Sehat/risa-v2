@@ -7,7 +7,7 @@ import StickerRewardAnimation from '../ui/StickerRewardAnimation';
 
 export default function ShareButton({ title, articleId }) {
   const { trackShare } = useMissions();
-  const { addStickers } = useStickers();
+  const { addStickers, updateStickersToServer } = useStickers();
   const [showAnimation, setShowAnimation] = useState(false);
   
   useEffect(() => {
@@ -24,12 +24,12 @@ export default function ShareButton({ title, articleId }) {
           text: shareText,
           url: shareUrl
         }).then(() => {
-          trackShare(addStickers, () => setShowAnimation(true));
+          trackShare(addStickers, () => setShowAnimation(true), updateStickersToServer);
         }).catch(console.error);
       } else {
         navigator.clipboard.writeText(`${shareText} - ${shareUrl}`)
           .then(() => {
-            trackShare(addStickers, () => setShowAnimation(true));
+            trackShare(addStickers, () => setShowAnimation(true), updateStickersToServer);
           })
           .catch(() => {
             alert('Gagal menyalin link');
