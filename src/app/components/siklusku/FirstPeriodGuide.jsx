@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import ScrollTrigger from 'gsap/ScrollTrigger';
+import CustomButton from '../ui/CustomButton';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -119,8 +120,8 @@ export default function FirstPeriodGuide({ onComplete }) {
   return (
     <div ref={containerRef} className="space-y-8">
       <header className="rounded-3xl bg-linear-to-r from-pink-100 via-white to-pink-50 p-6 shadow-sm">
-        <h3 className="mt-2 text-2xl font-semibold text-slate-800">Mari berkenalan dengan tubuhmu!</h3>
-        <p className="mt-2 text-sm text-slate-600">Haid itu fase alami yang cuma dialami perempuan. Dan kamu gaperlu takut! Sini deh, aku kasih tau segalanya tentang haid.</p>
+        <h3 className="mt-2 text-2xl font-semibold text-slate-800">Mengenal Menstruasi Pertamamu</h3>
+        <p className="mt-2 text-sm text-slate-600">Haid itu fase alami yang cuma dialami perempuan. Sini deh, aku kasih tau segalanya tentang haid.</p>
       </header>
 
       <div className="flex flex-col gap-6 md:flex-row">
@@ -173,15 +174,7 @@ export default function FirstPeriodGuide({ onComplete }) {
       </div>
 
       <div className="flex flex-col items-center gap-3 rounded-3xl bg-white p-6 text-center">
-        <button
-          data-ripple="true"
-          type="button"
-          className="relative cursor-pointer rounded-full bg-pink-500 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-transform duration-200 ease-out hover:shadow-lg motion-safe:hover:scale-[1.03] motion-reduce:transform-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-600 overflow-hidden"
-          aria-label="Selesai membaca panduan, kembali ke dashboard"
-          onClick={onComplete}
-        >
-          Buka Siklusku
-        </button>
+        <CustomButton title="Buka Siklusku" className="px-6 py-3 text-sm tracking-wide" aria-label="Selesai membaca panduan, kembali ke dashboard" onClick={onComplete} data-ripple="true" />
       </div>
     </div>
   );

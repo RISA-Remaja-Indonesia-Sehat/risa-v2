@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { useEffect, useMemo, useRef, useState } from "react";
-import { formatDisplayDate } from "@/lib/siklus/cycleMath";
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { formatDisplayDate } from '@/lib/siklus/cycleMath';
 
-const WEEKDAY_LABELS = ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"];
+const WEEKDAY_LABELS = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
 
 function cx(...vals) {
-  return vals.filter(Boolean).join(" ");
+  return vals.filter(Boolean).join(' ');
 }
 
 function normalizeInputDate(value) {
@@ -14,7 +14,7 @@ function normalizeInputDate(value) {
   if (value instanceof Date) {
     return new Date(value.getFullYear(), value.getMonth(), value.getDate());
   }
-  if (typeof value === "string") {
+  if (typeof value === 'string') {
     const m = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
     if (m) return new Date(+m[1], +m[2] - 1, +m[3]);
   }
@@ -34,20 +34,12 @@ function isSameMonth(a, b) {
 }
 function toISO(date) {
   const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, "0");
-  const d = String(date.getDate()).padStart(2, "0");
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
   return `${y}-${m}-${d}`;
 }
 
-export default function CalendarRange({
-  value = {},
-  onChange,
-  max,
-  min,
-  className,
-  ariaInvalid = false,
-  ariaDescribedBy,
-}) {
+export default function CalendarRange({ value = {}, onChange, max, min, className, ariaInvalid = false, ariaDescribedBy }) {
   const today = normalizeInputDate(new Date());
   const maxDate = normalizeInputDate(max) || today;
   const minDate = normalizeInputDate(min);
@@ -84,16 +76,8 @@ export default function CalendarRange({
     return Array.from({ length: 42 }, (_, i) => addDays(gridStart, i));
   }, [viewDate]);
 
-  const canGoPrev =
-    !minDate ||
-    viewDate.getFullYear() > minDate.getFullYear() ||
-    (viewDate.getFullYear() === minDate.getFullYear() &&
-      viewDate.getMonth() > minDate.getMonth());
-  const canGoNext =
-    !maxDate ||
-    viewDate.getFullYear() < maxDate.getFullYear() ||
-    (viewDate.getFullYear() === maxDate.getFullYear() &&
-      viewDate.getMonth() < maxDate.getMonth());
+  const canGoPrev = !minDate || viewDate.getFullYear() > minDate.getFullYear() || (viewDate.getFullYear() === minDate.getFullYear() && viewDate.getMonth() > minDate.getMonth());
+  const canGoNext = !maxDate || viewDate.getFullYear() < maxDate.getFullYear() || (viewDate.getFullYear() === maxDate.getFullYear() && viewDate.getMonth() < maxDate.getMonth());
 
   const startTime = startDate ? startDate.getTime() : null;
   const endTime = endDate ? endDate.getTime() : null;
@@ -109,7 +93,7 @@ export default function CalendarRange({
   );
 
   function emitRange(nextRange) {
-    if (typeof onChange !== "function") return;
+    if (typeof onChange !== 'function') return;
     onChange({
       start: nextRange.start || null,
       end: nextRange.end || null,
@@ -163,7 +147,7 @@ export default function CalendarRange({
       else focusDay(iso);
       return;
     }
-    if (event.key === "Enter" || event.key === " ") {
+    if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
       selectDay(toISO(dateObj), dateObj);
     }
@@ -172,26 +156,24 @@ export default function CalendarRange({
   function renderDay(dateObj) {
     const iso = toISO(dateObj);
     const time = dateObj.getTime();
-    const disabled =
-      (minTime !== null && time < minTime) || (maxTime !== null && time > maxTime);
+    const disabled = (minTime !== null && time < minTime) || (maxTime !== null && time > maxTime);
     const isStart = startTime !== null && time === startTime;
     const isEnd = endTime !== null && time === endTime;
-    const inRange =
-      startTime !== null && endTime !== null && time > startTime && time < endTime;
+    const inRange = startTime !== null && endTime !== null && time > startTime && time < endTime;
     const outside = !isSameMonth(dateObj, viewDate);
     const isToday = today && time === today.getTime();
 
     const classes = cx(
-      "flex h-10 w-10 items-center justify-center rounded-full text-sm font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-500",
-      disabled && "cursor-not-allowed text-slate-300",
-      !disabled && (isStart || isEnd) && "bg-pink-500 text-white",
-      !disabled && !isStart && !isEnd && inRange && "bg-pink-100 text-pink-600",
-      !disabled && !isStart && !isEnd && !inRange && outside && "text-slate-400",
-      !disabled && !isStart && !isEnd && !inRange && !outside && "text-slate-700 hover:bg-pink-50"
+      'flex h-10 w-10 items-center justify-center rounded-full text-sm font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-500',
+      disabled && 'cursor-not-allowed text-slate-300',
+      !disabled && (isStart || isEnd) && 'bg-pink-500 text-white',
+      !disabled && !isStart && !isEnd && inRange && 'bg-pink-100 text-pink-600',
+      !disabled && !isStart && !isEnd && !inRange && outside && 'text-slate-400',
+      !disabled && !isStart && !isEnd && !inRange && !outside && 'text-slate-700 hover:bg-pink-50'
     );
 
     const aria = [formatDisplayDate(iso) || iso];
-    if (isToday) aria.push("(hari ini)");
+    if (isToday) aria.push('(hari ini)');
 
     return (
       <button
@@ -204,32 +186,25 @@ export default function CalendarRange({
         disabled={disabled}
         role="gridcell"
         aria-selected={isStart || isEnd}
-        aria-label={aria.join(" ")}
+        aria-label={aria.join(' ')}
       >
         <span className="relative">
           {dateObj.getDate()}
-          {isToday ? (
-            <span className="absolute left-1/2 top-[85%] -translate-x-1/2 block h-1 w-1 rounded-full bg-pink-500" />
-          ) : null}
+          {isToday ? <span className="absolute left-1/2 top-[85%] -translate-x-1/2 block h-1 w-1 rounded-full bg-pink-500" /> : null}
         </span>
       </button>
     );
   }
 
-  const monthFormatter = useMemo(
-    () => new Intl.DateTimeFormat("id-ID", { month: "long", year: "numeric" }),
-    []
-  );
+  const monthFormatter = useMemo(() => new Intl.DateTimeFormat('id-ID', { month: 'long', year: 'numeric' }), []);
 
   return (
-    <div className={cx("space-y-3", className)}>
-      <div className="flex flex-col gap-2">
+    <div className={cx('space-y-2', className)}>
+      <div className="flex flex-col gap-1.5">
         <div className="flex items-center justify-between">
           <div>
             <h4 className="text-sm font-semibold text-slate-700">Pilih rentang tanggal</h4>
-            <p className="text-xs text-slate-500">
-              Klik tanggal mulai lalu tanggal selesai haidmu.
-            </p>
+            <p className="text-xs text-slate-500">Klik tanggal mulai lalu tanggal selesai haidmu.</p>
           </div>
 
           {/* Month navigation only */}
@@ -238,11 +213,7 @@ export default function CalendarRange({
               type="button"
               onClick={() => {
                 if (!canGoPrev) return;
-                const prev = new Date(
-                  viewDate.getFullYear(),
-                  viewDate.getMonth() - 1,
-                  1
-                );
+                const prev = new Date(viewDate.getFullYear(), viewDate.getMonth() - 1, 1);
                 handleNavigation(prev, toISO(prev));
               }}
               disabled={!canGoPrev}
@@ -254,11 +225,7 @@ export default function CalendarRange({
               type="button"
               onClick={() => {
                 if (!canGoNext) return;
-                const next = new Date(
-                  viewDate.getFullYear(),
-                  viewDate.getMonth() + 1,
-                  1
-                );
+                const next = new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 1);
                 handleNavigation(next, toISO(next));
               }}
               disabled={!canGoNext}
@@ -269,46 +236,20 @@ export default function CalendarRange({
           </div>
         </div>
 
-        <div className="rounded-2xl border border-pink-100 bg-white p-4 shadow-sm">
-          <div className="mb-3 flex items-center justify-between">
-            <p className="text-sm font-semibold text-slate-700">
-              {monthFormatter.format(viewDate)}
-            </p>
+        <div className="rounded-2xl border border-pink-100 bg-white p-3 shadow-sm">
+          <div className="mb-2 flex items-center justify-between">
+            <p className="text-sm font-semibold text-slate-700">{monthFormatter.format(viewDate)}</p>
           </div>
 
-          <div
-            role="grid"
-            aria-label="Kalender pemilihan rentang haid"
-            aria-invalid={ariaInvalid ? "true" : undefined}
-            aria-describedby={ariaDescribedBy}
-            className="grid grid-cols-7 gap-1"
-            ref={gridRef}
-          >
+          <div role="grid" aria-label="Kalender pemilihan rentang haid" aria-invalid={ariaInvalid ? 'true' : undefined} aria-describedby={ariaDescribedBy} className="grid grid-cols-7 gap-1" ref={gridRef}>
             {WEEKDAY_LABELS.map((label) => (
-              <div
-                key={label}
-                role="columnheader"
-                className="h-8 text-center text-[11px] font-semibold uppercase tracking-wide text-slate-400"
-              >
+              <div key={label} role="columnheader" className="h-7 text-center text-[11px] font-semibold uppercase tracking-wide text-slate-400">
                 {label}
               </div>
             ))}
             {calendarDays.map(renderDay)}
           </div>
         </div>
-      </div>
-
-      <div className="rounded-xl bg-pink-50 px-4 py-3 text-xs text-pink-700">
-        <p>
-          Terpilih:{" "}
-          {rangeValue.start ? formatDisplayDate(rangeValue.start) : "Belum ada"}
-          {rangeValue.start ? " → " : ""}
-          {rangeValue.start
-            ? rangeValue.end
-              ? formatDisplayDate(rangeValue.end)
-              : "pilih tanggal selesai"
-            : ""}
-        </p>
       </div>
     </div>
   );
