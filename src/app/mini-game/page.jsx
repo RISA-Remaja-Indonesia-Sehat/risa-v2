@@ -9,9 +9,12 @@ import  Herogame from "../../../public/image/Illustration_hero_gamification.png"
 import Trophy from "../../../public/image/piala.png"
 import CustomButton from "../components/ui/CustomButton";
 import Link from "next/link";
-import { Card, CardContent } from "@/app/components/ui/card"
+import {CardContent } from "@/app/components/ui/card"
 import { Star, Timer, TrophyIcon, Users } from "lucide-react";
 import GameCard from "../components/ui/Cardgame";
+import CardSwap from "../components/games/CardSwap";
+import MemoIcon from "../../../public/image/memory-game.png";
+import DragIcon from "../../../public/image/drag-drop.png";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -107,24 +110,24 @@ export default function Home() {
    
 
       {/* HERO */}
-      <section className="w-full py-16 px-6 md:px-16 flex flex-col md:flex-row items-center justify-between bg-pink-100/90">
-        <div className="md:w-1/2 space-y-6">
-          <h1 ref={addFadeSlide} className="text-4xl md:text-6xl font-bold text-pink-600">
+      <section className="w-full py-16 px-2 lg:px-16 flex flex-col lg:flex-row items-center justify-between bg-pink-100/90">
+        <div className="lg:w-1/2 space-y-6">
+          <h1 ref={addFadeSlide} className="text-3xl lg:text-6xl font-bold text-pink-600">
             Yuk, Main & Jadi Juara!
           </h1>
-          <p ref={addFadeSlide} className="text-gray-700 text-lg">
+          <p ref={addFadeSlide} className="text-gray-700 md:text-lg">
             Kumpulin poin, seru-seruan, dan lihat siapa yang juara di leaderboard!
           </p>
           <div ref={addFadeSlide} className="flex gap-4">
             <Link href="/memoryGames">
-              <CustomButton title="Mainkan Sekarang!" className="button-11 text-nowrap px-4 py-2 md:px-6 md:py-4 animate-pulse-slow" />
+              <CustomButton title="Mainkan Sekarang!" className="button-11 text-nowrap px-4 py-2 lg:px-6 lg:py-4 animate-pulse-slow" />
             </Link>
             <Link href="#leaderboard">
-              <CustomButton title="Leaderboard" className="button-10 px-4 py-2 md:px-6 md:py-4  animate-pulse-slow" />
+              <CustomButton title="Leaderboard" className="button-10 px-4 py-2 lg:px-6 lg:py-4  animate-pulse-slow" />
             </Link>
           </div>
         </div>
-        <div ref={addScaleIn} className="md:w-1/2 mt-6 md:mt-0 flex justify-center">
+        <div ref={addScaleIn} className="lg:w-1/2 mt-6 md:mt-0 flex justify-center">
           <Image
             src={Herogame}
             alt="Hero Illustration"
@@ -135,45 +138,14 @@ export default function Home() {
           />
         </div>
       </section>
-
-
-   {/* <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-        <Card className="gradient-card shadow-card">
-          <CardContent className="p-4 text-center">
-            <TrophyIcon className="h-8 w-8 text-warning mx-auto mb-2" />
-            <div className="text-2xl font-bold text-primary">12</div>
-            <div className="text-sm text-muted-foreground">Games Selesai</div>
-          </CardContent>
-        </Card>
-        <Card className="gradient-card shadow-card">
-          <CardContent className="p-4 text-center">
-            <Star className="h-8 w-8 text-success mx-auto mb-2" />
-            <div className="text-2xl font-bold text-primary">2,456</div>
-            <div className="text-sm text-muted-foreground">Total Poin</div>
-          </CardContent>
-        </Card>
-        <Card className="gradient-card shadow-card">
-          <CardContent className="p-4 text-center">
-            <Timer className="h-8 w-8 text-info mx-auto mb-2" />
-            <div className="text-2xl font-bold text-primary">87%</div>
-            <div className="text-sm text-muted-foreground">Rata-rata Skor</div>
-          </CardContent>
-        </Card>
-        <Card className="gradient-card shadow-card">
-          <CardContent className="p-4 text-center">
-            <Users className="h-8 w-8 text-secondary mx-auto mb-2" />
-            <div className="text-2xl font-bold text-primary">#4</div>
-            <div className="text-sm text-muted-foreground">Ranking Minggu Ini</div>
-          </CardContent>
-        </Card>
-      </div> */}
-      <main className="max-w-screen mx-auto px-4 md:px-6 lg:px-8 py-8 space-y-16">
+      
+      <main className="max-w-full mx-auto px-4 md:px-6 lg:px-8 py-8 space-y-16 overflow-hidden">
         <section className="w-full py-10 px-6 md:px-16 flex flex-col items-center">
           <h2 ref={addFadeSlide} className="text-3xl font-extrabold text-pink-700 mb-3">
             🎮 Game Kamu
           </h2>
-          <p className="text-gray-600 text-lg text-center">Belajar sambil bermain! Kumpulan mini games seru untuk menguji dan meningkatkan pengetahuanmu tentang kesehatan reproduksi.</p>
-          <div className="grid grid-cols-1  gap-8 lg:gap-16 items-center mt-8">
+          <p className="text-gray-600 text-sm md:text-lg text-center">Belajar sambil bermain! Kumpulan mini games seru untuk menguji dan meningkatkan pengetahuanmu tentang kesehatan reproduksi.</p>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 mt-8 items-center w-full max-w-6xl mx-auto">
             <GameCard
               title="Memory Cards"
               description="Uji pengetahuanmu dengan mencocokkan pasangan kartu seputar kesehatan reproduksi."
@@ -181,14 +153,29 @@ export default function Home() {
               timeEstimate="30 detik"
               difficulty="Mudah"
               completedBy={50}
+              icon={MemoIcon}
               onPlay={() => console.log("Playing Memory Cards")}
+              linkgame="/mini-game/memory"
+            />
+            <GameCard
+              title="Mitos VS Fakta"
+              description="Jawab pertanyaan seputar kesehatan reproduksi dalam waktu terbatas."
+              points={100}
+              timeEstimate="45 detik"
+              difficulty="Sedang"
+              completedBy={30}
+              icon={DragIcon}
+              onPlay={() => console.log("Playing Quick Quiz")}
+              linkgame="/mini-game/drag-drop"
             />
           </div>
+          <CardSwap></CardSwap>
         </section>
+        
 
         <section className="py-10 px-6 md:px-16 text-center">
           <div className="mb-2 flex flex-col justify-center items-center">
-            <svg viewBox="0 0 400 350" className="w-[400px] h-[180px]" ref={addFadeSlide}>
+            <svg viewBox="0 0 400 350" className="w-full max-w-[400px] h-[180px]" ref={addFadeSlide}>
               <defs>
                 <path id="curveSelamat" d="M 0,300 A 300,200 0 0 1 400,300" />
               </defs>

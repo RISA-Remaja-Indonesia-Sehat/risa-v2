@@ -1,14 +1,19 @@
+import { useEffect } from 'react';
 import useExchangeHistory from '../../store/useExchangeHistory';
 
 export default function ExchangeHistory() {
-  const { history } = useExchangeHistory();
+  const { history, loading, loadHistory } = useExchangeHistory();
+  
+  useEffect(() => {
+    loadHistory();
+  }, [loadHistory]);
 
   return (
     <div className="bg-white rounded-3xl shadow-xl p-4 sm:p-6 md:p-8 mb-8 border-2 border-pink-200">
       <h2 className="text-xl sm:text-2xl font-bold text-[#382b22] text-center mb-4 sm:mb-6">
         📜 Riwayat Penukaran
       </h2>
-      <div className="space-y-3 sm:space-y-4">
+      <div className="space-y-3 sm:space-y-4 max-h-96 overflow-y-auto">
         {history.map((item) => (
           <div key={item.id} className="bg-gradient-to-r from-pink-50 to-pink-100 rounded-2xl p-3 sm:p-4 border border-pink-200">
             <div className="flex items-center justify-between flex-col sm:flex-row gap-3 sm:gap-0">

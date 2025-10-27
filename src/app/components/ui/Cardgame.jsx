@@ -6,7 +6,7 @@ import { EnhancedButton } from "@/app/components/games/EnhancedButton";
 import { Badge } from "@/app/components/ui/badge";
 import { Clock, Target, Trophy, Users } from "lucide-react";
 import Image from "next/image";
-import game from "../../../../public/image/hero-game.png";
+import { useRouter } from "next/navigation"; 
 
 const GameCard = ({
   title,
@@ -16,6 +16,8 @@ const GameCard = ({
   difficulty,
   completedBy,
   onPlay,
+  icon,
+  linkgame,
   isCompleted = false,
 }) => {
   const difficultyColors = {
@@ -24,24 +26,26 @@ const GameCard = ({
     Sulit: "bg-red-100 text-red-700 border-red-200",
   };
 
+  const router = useRouter();
+
   return (
     <Card className="group relative max-w-screen md:min-w-md overflow-hidden backdrop-blur-md bg-white/70 hover:bg-white/90 border border-pink-200 shadow-md rounded-xl transition-all duration-500 hover:shadow-xl hover:-translate-y-1">
       {/* Gradient background floating effect */}
       <div className="absolute inset-0 bg-gradient-to-br from-pink-100 via-transparent to-pink-200 opacity-50 group-hover:opacity-70 transition-opacity duration-500" />
 
       <CardHeader className="relative z-10">
-        <div className="flex items-start justify-between">
+        <div className="flex items-center sm:items-start justify-between">
           <CardTitle className="text-lg font-bold text-gray-900 group-hover:text-pink-600 transition-colors">
             {title}
           </CardTitle>
-          <Image src={game} width={40} height={40} alt="game"></Image>
+          <Image src={icon} width={100} height={100} alt="game"></Image>
         </div>
       </CardHeader>
 
       <CardContent className="relative z-10 space-y-4">
-        <p className="text-gray-600 leading-relaxed">{description}</p>
+        <p className="text-gray-600 leading-relaxed hidden sm:block">{description}</p>
 
-        <div className="flex flex-wrap gap-2">
+        <div className="flex gap-2">
           <Badge className={difficultyColors[difficulty]}>
             <Target className="h-3 w-3 mr-1" />
             {difficulty}
@@ -67,7 +71,7 @@ const GameCard = ({
         </div>
 
         <EnhancedButton
-          onClick={()=> onPlay && window.open("/mini-game/memory", "_blank")}
+          onClick={()=> router.push(`${linkgame}`) && onPlay()}
           disabled={isCompleted}
           variant={isCompleted ? "ghost" : "default"}
           size="lg"

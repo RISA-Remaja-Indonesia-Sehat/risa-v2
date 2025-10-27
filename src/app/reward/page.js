@@ -1,7 +1,7 @@
 'use client';
 
 import Image from "next/image";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from "next/link";
 import RewardGrid from '../components/reward/RewardGrid';
 import ExchangeHistory from '../components/reward/ExchangeHistory';
@@ -11,50 +11,31 @@ import useStickers from '../store/useStickers';
 import useExchangeHistory from '../store/useExchangeHistory';
 
 export default function RewardPage() {
-  const { stickers, deductStickers } = useStickers();
+  const { stickers, deductStickers,initStickers } = useStickers();
+  
+  useEffect(() => {
+    initStickers();
+  }, [initStickers]);
   const { addExchange } = useExchangeHistory();
   const [selectedReward, setSelectedReward] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showScratchModal, setShowScratchModal] = useState(false);
   const [voucherCode, setVoucherCode] = useState('');
+  const [ rewards, setRewards] = useState([]);
 
-  const rewards = [
-    {
-      id: 1,
-      title: "Voucher Laurier Rp 10.000",
-      cost: 150,
-      image: "/image/Laurier.png",
-      description: "Voucher khusus produk Laurier di Official Store Shopee PT Kao Indonesia"
-    },
-    {
-      id: 2,
-      title: "Keychain RISA Eksklusif",
-      cost: 150,
-      image: "/image/keychain.png",
-      description: "Gantungan kunci eksklusif RISA dengan desain cantik"
-    },
-    {
-      id: 3,
-      title: "Notebook RISA Premium",
-      cost: 400,
-      image: "/image/notebook.png",
-      description: "Buku catatan premium dengan cover RISA yang stylish"
-    },
-    {
-      id: 4,
-      title: "Tote Bag RISA Limited",
-      cost: 700,
-      image: "/image/totebag.png",
-      description: "Tas tote bag limited edition dengan logo RISA"
-    },
-    {
-      id: 5,
-      title: "Kipas RISA Cantik",
-      cost: 200,
-      image: "/image/kipas.png",
-      description: "Kipas cantik dengan desain RISA yang praktis dan stylish"
-    },
-  ];
+  useEffect(() => {
+    const fetchRewards = async () => {
+      try {
+        const response = await fetch('https://server-risa.vercel.app/api/reward');
+        const data = await response.json();
+        setRewards(data.data);
+      } catch (error) {
+        console.error('Error fetching rewards:', error);
+      }
+    };
+
+    fetchRewards();
+  }, []);
 
   const handleExchange = (reward) => {
     if (stickers >= reward.cost) {
@@ -72,14 +53,24 @@ export default function RewardPage() {
     return result;
   };
 
-  const confirmExchange = () => {
+  const confirmExchange = async () => {
     if (selectedReward) {
       const newVoucherCode = generateVoucherCode();
-      deductStickers(selectedReward.cost);
-      setShowConfirmModal(false);
-      setShowScratchModal(true);
-      setVoucherCode(newVoucherCode);
-      addExchange(selectedReward, newVoucherCode);
+      console.log('Generated voucher code:', newVoucherCode);
+      console.log('Selected reward:', selectedReward);
+      
+      const result = await addExchange(selectedReward, newVoucherCode);
+      console.log('Exchange result:', result);
+      
+      if (result.success) {
+        await deductStickers(selectedReward.cost);
+        setShowConfirmModal(false);
+        setShowScratchModal(true);
+        setVoucherCode(newVoucherCode);
+      } else {
+        console.log('Exchange failed:', result.error);
+        alert(`Gagal menyimpan riwayat penukaran: ${result.error}`);
+      }
     }
   };
 
@@ -104,7 +95,7 @@ export default function RewardPage() {
             Tukar Stiker Digital
           </h1>
           <p className="text-gray-600 text-lg mb-6">
-            Tukarkan stiker digitalmu dengan voucher Laurier Official Store!
+            Tukarkan stiker digitalmu dengan item favoritmu!
           </p>
           
           {/* User Stickers Display */}
@@ -156,7 +147,7 @@ export default function RewardPage() {
                 <span className="text-2xl">3️⃣</span>
               </div>
               <h3 className="font-bold text-[#382b22] mb-2">Terima Voucher</h3>
-              <p className="text-gray-600 text-sm">Voucher akan dikirim ke email atau nomor HP yang terdaftar</p>
+              <p className="text-gray-600 text-sm">Kode voucher akan muncul ketika digosok</p>
             </div>
           </div>
         </div>
