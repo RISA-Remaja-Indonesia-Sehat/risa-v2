@@ -10,7 +10,6 @@ import {
 } from '@dnd-kit/core';
 import confetti from 'canvas-confetti';
 import { ArrowBigLeft } from 'lucide-react';
-// Asumsi path komponen sudah benar
 import DraggableStatement from '../../components/games/DraggableStatement'; 
 import DroppableZone from '../../components/games/DroppableZone'; 
 import { gsap } from 'gsap';
@@ -105,7 +104,7 @@ export default function MythFactGame() {
         };
 
         const finalData = {
-            score: answersLog.current.filter(a => a.isCorrect).length,
+            score: answersLog.current.filter(a => a.isCorrect).length*20,
             correct: answersLog.current.filter(a => a.isCorrect).length,
             wrong: answersLog.current.filter(a => !a.isCorrect).length,
             duration: formatDuration(duration),
@@ -116,7 +115,7 @@ export default function MythFactGame() {
             }))
         };
 
-        localStorage.setItem('quizResult', JSON.stringify(finalData));
+        localStorage.setItem('gameResult', JSON.stringify(finalData));
         
      
         console.log("Game Ended. Redirecting to result page...");
