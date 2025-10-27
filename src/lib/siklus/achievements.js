@@ -15,14 +15,14 @@ function normalizeDateKey(value) {
     return null;
   }
   const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
 }
 
 function countUniqueLogsInCurrentMonth(moodLogs = []) {
   const today = new Date();
-  const targetPrefix = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}`;
+  const targetPrefix = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
   const uniqueDates = new Set();
 
   moodLogs.forEach((log = {}) => {
@@ -52,29 +52,29 @@ function hasCompletedOnboarding(data = {}) {
 // Achievement definitions
 export const ACHIEVEMENTS = [
   {
-    id: "streak_7",
-    title: "7-Day Streak",
-    description: "Catat mood 7 hari berturut-turut.",
-    condition: (data) => Number.isInteger(data.streak) && data.streak >= 7
+    id: 'streak_7',
+    title: 'Konsisten Seminggu',
+    description: 'Catat mood 7 hari berturut-turut. Mantap, teruskan.',
+    condition: (data) => Number.isInteger(data.streak) && data.streak >= 7,
   },
   {
-    id: "streak_30",
-    title: "30-Day Club",
-    description: "Pertahankan streak selama 30 hari penuh.",
-    condition: (data) => Number.isInteger(data.streak) && data.streak >= 30
+    id: 'streak_30',
+    title: 'Sudah Satu Bulan',
+    description: 'Keren! Mempertahankan streak selama 30 hari penuh.',
+    condition: (data) => Number.isInteger(data.streak) && data.streak >= 30,
   },
   {
-    id: "cycle_predictor",
-    title: "Cycle Predictor Pro",
-    description: "Lengkapi data onboarding untuk bantu prediksi siklus.",
-    condition: (data) => hasCompletedOnboarding(data)
+    id: 'cycle_predictor',
+    title: 'Ahli Prediksi!',
+    description: 'Kamu sudah melengkapi data menstruasi pertamamu. Selamat! Kamu sekarang bisa mengunduh laporan siklusmu.',
+    condition: (data) => hasCompletedOnboarding(data),
   },
   {
-    id: "monthly_mood_master",
-    title: "Monthly Mood Master",
-    description: "Catat minimal 20 hari mood dalam bulan ini.",
-    condition: (data) => countUniqueLogsInCurrentMonth(data.moodLogs) >= 20
-  }
+    id: 'monthly_mood_master',
+    title: 'Master Jurnaling',
+    description: 'Kamu sudah mencatat jurnal perasaanmu lebih dari 20 hari dalam bulan ini loh.',
+    condition: (data) => countUniqueLogsInCurrentMonth(data.moodLogs) >= 20,
+  },
 ];
 
 /**

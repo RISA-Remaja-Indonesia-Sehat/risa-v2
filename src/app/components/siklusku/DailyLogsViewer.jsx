@@ -12,10 +12,10 @@ const FLOW_LABELS = {
 };
 
 const MOOD_LABELS = {
-  happy: { label: 'Senang', emoji: '😊' },
-  sad: { label: 'Sedih', emoji: '😢' },
-  angry: { label: 'Kesal', emoji: '😠' },
-  anxious: { label: 'Cemas', emoji: '😰' },
+  senang: { label: 'Senang', emoji: '😊' },
+  sedih: { label: 'Sedih', emoji: '😢' },
+  kesal: { label: 'Kesal', emoji: '😠' },
+  cemas: { label: 'Cemas', emoji: '😰' },
   normal: { label: 'Biasa aja', emoji: '😐' },
 };
 
@@ -28,100 +28,100 @@ const SYMPTOM_LABELS = {
   acne: { label: 'Jerawatan', emoji: '😔' },
 };
 
-function formatDate(dateStr) {
-  const date = new Date(dateStr);
-  return date.toLocaleDateString('id-ID', {
+const toJakartaDate = (value) =>
+  new Intl.DateTimeFormat('id-ID', {
+    timeZone: 'Asia/Jakarta',
     weekday: 'long',
     year: 'numeric',
     month: 'long',
     day: 'numeric',
-  });
-}
+  }).format(new Date(value));
 
 export default function DailyLogsViewer() {
-  const dailyLogs = useSiklusStore((state) => state.dailyLogs || []);
+  const dailyNotes = useSiklusStore((state) => state.dailyNotes);
 
-  const recentLogs = useMemo(() => {
-    return dailyLogs.slice(0, 7); // Show last 7 entries
-  }, [dailyLogs]);
+  const recentNotes = useMemo(() => (Array.isArray(dailyNotes) ? dailyNotes.slice(0, 7) : []), [dailyNotes]);
 
-  if (!recentLogs.length) {
+  if (!recentNotes.length) {
     return (
-      <div className="bg-white rounded-3xl shadow-sm border border-pink-100 p-6 text-center">
-        <Calendar className="w-12 h-12 text-pink-300 mx-auto mb-3" />
-        <h3 className="text-lg font-semibold text-slate-800 mb-2">Belum Ada Jurnal</h3>
+      <div className="rounded-3xl border border-pink-100 bg-white p-6 text-center shadow-sm">
+        <Calendar className="mx-auto mb-3 h-12 w-12 text-pink-300" />
+        <h3 className="mb-2 text-lg font-semibold text-slate-800">Belum Ada Jurnal</h3>
         <p className="text-sm text-slate-600">Mulai catat jurnal harianmu untuk melihat pola dan tren</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-3xl shadow-sm border border-pink-100 p-6">
-      <div className="flex items-center gap-2 mb-4">
-        <Calendar className="w-5 h-5 text-pink-500" />
+    <div className="rounded-3xl border border-pink-100 bg-white p-6 shadow-sm">
+      <div className="mb-4 flex items-center gap-2">
+        <Calendar className="h-5 w-5 text-pink-500" />
         <h3 className="text-lg font-semibold text-slate-800">Riwayat jurnal harianku</h3>
       </div>
 
       <div className="space-y-4">
-        {recentLogs.map((log, index) => (
-          <div key={`${log.date}-${index}`} className="border border-pink-100 rounded-2xl p-4">
-            <div className="flex items-center justify-between mb-3">
-              <h4 className="font-medium text-slate-800">{formatDate(log.date)}</h4>
-              {log.mood && MOOD_LABELS[log.mood] && (
-                <div className="flex items-center gap-2 bg-pink-50 px-3 py-1 rounded-full">
-                  <span>{MOOD_LABELS[log.mood].emoji}</span>
-                  <span className="text-sm font-medium text-pink-700">{MOOD_LABELS[log.mood].label}</span>
-                </div>
-              )}
-            </div>
+        {recentNotes.map((note) => {
+          const moodMeta = typeof note.mood === 'string' ? MOOD_LABELS[note.mood] : null;
+          const flowMeta = note.flowLevel !== undefined && FLOW_LABELS[note.flowLevel] ? FLOW_LABELS[note.flowLevel] : null;
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-              {/* Flow */}
-              {log.flow && FLOW_LABELS[log.flow] && (
-                <div className="flex items-center gap-2">
-                  <Droplets className="w-4 h-4 text-pink-500" />
-                  <span className="text-slate-600">
-                    {FLOW_LABELS[log.flow].emoji} {FLOW_LABELS[log.flow].label}
+          return (
+            <article key={`${note.date}-${note.mood || 'log'}`} className="rounded-2xl border border-pink-100 p-4">
+              <header className="mb-3 flex items-center justify-between">
+                <h4 className="font-medium text-slate-800">{toJakartaDate(note.date)}</h4>
+                {moodMeta ? (
+                  <span className="flex items-center gap-2 rounded-full bg-pink-50 px-3 py-1 text-sm font-medium text-pink-700">
+                    <span>{moodMeta.emoji}</span>
+                    <span>{moodMeta.label}</span>
+                  </span>
+                ) : null}
+              </header>
+
+              <dl className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-2">
+                {flowMeta ? (
+                  <div className="flex items-center gap-2">
+                    <Droplets className="h-4 w-4 text-pink-500" />
+                    <span className="text-slate-600">
+                      {flowMeta.emoji} {flowMeta.label}
+                    </span>
+                  </div>
+                ) : null}
+
+                {Array.isArray(note.symptoms) && note.symptoms.length > 0 ? (
+                  <div className="flex items-start gap-2">
+                    <Heart className="mt-0.5 h-4 w-4 text-pink-500" />
+                    <div className="flex flex-wrap gap-1">
+                      {note.symptoms.map((symptomId) => {
+                        const symptom = SYMPTOM_LABELS[symptomId];
+                        return symptom ? (
+                          <span key={symptomId} className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2 py-1 text-xs text-slate-600">
+                            <span>{symptom.emoji}</span>
+                            <span>{symptom.label}</span>
+                          </span>
+                        ) : null;
+                      })}
+                    </div>
+                  </div>
+                ) : null}
+              </dl>
+
+              {note.story ? (
+                <div className="mt-3 border-t border-pink-100 pt-3">
+                  <span className="flex items-start gap-2">
+                    <MessageCircle className="mt-0.5 h-4 w-4 text-pink-500" />
+                    <p className="text-sm italic text-slate-600">"{note.story}"</p>
                   </span>
                 </div>
-              )}
-
-              {/* Symptoms */}
-              {log.symptoms && log.symptoms.length > 0 && (
-                <div className="flex items-start gap-2">
-                  <Heart className="w-4 h-4 text-pink-500 mt-0.5" />
-                  <div className="flex flex-wrap gap-1">
-                    {log.symptoms.map((symptomId) => {
-                      const symptom = SYMPTOM_LABELS[symptomId];
-                      return symptom ? (
-                        <span key={symptomId} className="text-xs bg-gray-100 px-2 py-1 rounded-full">
-                          {symptom.emoji} {symptom.label}
-                        </span>
-                      ) : null;
-                    })}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Story */}
-            {log.story && (
-              <div className="mt-3 pt-3 border-t border-pink-100">
-                <div className="flex items-start gap-2">
-                  <MessageCircle className="w-4 h-4 text-pink-500 mt-0.5" />
-                  <p className="text-sm text-slate-600 italic">"{log.story}"</p>
-                </div>
-              </div>
-            )}
-          </div>
-        ))}
+              ) : null}
+            </article>
+          );
+        })}
       </div>
 
-      {dailyLogs.length > 7 && (
-        <div className="mt-4 text-center">
-          <p className="text-sm text-slate-500">Menampilkan 7 jurnal terakhir dari {dailyLogs.length} total jurnal</p>
-        </div>
-      )}
+      {dailyNotes.length > 7 ? (
+        <footer className="mt-4 text-center">
+          <p className="text-sm text-slate-500">Menampilkan 7 jurnal terakhir dari {dailyNotes.length} total jurnal</p>
+        </footer>
+      ) : null}
     </div>
   );
 }

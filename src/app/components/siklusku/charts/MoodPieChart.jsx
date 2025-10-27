@@ -7,10 +7,10 @@ const EPS = 1e-6;
 
 // Default colors if none are provided via `colors` prop
 const DEFAULT_COLORS = {
-  happy: '#facc15', // yellow-400
-  sad: '#60a5fa', // blue-400
-  angry: '#f87171', // red-400
-  anxious: '#a78bfa', // violet-400
+  senang: '#facc15', // yellow-400
+  sedih: '#60a5fa', // blue-400
+  kesal: '#f87171', // red-400
+  cemas: '#a78bfa', // violet-400
   normal: '#94a3b8', // slate-400
 };
 
