@@ -244,7 +244,9 @@ export default function ResultPage() {
     const correctValue = isMemoryGame ? resultData.matchedCount : resultData.correct;
     // Perhatikan: resultData.moves hanya ada di Memory Game
     const wrongValue = isMemoryGame ? resultData.moves : resultData.wrong; 
-    const scoreValue = isMemoryGame ? resultData.points : resultData.score * 20; 
+    const scoreValue = isMemoryGame
+        ? (Number(resultData.points ?? 0))
+        : (Number(resultData.score ?? resultData.points ?? 0) * 20); 
     const correctIcon = isMemoryGame ? Target : CheckCircle;
     const wrongIcon = isMemoryGame ? Repeat : XCircle;
     console.log('Result Data:', scoreValue, correctValue, wrongValue);
