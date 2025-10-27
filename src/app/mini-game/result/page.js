@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { gsap } from 'gsap'; 
 import html2canvas from 'html2canvas'; 
@@ -43,7 +43,7 @@ const MemoryDetailCard = ({ pair, index }) => (
     </div>
 );
 
-// Card untuk detail jawaban Quiz/MythFact (Pertanyaan)
+// Card untuk detail jawaban Quiz/mitosfakta (Pertanyaan)
 const QuizDetailCard = ({ answer, index }) => (
     <div 
         className={`p-4 md:p-6 rounded-xl shadow-lg transition-all transform hover:shadow-xl hover:-translate-y-0.5
@@ -90,55 +90,99 @@ export default function ResultPage() {
             completeAudioRef.current = new Audio('/audio/complete.mp3');
         }
 
-        // PERBAIKAN BUG: Gunakan kunci 'gameResult'
-        const storedResult = localStorage.getItem('gameResult'); 
-        
-        if (storedResult) {
-            const data = JSON.parse(storedResult);
+        // Coba ambil data dari beberapa kunci: 'gameResult' (memory) atau 'quizResult' (drag-drop)
+        const rawGame = typeof window !== 'undefined' ? localStorage.getItem('gameResult') : null;
+        const rawQuiz = typeof window !== 'undefined' ? localStorage.getItem('quizResult') : null;
+        console.log(rawQuiz);
+
+        let parsed = null;
+        let source = null; // 'game' atau 'quiz'
+
+        if (rawGame) {
+            try {
+                parsed = JSON.parse(rawGame);
+                source = 'game';
+            } catch (err) {
+                console.warn('Gagal parse gameResult:', err);
+            }
+        } else if (rawQuiz) {
+            try {
+                parsed = JSON.parse(rawQuiz);
+                source = 'quiz';
+            } catch (err) {
+                console.warn('Gagal parse quizResult:', err);
+            }
+        }
+
+        if (parsed) {
+            // Jika data berasal dari drag-drop (quiz), normalisasi struktur ke format yang sama
+            let data = parsed;
+            if (source === 'quiz') {
+                data = {
+                    gameType: 'quiz',
+                    // skor/points: beberapa game menggunakan 'score' atau 'points'
+                    score: parsed.score ?? parsed.points ?? 0,
+                    correct: parsed.correct ?? (Array.isArray(parsed.answers) ? parsed.answers.filter(a => a.isCorrect).length : 0),
+                    wrong: parsed.wrong ?? (Array.isArray(parsed.answers) ? parsed.answers.filter(a => !a.isCorrect).length : 0),
+                    // durasi mungkin disimpan sebagai string 'mm:ss' di quiz
+                    time: parsed.duration ?? parsed.time ?? parsed.timePlayed ?? parsed.timeLeft ?? '',
+                    // Pastikan answers tersedia dan memiliki shape yang diharapkan oleh tampilan
+                    answers: Array.isArray(parsed.answers) ? parsed.answers.map(a => ({
+                        statement: a.statement ?? a.term ?? '',
+                        userAnswer: a.userAnswer ?? a.choice ?? '',
+                        isCorrect: !!a.isCorrect,
+                        correctAnswer: a.correctAnswer ?? a.correct ?? null
+                    })) : [],
+                    // fallback fields untuk kompatibilitas
+                    points: parsed.points ?? parsed.score ?? 0,
+                    moves: parsed.moves ?? null,
+                    matchedCount: parsed.matchedCount ?? null
+                };
+            }
+
             setResultData(data);
             setLoading(false);
-            
-            completeAudioRef.current?.play().catch(err => console.warn("Autoplay diblokir:", err));
+
+            completeAudioRef.current?.play().catch(err => console.warn('Autoplay diblokir:', err));
 
             // Animasi GSAP
             setTimeout(() => {
-                gsap.to("#score-circle", {
-                    scale: 1, 
-                    opacity: 1, 
-                    duration: 1, 
-                    ease: "back.out(1.7)"
+                gsap.to('#score-circle', {
+                    scale: 1,
+                    opacity: 1,
+                    duration: 1,
+                    ease: 'back.out(1.7)'
                 });
-                gsap.fromTo("#stats > div", { 
-                    y: 20, 
-                    opacity: 0 
-                }, { 
-                    y: 0, 
-                    opacity: 1, 
-                    duration: 0.5, 
-                    stagger: 0.2, 
-                    delay: 0.5 
+                gsap.fromTo('#stats > div', {
+                    y: 20,
+                    opacity: 0
+                }, {
+                    y: 0,
+                    opacity: 1,
+                    duration: 0.5,
+                    stagger: 0.2,
+                    delay: 0.5
                 });
-                gsap.to("#back-btn", { opacity: 1, duration: 0.5, delay: 0.2 });
-                gsap.to("#result-list", { opacity: 1, duration: 0.8, delay: 1 });
-                
+                gsap.to('#back-btn', { opacity: 1, duration: 0.5, delay: 0.2 });
+                gsap.to('#result-list', { opacity: 1, duration: 0.8, delay: 1 });
+
                 // Tampilkan confetti
-                setShowConfetti(true); 
+                setShowConfetti(true);
             }, 100);
 
             const timeoutId = setTimeout(() => {
                 // Opsional: router.push('/');
             }, DURATION_TO_REDIRECT);
-            
+
             return () => {
                 clearTimeout(timeoutId);
                 completeAudioRef.current?.pause();
                 completeAudioRef.current = null;
             };
-
         } else {
             setLoading(false);
             // Redirect jika tidak ada data
-            setTimeout(() => router.push('/mini-game/'), 500); 
+            setTimeout(() => router.push('/mini-game'), 500);
         }
     }, [router]);
 
@@ -184,7 +228,7 @@ export default function ResultPage() {
              <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-6">
                 <p className="text-xl font-semibold text-red-500 mb-4">Data Hasil Tidak Ditemukan 😔</p>
                 <button
-                    onClick={() => router.push('/mini-game/')}
+                    onClick={() => router.push('/mini-game')}
                     className="flex items-center px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition"
                 >
                     <ChevronLeft className="w-5 h-5 mr-1" /> Kembali ke Daftar Game
@@ -200,10 +244,10 @@ export default function ResultPage() {
     const correctValue = isMemoryGame ? resultData.matchedCount : resultData.correct;
     // Perhatikan: resultData.moves hanya ada di Memory Game
     const wrongValue = isMemoryGame ? resultData.moves : resultData.wrong; 
-    const scoreValue = isMemoryGame ? resultData.points : resultData.score; 
+    const scoreValue = isMemoryGame ? resultData.points : resultData.score * 20; 
     const correctIcon = isMemoryGame ? Target : CheckCircle;
     const wrongIcon = isMemoryGame ? Repeat : XCircle;
-
+    console.log('Result Data:', scoreValue, correctValue, wrongValue);
 
     return (
         <div className="relative min-h-screen bg-gradient-to-br from-pink-100 via-white to-gray-50">
@@ -227,8 +271,8 @@ export default function ResultPage() {
                     
                     {/* Header Score */}
                     <div className="mb-8">
-                        <h1 className="text-3xl md:text-4xl font-extrabold text-pink-600 mb-2">🎉 Hasil Akhir Game 🎉</h1>
-                        <p className="text-gray-500 mb-8">Selamat! Ini adalah performa Anda pada **{isMemoryGame ? 'Memory Game' : 'Quiz Mitos/Fakta'}**.</p>
+                        <h1 className="text-3xl md:text-4xl font-extrabold text-pink-600 mb-2">Hasil Akhir Game</h1>
+                        <p className="text-gray-500 mb-8">{isMemoryGame ? 'Memory Game' : 'Mitos/Fakta'}</p>
                         
                         <div id="score-circle" className="w-64 h-64 mx-auto bg-gradient-to-br from-pink-400 to-rose-500 rounded-full flex flex-col items-center justify-center text-white shadow-2xl opacity-0 transform scale-0">
                             <span className="text-lg font-medium opacity-80">{isMemoryGame ? 'Poin' : 'Score'}</span>
@@ -289,12 +333,12 @@ export default function ResultPage() {
                         >
                             <Download className="w-5 h-5" /> Download Hasil (PNG)
                         </button>
-                        <button 
+                        {/* <button 
                             onClick={() => router.push('/mini-game/')} 
                             className="flex items-center gap-2 px-6 py-3 rounded-full border border-pink-500 text-pink-500 bg-white font-semibold shadow-lg hover:bg-pink-50 transition transform hover:scale-[1.02]"
                         >
                             <Repeat className="w-5 h-5" /> Main Lagi
-                        </button>
+                        </button> */}
                     </div>
 
                 </div>

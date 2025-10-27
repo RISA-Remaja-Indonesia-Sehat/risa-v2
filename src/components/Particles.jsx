@@ -89,7 +89,7 @@ const Particles = ({
   speed = 0.1,
   particleColors,
   moveParticlesOnHover = false,
-  particleHoverFactor = 1,
+  particleHoverfaktaor = 1,
   alphaParticles = false,
   particleBaseSize = 100,
   sizeRandomness = 1,
@@ -188,8 +188,8 @@ const Particles = ({
       program.uniforms.uTime.value = elapsed * 0.001;
 
       if (moveParticlesOnHover) {
-        particles.position.x = -mouseRef.current.x * particleHoverFactor;
-        particles.position.y = -mouseRef.current.y * particleHoverFactor;
+        particles.position.x = -mouseRef.current.x * particleHoverfaktaor;
+        particles.position.y = -mouseRef.current.y * particleHoverfaktaor;
       } else {
         particles.position.x = 0;
         particles.position.y = 0;
@@ -222,7 +222,7 @@ const Particles = ({
     particleSpread,
     speed,
     moveParticlesOnHover,
-    particleHoverFactor,
+    particleHoverfaktaor,
     alphaParticles,
     particleBaseSize,
     sizeRandomness,
