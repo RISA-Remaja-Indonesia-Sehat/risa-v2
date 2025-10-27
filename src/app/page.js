@@ -14,17 +14,17 @@ export default function Home() {
             <div className="grid grid-cols-2 lg:grid-cols-2 text-center gap-8 max-w-4xl mx-auto">
               <div className="p-6 hover:-translate-y-2 duration-300 ease-out">
                 <div className="w-fit mx-auto mb-4">
-                  <Image width={80} height={80} src="/image/hero-privacy.png" alt="Keamanan Data" className="mx-auto md:w-32 md:h-32"/>
-                </div>
-                <h3 className="font-semibold text-gray-800 mb-3 text-lg">Data Aman</h3>
-                <p className="text-sm text-gray-600 leading-6">Semua data di platform ini dijamin aman serta terjaga kerahasiaannya</p>
-              </div>
-              <div className="p-6 hover:-translate-y-2 duration-300 ease-out">
-                <div className="w-fit mx-auto mb-4">
                   <Image width={80} height={80} src="/image/hero-game.png" alt="Game Edukatif" className="mx-auto md:w-32 md:h-32"/>
                 </div>
                 <h3 className="font-semibold text-gray-800 mb-3 text-lg">Game Edukatif</h3>
                 <p className="text-sm text-gray-600 leading-6">Game seru untuk uji pengetahuanmu sekaligus nambah wawasan baru</p>
+              </div>
+              <div className="p-6 hover:-translate-y-2 duration-300 ease-out">
+                <div className="w-fit mx-auto mb-4">
+                  <Image width={80} height={80} src="/image/hero-privacy.png" alt="Keamanan Data" className="mx-auto md:w-32 md:h-32"/>
+                </div>
+                <h3 className="font-semibold text-gray-800 mb-3 text-lg">AI RISA</h3>
+                <p className="text-sm text-gray-600 leading-6">Fitur AI guna memberikan rekomendasi artikel edukatif sesuai dengan kebutuhanmu</p>
               </div>
               <div className="p-6 hover:-translate-y-2 duration-300 ease-out">
                 <div className="w-fit mx-auto mb-4">
