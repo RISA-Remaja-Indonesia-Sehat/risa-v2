@@ -392,12 +392,7 @@ export default function ResultPage() {
             >
               <Download className="w-5 h-5 md:w-6 md:h-6" /> BAGIKAN PRESTASIMU (PNG)
             </button>
-            <button
-              onClick={() => router.push('/mini-game/')}
-              className="flex items-center justify-center gap-2 px-6 py-3 rounded-full border-2 border-pink-500 text-pink-500 bg-white/80 font-semibold text-base md:text-lg shadow-md hover:bg-pink-50 transition transform hover:scale-[1.03] min-w-[200px]"
-            >
-              <Repeat className="w-5 h-5 md:w-6 md:h-6" /> ULANGI CHALLENGE!
-            </button>
+          
           </div>
 
           {/* Detail Jawaban (Bedah Hasil) */}
