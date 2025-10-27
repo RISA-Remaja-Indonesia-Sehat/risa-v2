@@ -11,7 +11,7 @@ import useStickers from '../store/useStickers';
 import useExchangeHistory from '../store/useExchangeHistory';
 
 export default function RewardPage() {
-  const { stickers, deductStickers, updateStickersToServer, initStickers } = useStickers();
+  const { stickers, deductStickers,initStickers } = useStickers();
   
   useEffect(() => {
     initStickers();
@@ -63,9 +63,7 @@ export default function RewardPage() {
       console.log('Exchange result:', result);
       
       if (result.success) {
-        deductStickers(selectedReward.cost);
-        const newStickerCount = stickers - selectedReward.cost;
-        await updateStickersToServer(newStickerCount);
+        await deductStickers(selectedReward.cost);
         setShowConfirmModal(false);
         setShowScratchModal(true);
         setVoucherCode(newVoucherCode);
