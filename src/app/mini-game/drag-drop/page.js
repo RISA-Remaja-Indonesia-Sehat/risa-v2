@@ -264,6 +264,9 @@ export default function MythFactGame() {
     }, []); 
 
  
+    const handleBack = () => {
+         alert("Kembali ke Halaman Game (Simulasi navigasi)");
+    };
 
     return (
         <DndContext 
@@ -285,6 +288,13 @@ export default function MythFactGame() {
                     <div className="flex items-center gap-4 mb-6">
                        
                        <BackButton />
+                        <button
+                            id="backBtn"
+                            className="w-12 h-12 flex items-center justify-center rounded-full bg-pink-400 text-white shadow-md hover:shadow-lg hover:bg-pink-500 transition-all duration-300 transform hover:-translate-x-1"
+                            onClick={handleBack} 
+                        >
+                           <ArrowBigLeft size={24} />
+                        </button>
 
                         <div>
                             <h1 className="text-3xl font-extrabold text-pink-500 drop-shadow-md">
