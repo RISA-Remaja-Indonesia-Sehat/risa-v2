@@ -5,34 +5,47 @@ import { useState, useEffect } from 'react';
 import CustomButton from "../components/ui/CustomButton";
 import Link from "next/link";
 import useStickers from '../store/useStickers';
+import useMissions from '../store/useMissions';
+
 
 export default function MissionPage() {
-  const { stickers, addStickers } = useStickers();
+  const { stickers } = useStickers();
+  const { initMissions, getCombinedMissions, startMission } = useMissions();
   const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
-  const [missions, setMissions] = useState([
-    { id: 1, title: "Baca Artikel", reward: 1, completed: false, progress: 0, target: 2, icon: "📚" },
-    { id: 2, title: "Main Game", reward: 1, completed: false, progress: 0, target: 1, icon: "🎮" },
-    { id: 3, title: "Isi Siklusku", reward: 1, completed: false, progress: 0, target: 1, icon: "📅" },
-    { id: 4, title: "Share ke Teman", reward: 1, completed: false, progress: 0, target: 2, icon: "💕" }
-  ]);
+  const [missions, setMissions] = useState([]);
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    const loadData = async () => {
+      console.log('Loading mission data');
+      setLoading(true);
+      await initMissions(); // Load daily logs (sudah include mission data)
+      const combined = getCombinedMissions();
+      setMissions(combined);
+      setLoading(false);
+    };
+    loadData();
+  }, [initMissions, getCombinedMissions]);
+
+  // Countdown timer (unchanged)
   useEffect(() => {
     const calculateTimeLeft = () => {
       const now = new Date();
       const tomorrow = new Date(now);
       tomorrow.setDate(tomorrow.getDate() + 1);
       tomorrow.setHours(0, 0, 0, 0);
-      
-      const difference = tomorrow - now;
-      
-      if (difference > 0) {
-        setTimeLeft({
-          hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-          minutes: Math.floor((difference / 1000 / 60) % 60),
-          seconds: Math.floor((difference / 1000) % 60)
-        });
-      }
-    };
+
+        const difference = tomorrow - now;
+        
+        if (difference > 0) {
+          setTimeLeft({
+            hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+            minutes: Math.floor((difference / 1000 / 60) % 60),
+            seconds: Math.floor((difference / 1000) % 60)
+          });
+        }
+      };
+
 
     calculateTimeLeft();
     const timer = setInterval(calculateTimeLeft, 1000);
@@ -40,24 +53,30 @@ export default function MissionPage() {
     return () => clearInterval(timer);
   }, []);
 
-  const completeMission = (missionId) => {
-    setMissions(prev => prev.map(mission => {
-      if (mission.id === missionId && !mission.completed) {
-        const newProgress = mission.progress + 1;
-        const isCompleted = newProgress >= mission.target;
-        
-        if (isCompleted) {
-          addStickers(mission.reward);
-        }
-        
-        return {
-          ...mission,
-          progress: newProgress,
-          completed: isCompleted
-        };
-      }
-      return mission;
-    }));
+  const handleMissionClick = async (mission) => {
+    if (mission.status === 'idle') {
+      await startMission(mission.id); // Update status
+      setMissions(prev => prev.map(m => 
+        m.id === mission.id ? { ...m, status: 'in_progress' } : m
+      ));
+      // Redirect based on mission
+      if (mission.id === 1) window.location.href = '/article';
+      if (mission.id === 4) window.location.href = '/article';
+      if (mission.id === 5) window.location.href = '/article';
+      // ... (add others as needed)
+    }
+  };
+
+  // Button helpers (unchanged)
+  const getButtonText = (mission) => {
+    if (mission.completed) return 'Selesai';
+    if (mission.status === 'in_progress') return 'Dikerjakan';
+    return 'Mulai';
+  };
+  const getButtonClass = (mission) => {
+    if (mission.completed) return 'bg-green-500 text-white';
+    if (mission.status === 'in_progress') return 'bg-transparent border-2 border-pink-500 text-pink-500';
+    return 'bg-pink-500 text-white hover:shadow-lg hover:scale-105';
   };
 
   return (
@@ -73,6 +92,7 @@ export default function MissionPage() {
                 width={120}
                 height={120}
                 className="drop-shadow-lg"
+                priority={true}
               />
               <h1 className="text-xl md:text-3xl font-bold">
                 {stickers} Stiker
@@ -106,56 +126,69 @@ export default function MissionPage() {
           </div>
 
           {/* Mission List */}
-          <div className="grid gap-4">
-            {missions.map((mission) => (
-              <div key={mission.id} className={`p-4 sm:p-6 rounded-2xl border-2 transition-all duration-300 ${
-                mission.completed 
-                  ? 'bg-gradient-to-r from-green-50 to-emerald-50 border-green-200' 
-                  : 'bg-gradient-to-r from-pink-50 to-purple-50 border-pink-200 hover:shadow-lg'
-              }`}>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3 sm:gap-4">
-                    <div className="text-xl sm:text-3xl">{mission.icon}</div>
-                    <div className="flex-1">
-                      <h3 className="font-bold text-[#382b22] text-sm sm:text-lg">{mission.title}</h3>
-                      <div className="flex items-center gap-2 mt-1">
-                        <div className="bg-white rounded-full px-2 sm:px-3 py-1 border border-pink-200">
-                          <span className="text-xs sm:text-sm text-pink-600 font-medium">
-                            {mission.progress}/{mission.target}
-                          </span>
-                        </div>
-                        <span className="text-xs sm:text-sm text-gray-600">
-                          + {mission.reward} stiker
+      <div className="grid gap-4">
+        {loading ? (
+          // Loading skeleton
+          Array.from({ length: 2 }).map((_, index) => (
+            <div key={index} className="p-4 sm:p-6 rounded-2xl border-2 bg-gray-100 animate-pulse">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3 sm:gap-4">
+                  <div className="w-12 h-12 bg-gray-300 rounded"></div>
+                  <div>
+                    <div className="w-24 h-4 bg-gray-300 rounded mb-2"></div>
+                    <div className="w-16 h-3 bg-gray-300 rounded"></div>
+                  </div>
+                </div>
+                <div className="w-16 h-8 bg-gray-300 rounded"></div>
+              </div>
+            </div>
+          ))
+        ) : (
+          missions.map((mission) => (
+            <div key={mission.id} className={`p-4 sm:p-6 rounded-2xl border-2 transition-all duration-300 ${
+              mission.completed 
+                ? 'bg-gradient-to-r from-green-50 to-emerald-50 border-green-200' 
+                : 'bg-gradient-to-r from-pink-50 to-purple-50 border-pink-200 hover:shadow-lg'
+            }`}>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3 sm:gap-4">
+                  <Image width="48" height="48" src={mission.icon} alt={mission.title} />
+                  <div className="flex-1">
+                    <h3 className="font-bold text-[#382b22] text-sm sm:text-lg">{mission.title}</h3>
+                    <div className="flex items-center gap-2 mt-1">
+                      <div className="bg-white rounded-full px-2 sm:px-3 py-1 border border-pink-200">
+                        <span className="text-xs sm:text-sm text-pink-600 font-medium">
+                          {mission.progress}/{mission.target}
                         </span>
                       </div>
+                      <span className="text-xs sm:text-sm text-gray-600">
+                        + {mission.reward} stiker
+                      </span>
                     </div>
                   </div>
-                  
-                  {mission.completed ? (
-                    <div className="bg-green-500 text-white px-3 sm:px-4 py-2 rounded-lg font-semibold text-xs sm:text-base">
-                      Selesai
-                    </div>
-                  ) : (
-                    <button 
-                      onClick={() => completeMission(mission.id)}
-                      className="bg-pink-500 text-white px-4 sm:px-6 py-2 rounded-lg font-semibold hover:shadow-lg hover:scale-105 transition-all duration-300 text-xs sm:text-base"
-                    >
-                      Mulai
-                    </button>
-                  )}
                 </div>
                 
-                {/* Progress Bar */}
-                <div className="mt-3 sm:mt-4">
-                  <div className="bg-gray-200 rounded-full h-2 overflow-hidden">
-                    <div 
-                      className="bg-pink-400 h-full transition-all duration-500 ease-out"
-                      style={{ width: `${(mission.progress / mission.target) * 100}%` }}
-                    ></div>
+                <button 
+                  onClick={() => handleMissionClick(mission)}
+                  disabled={mission.completed}
+                  className={`${getButtonClass(mission)} px-4 sm:px-6 py-2 rounded-lg font-semibold transition-all duration-300 text-xs sm:text-base disabled:cursor-not-allowed`}
+                >
+                  {getButtonText(mission)}
+                </button>
+              </div>
+                  
+                  {/* Progress Bar */}
+                  <div className="mt-3 sm:mt-4">
+                    <div className="bg-gray-200 rounded-full h-2 overflow-hidden">
+                      <div 
+                        className="bg-pink-400 h-full transition-all duration-500 ease-out"
+                        style={{ width: `${(mission.progress / mission.target) * 100}%` }}
+                      ></div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
 
         </section>

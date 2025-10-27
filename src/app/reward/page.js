@@ -11,12 +11,31 @@ import useStickers from '../store/useStickers';
 import useExchangeHistory from '../store/useExchangeHistory';
 
 export default function RewardPage() {
-  const { stickers, deductStickers } = useStickers();
+  const { stickers, deductStickers, updateStickersToServer, initStickers } = useStickers();
+  
+  useEffect(() => {
+    initStickers();
+  }, [initStickers]);
   const { addExchange } = useExchangeHistory();
   const [selectedReward, setSelectedReward] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showScratchModal, setShowScratchModal] = useState(false);
   const [voucherCode, setVoucherCode] = useState('');
+  const [ rewards, setRewards] = useState([]);
+
+  useEffect(() => {
+    const fetchRewards = async () => {
+      try {
+        const response = await fetch('https://server-risa.vercel.app/api/reward');
+        const data = await response.json();
+        setRewards(data.data);
+      } catch (error) {
+        console.error('Error fetching rewards:', error);
+      }
+    };
+
+    fetchRewards();
+  }, []);
 
   const handleExchange = (reward) => {
     if (stickers >= reward.cost) {
@@ -34,14 +53,26 @@ export default function RewardPage() {
     return result;
   };
 
-  const confirmExchange = () => {
+  const confirmExchange = async () => {
     if (selectedReward) {
       const newVoucherCode = generateVoucherCode();
-      deductStickers(selectedReward.cost);
-      setShowConfirmModal(false);
-      setShowScratchModal(true);
-      setVoucherCode(newVoucherCode);
-      addExchange(selectedReward, newVoucherCode);
+      console.log('Generated voucher code:', newVoucherCode);
+      console.log('Selected reward:', selectedReward);
+      
+      const result = await addExchange(selectedReward, newVoucherCode);
+      console.log('Exchange result:', result);
+      
+      if (result.success) {
+        deductStickers(selectedReward.cost);
+        const newStickerCount = stickers - selectedReward.cost;
+        await updateStickersToServer(newStickerCount);
+        setShowConfirmModal(false);
+        setShowScratchModal(true);
+        setVoucherCode(newVoucherCode);
+      } else {
+        console.log('Exchange failed:', result.error);
+        alert(`Gagal menyimpan riwayat penukaran: ${result.error}`);
+      }
     }
   };
 
