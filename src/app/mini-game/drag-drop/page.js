@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { 
     DndContext, 
     useSensor, 
@@ -8,8 +8,6 @@ import {
     MouseSensor, 
     TouchSensor, 
 } from '@dnd-kit/core';
-import confetti from 'canvas-confetti';
-import { ArrowBigLeft } from 'lucide-react';
 // Asumsi path komponen sudah benar
 import DraggableStatement from '../../components/games/DraggableStatement'; 
 import DroppableZone from '../../components/games/DroppableZone'; 
@@ -20,27 +18,27 @@ import BackButton from '../../components/games/BackButton';
 const statements = [
     {
         text: "Menstruasi adalah proses normal dan sehat pada wanita",
-        correct: "fact",
+        correct: "fakta",
         explanation: "Menstruasi adalah proses alami sebagai bagian dari siklus reproduksi. Tidak berbahaya dan tanda tubuh sehat."
     },
     {
         text: "Wanita yang sedang menstruasi tidak boleh berenang",
-        correct: "myth",
+        correct: "mitos",
         explanation: "Wanita tetap boleh berenang saat menstruasi, asal menggunakan perlindungan yang tepat seperti tampon atau menstrual cup."
     },
     {
         text: "Vaksin HPV dapat mencegah kanker serviks",
-        correct: "fact",
+        correct: "fakta",
         explanation: "Vaksin HPV terbukti efektif mencegah infeksi virus HPV penyebab utama kanker serviks."
     },
     {
         text: "PMS hanya ada di 'pikiran' saja",
-        correct: "myth",
+        correct: "mitos",
         explanation: "PMS nyata, disebabkan oleh perubahan hormon yang bisa memengaruhi fisik dan emosi."
     },
     {
         text: "Olahraga dapat membantu mengurangi nyeri menstruasi",
-        correct: "fact",
+        correct: "fakta",
         explanation: "Aktivitas fisik membantu melancarkan peredaran darah dan merangsang endorfin yang mengurangi rasa sakit."
     }
 ];
@@ -53,7 +51,7 @@ if (typeof window !== 'undefined') {
     localStorage.removeItem('quizResult');
 }
 
-export default function MythFactGame() {
+export default function MitosFaktaGame() {
     // 1. STATE UNTUK GAME LOGIC
     const [currentIndex, setCurrentIndex] = useState(0);
     const [score, setScore] = useState(0);
@@ -82,15 +80,6 @@ export default function MythFactGame() {
             activationConstraint: { distance: 10 },
         })
     );
-
-    const confettiBurst = useCallback(() => {
-        confetti({
-            particleCount: 200,
-            spread: 80,
-            origin: { y: 0.6 },
-            colors: [PRIMARY_COLOR, '#FFFFFF', '#FFD700']
-        });
-    }, []);
 
     // 💡 FUNGSI END GAME (LOGIC SIMPAN DATA DAN REDIRECT)
     const endGame = useCallback(() => {
@@ -141,10 +130,9 @@ export default function MythFactGame() {
             isCorrect
         });
 
-        // 2. Update Score & Confetti
+        // 2. Update Score
         if (isCorrect) {
             setScore(prev => prev + 1);
-            confettiBurst();
             correctSoundRef.current?.play(); 
         } else {
              wrongSoundRef.current?.play(); 
@@ -202,7 +190,7 @@ export default function MythFactGame() {
                 }
             }
         }, 900);
-    }, [currentIndex, isGameActive, confettiBurst, endGame]);
+    }, [currentIndex, isGameActive, endGame]);
 
     // DND-KIT HANDLERS
     const handleDragStart = useCallback(({ active }) => {
@@ -217,7 +205,7 @@ export default function MythFactGame() {
         setActiveDragId(null); 
         setIsOverDropzoneId(null); 
 
-        if (over && (over.id === 'myth' || over.id === 'fact')) {
+        if (over && (over.id === 'mitos' || over.id === 'fakta')) {
             const dropType = over.id; 
             handleAnswer(dropType); 
         }
@@ -263,11 +251,6 @@ export default function MythFactGame() {
         };
     }, []); 
 
- 
-    const handleBack = () => {
-         alert("Kembali ke Halaman Game (Simulasi navigasi)");
-    };
-
     return (
         <DndContext 
             sensors={sensors} // KONFIGURASI PENTING
@@ -277,7 +260,7 @@ export default function MythFactGame() {
         > 
             <div className="min-h-screen flex items-start justify-center py-12 relative overflow-visible">
                 {/* Full background gradient dan dekorasi */}
-                <div className="absolute inset-0 bg-gradient-to-b from-pink-300/70 via-pink-100 to-pink-50 -z-20 min-h-screen"></div>
+                <div className="absolute inset-0 bg-pink-50 -z-20 min-h-screen"></div>
                 <div
                     className="absolute top-10 left-10 w-40 h-40 bg-pink-200 rounded-full opacity-40 blur-3xl -z-10 shadow-[0_20px_60px_rgba(248,155,177,0.4)] animate-pulse">
                 </div>
@@ -288,19 +271,12 @@ export default function MythFactGame() {
                     <div className="flex items-center gap-4 mb-6">
                        
                        <BackButton />
-                        <button
-                            id="backBtn"
-                            className="w-12 h-12 flex items-center justify-center rounded-full bg-pink-400 text-white shadow-md hover:shadow-lg hover:bg-pink-500 transition-all duration-300 transform hover:-translate-x-1"
-                            onClick={handleBack} 
-                        >
-                           <ArrowBigLeft size={24} />
-                        </button>
 
                         <div>
-                            <h1 className="text-3xl font-extrabold text-pink-500 drop-shadow-md">
+                            <h1 className="text-xl lg:text-3xl font-extrabold text-pink-500 drop-shadow-md">
                                 Mitos atau Fakta? Yuk, Buktikan!
                             </h1>
-                            <p className="text-sm text-gray-600">
+                            <p className="text-xs lg:text-sm text-gray-600">
                                 Banyak remaja percaya mitos tentang kesehatan reproduksi. Coba main game ini, apakah kamu bisa bedakan mana yang fakta dan mana yang cuma mitos?
                             </p>
                         </div>
@@ -310,7 +286,7 @@ export default function MythFactGame() {
                     <div className="mb-6">
                         <div className="flex justify-between mb-2 text-sm">
                             <div id="progressText">Pertanyaan {currentIndex + 1} dari {TOTAL_QUESTIONS}</div>
-                            <div id="scoreText">Skor: {score}/{TOTAL_QUESTIONS}</div>
+                            {/* <div id="scoreText">Skor: {score}/{TOTAL_QUESTIONS}</div> */}
                         </div>
                         <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
                             <div 
@@ -334,25 +310,25 @@ export default function MythFactGame() {
                     </div>
 
                     {/* Dropzones Container */}
-                    <div className="grid md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-2 gap-1 sm:gap-3 md:gap-6 lg:gap-8">
                         <DroppableZone 
-                            id="myth" 
-                            type="myth" 
+                            id="mitos" 
+                            type="mitos" 
                             isOverId={isOverDropzoneId} 
                             handleAnswer={handleAnswer} 
                         />
                         <DroppableZone 
-                            id="fact" 
-                            type="fact" 
+                            id="fakta" 
+                            type="fakta" 
                             isOverId={isOverDropzoneId} 
                             handleAnswer={handleAnswer} 
                         />
                     </div>
 
-                    <div className="flex gap-4 justify-center mt-8">
-                        <button className="button-11 px-5 py-2 border rounded hover:bg-red-50" onClick={() => handleAnswer('myth')}>Ini MITOS</button>
-                        <button className="button-10 px-6 py-2 border rounded hover:bg-green-50" onClick={() => handleAnswer('fact')}>Ini FAKTA</button>
-                    </div>
+                    {/* <div className="flex gap-4 justify-center mt-8">
+                        <button className="button-11 px-5 py-2 border rounded hover:bg-red-50" onClick={() => handleAnswer('mitos')}>Ini MITOS</button>
+                        <button className="button-10 px-6 py-2 border rounded hover:bg-green-50" onClick={() => handleAnswer('fakta')}>Ini FAKTA</button>
+                    </div> */}
 
                 </main>
             </div>

@@ -14,6 +14,7 @@ import {
   RotateCcw,
 } from "lucide-react";
 import BackButton from "../../components/games/BackButton";
+import Image from "next/image";
 
 // Data terms
 const termsAndDefs = [
@@ -24,12 +25,7 @@ const termsAndDefs = [
     term: "Fertilitas",
     definition: "Kemampuan untuk menghasilkan keturunan",
   },
-  { id: 4, term: "Kontrasepsi", definition: "Metode untuk mencegah kehamilan" },
-  {
-    id: 5,
-    term: "Spermatogenesis",
-    definition: "Proses pembentukan sperma",
-  },
+  { id: 4, term: "Kontrasepsi", definition: "Metode untuk mencegah kehamilan" }
 ];
 
 function shuffleArray(arr) {
@@ -68,8 +64,30 @@ export default function MemoryGamePage() {
   const timerRef = useRef(null);
   const cardRefs = useRef({}); // Ref untuk elemen DOM kartu
 
+  // --- Deteksi layar kecil (portrait mobile kecil) ---
+  const initialIsMobile = typeof window !== 'undefined' ? document.documentElement.clientWidth < 480 : false;
+  const [isMobileTooSmall, setIsMobileTooSmall] = useState(initialIsMobile);
+
+  // Update isMobileTooSmall saat resize/orientasi berubah
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const handler = () => setIsMobileTooSmall(document.documentElement.clientWidth < 480);
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
+  }, []);
+
+  // Jika layar terlalu kecil, pastikan game tidak berjalan
+  useEffect(() => {
+    if (isMobileTooSmall) {
+      setIsPlaying(false);
+      setRunning(false);
+    }
+  }, [isMobileTooSmall]);
+
   // Init Audio
   useEffect(() => {
+    if (isMobileTooSmall) return; // jangan mulai audio di layar sangat kecil
+
     audioRef.current = new Audio("/audio/memo-backsound.mp3");
     if (audioRef.current) {
       audioRef.current.volume = 0.1;
@@ -83,7 +101,7 @@ export default function MemoryGamePage() {
         audioRef.current.pause();
       }
     };
-  }, []);
+  }, [isMobileTooSmall]);
 
   const toggleAudio = () => {
     if (audioRef.current) {
@@ -98,6 +116,8 @@ export default function MemoryGamePage() {
 
   // init cards
   useEffect(() => {
+    if (isMobileTooSmall) return; // jangan inisialisasi kartu/game pada layar sangat kecil
+
     const generated = [];
     termsAndDefs.forEach((item) => {
       generated.push({
@@ -116,7 +136,7 @@ export default function MemoryGamePage() {
     setCards(shuffleArray(generated));
     // Pastikan resetGame dari store dipanggil
     resetGame();
-  }, [resetGame]);
+  }, [resetGame, isMobileTooSmall]);
 
   // FUNGSI UTAMA: HANDLE GAME OVER (Diperbaiki dependensi useCallback)
   const handleGameOver = useCallback((finalTime) => {
@@ -161,6 +181,7 @@ export default function MemoryGamePage() {
 
   // Timer jalan
   useEffect(() => {
+    if (isMobileTooSmall) return; // jangan jalankan timer di layar sangat kecil
     if (running) {
       timerRef.current = setInterval(() => {
         localSetTime((t) => {
@@ -176,7 +197,7 @@ export default function MemoryGamePage() {
       }, 1000);
     }
     return () => clearInterval(timerRef.current);
-  }, [running, setTime, handleGameOver]); // handleGameOver adalah dependensi
+  }, [running, setTime, handleGameOver, isMobileTooSmall]); // handleGameOver adalah dependensi
 
   // sync ke store
   useEffect(() => {
@@ -223,7 +244,7 @@ export default function MemoryGamePage() {
       const [a, b] = flipped;
       if (a.pair === b.pair && a.type !== b.type) {
         // match
-        localSetPoints((p) => p + 20);
+        localSetPoints((p) => p + 25);
         setMatched((m) => {
           addMatched(a.pair);
           return [...m, a.pair];
@@ -248,6 +269,23 @@ export default function MemoryGamePage() {
     }
   }, [flipped, addMatched]);
 
+  // Jika layar terlalu kecil, tampilkan instruksi putar HP dengan overlay gelap
+  if (isMobileTooSmall) {
+    return (
+      <div style={{ backgroundColor: 'rgba(0,0,0,0.9)' }} className="w-full min-h-screen flex flex-col justify-center items-center p-6 z-50">
+        <div className="text-6xl mb-4">
+          <Image
+           src="https://img.icons8.com/ios/100/EBEBEB/rotate-to-landscape--v1.png"
+           alt="rotate your phone"
+           width={96} 
+           height={96}
+           />
+        </div>
+        <h3 className="text-white text-lg font-semibold">Putar HP-mu</h3>
+        <p className="text-white/80 text-sm mt-2 text-center">Untuk pengalaman terbaik, putar perangkatmu ke orientasi landscape.</p>
+      </div>
+    );
+  }
 
   return (
 
@@ -281,8 +319,13 @@ export default function MemoryGamePage() {
       {/* Content */}
       <div className="p-6 max-w-6xl mx-auto relative z-10">
         {/* Header */}
-        <div className="flex items-center gap-3 mb-6">
-          <BackButton />
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-4">
+            <BackButton />
+          <h1 className="text-2xl font-extrabold text-pink-600 flex items-center gap-2">
+            Memory Card Game
+          </h1>
+          </div>
           <button onClick={toggleAudio}>
             <div
               className="p-2 rounded-full bg-white/60 hover:bg-white shadow-sm"
@@ -320,10 +363,6 @@ export default function MemoryGamePage() {
               )}
             </div>
           </button>
-          <h1 className="text-2xl font-extrabold text-pink-600 flex items-center gap-2">
-            <Sparkles className="w-6 h-6 text-pink-500" />
-            Memory Game Kesehatan
-          </h1>
         </div>
 
         {/* Stats */}
@@ -344,7 +383,7 @@ export default function MemoryGamePage() {
 
         {/* Cards */}
         <div
-          className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 p-2"
+          className="grid grid-cols-4 gap-2 md:gap-6 p-2"
           style={{ perspective: 1200 }}
         >
           {cards.map((card) => (

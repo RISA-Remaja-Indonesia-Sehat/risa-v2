@@ -110,24 +110,24 @@ export default function Home() {
    
 
       {/* HERO */}
-      <section className="w-full py-16 px-6 md:px-16 flex flex-col md:flex-row items-center justify-between bg-pink-100/90">
-        <div className="md:w-1/2 space-y-6">
-          <h1 ref={addFadeSlide} className="text-4xl md:text-6xl font-bold text-pink-600">
+      <section className="w-full py-16 px-2 lg:px-16 flex flex-col lg:flex-row items-center justify-between bg-pink-100/90">
+        <div className="lg:w-1/2 space-y-6">
+          <h1 ref={addFadeSlide} className="text-3xl lg:text-6xl font-bold text-pink-600">
             Yuk, Main & Jadi Juara!
           </h1>
-          <p ref={addFadeSlide} className="text-gray-700 text-lg">
+          <p ref={addFadeSlide} className="text-gray-700 md:text-lg">
             Kumpulin poin, seru-seruan, dan lihat siapa yang juara di leaderboard!
           </p>
           <div ref={addFadeSlide} className="flex gap-4">
             <Link href="/memoryGames">
-              <CustomButton title="Mainkan Sekarang!" className="button-11 text-nowrap px-4 py-2 md:px-6 md:py-4 animate-pulse-slow" />
+              <CustomButton title="Mainkan Sekarang!" className="button-11 text-nowrap px-4 py-2 lg:px-6 lg:py-4 animate-pulse-slow" />
             </Link>
             <Link href="#leaderboard">
-              <CustomButton title="Leaderboard" className="button-10 px-4 py-2 md:px-6 md:py-4  animate-pulse-slow" />
+              <CustomButton title="Leaderboard" className="button-10 px-4 py-2 lg:px-6 lg:py-4  animate-pulse-slow" />
             </Link>
           </div>
         </div>
-        <div ref={addScaleIn} className="md:w-1/2 mt-6 md:mt-0 flex justify-center">
+        <div ref={addScaleIn} className="lg:w-1/2 mt-6 md:mt-0 flex justify-center">
           <Image
             src={Herogame}
             alt="Hero Illustration"
@@ -139,13 +139,13 @@ export default function Home() {
         </div>
       </section>
       
-      <main className="max-w-screen mx-auto px-4 md:px-6 lg:px-8 py-8 space-y-16">
+      <main className="max-w-full mx-auto px-4 md:px-6 lg:px-8 py-8 space-y-16 overflow-hidden">
         <section className="w-full py-10 px-6 md:px-16 flex flex-col items-center">
           <h2 ref={addFadeSlide} className="text-3xl font-extrabold text-pink-700 mb-3">
             🎮 Game Kamu
           </h2>
-          <p className="text-gray-600 text-lg text-center">Belajar sambil bermain! Kumpulan mini games seru untuk menguji dan meningkatkan pengetahuanmu tentang kesehatan reproduksi.</p>
-          <div className="grid grid-cols-2  gap-8 lg:gap-16 items-center mt-8">
+          <p className="text-gray-600 text-sm md:text-lg text-center">Belajar sambil bermain! Kumpulan mini games seru untuk menguji dan meningkatkan pengetahuanmu tentang kesehatan reproduksi.</p>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 mt-8 items-center w-full max-w-6xl mx-auto">
             <GameCard
               title="Memory Cards"
               description="Uji pengetahuanmu dengan mencocokkan pasangan kartu seputar kesehatan reproduksi."
@@ -160,7 +160,7 @@ export default function Home() {
             <GameCard
               title="Mitos VS Fakta"
               description="Jawab pertanyaan seputar kesehatan reproduksi dalam waktu terbatas."
-              points={150}
+              points={100}
               timeEstimate="45 detik"
               difficulty="Sedang"
               completedBy={30}
@@ -175,7 +175,7 @@ export default function Home() {
 
         <section className="py-10 px-6 md:px-16 text-center">
           <div className="mb-2 flex flex-col justify-center items-center">
-            <svg viewBox="0 0 400 350" className="w-[400px] h-[180px]" ref={addFadeSlide}>
+            <svg viewBox="0 0 400 350" className="w-full max-w-[400px] h-[180px]" ref={addFadeSlide}>
               <defs>
                 <path id="curveSelamat" d="M 0,300 A 300,200 0 0 1 400,300" />
               </defs>
