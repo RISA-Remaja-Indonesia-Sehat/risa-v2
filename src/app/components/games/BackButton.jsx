@@ -16,9 +16,9 @@ const BackButton = () => {
     <button
       id="backBtn"
       onClick={handleBack} 
-      className="w-12 h-12 flex items-center justify-center rounded-full bg-pink-400 text-white"
+      className="text-pink-400"
     >
-      <ArrowBigLeft size={24} />
+      <ArrowBigLeft size={36} />
     </button>
   );
 };
