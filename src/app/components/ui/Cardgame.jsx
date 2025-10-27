@@ -6,7 +6,6 @@ import { EnhancedButton } from "@/app/components/games/EnhancedButton";
 import { Badge } from "@/app/components/ui/badge";
 import { Clock, Target, Trophy, Users } from "lucide-react";
 import Image from "next/image";
-import game from "../../../../public/image/hero-game.png";
 
 const GameCard = ({
   title,
@@ -16,6 +15,8 @@ const GameCard = ({
   difficulty,
   completedBy,
   onPlay,
+  icon,
+  linkgame,
   isCompleted = false,
 }) => {
   const difficultyColors = {
@@ -34,7 +35,7 @@ const GameCard = ({
           <CardTitle className="text-lg font-bold text-gray-900 group-hover:text-pink-600 transition-colors">
             {title}
           </CardTitle>
-          <Image src={game} width={40} height={40} alt="game"></Image>
+          <Image src={icon} width={80} height={80} alt="game"></Image>
         </div>
       </CardHeader>
 
@@ -67,7 +68,7 @@ const GameCard = ({
         </div>
 
         <EnhancedButton
-          onClick={()=> onPlay && window.open("/mini-game/memory", "_blank")}
+          onClick={()=> onPlay && window.open(`${linkgame}`)}
           disabled={isCompleted}
           variant={isCompleted ? "ghost" : "default"}
           size="lg"

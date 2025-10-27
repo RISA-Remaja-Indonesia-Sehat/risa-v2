@@ -11,63 +11,87 @@ const MoodPieChart = dynamic(() => import('./charts/MoodPieChart'), {
   ),
 });
 
-/** Canonical mood labels + chart colors (hex) */
 const MOOD_LABELS = {
-  happy: { label: 'Senang', color: '#facc15' }, // yellow-400
-  sad: { label: 'Sedih', color: '#60a5fa' }, // blue-400
-  angry: { label: 'Kesal', color: '#f87171' }, // red-400
-  anxious: { label: 'Cemas', color: '#a78bfa' }, // violet-400
-  normal: { label: 'Biasa aja', color: '#94a3b8' }, // slate-400
+  senang: { label: 'Senang', color: '#facc15' },
+  sedih: { label: 'Sedih', color: '#60a5fa' },
+  kesal: { label: 'Kesal', color: '#f87171' },
+  cemas: { label: 'Cemas', color: '#a78bfa' },
+  normal: { label: 'Biasa aja', color: '#94a3b8' },
 };
 
 const DAYS_WINDOW = 30;
 
-function inLastNDays(iso, n = DAYS_WINDOW) {
-  if (!iso) return false;
-  const d = new Date(iso + 'T00:00:00');
-  if (Number.isNaN(d.getTime())) return false;
-  const today = new Date();
-  const cutoff = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-  cutoff.setDate(cutoff.getDate() - n);
-  return d >= cutoff && d <= today;
-}
+const toJakartaYMD = (date = new Date()) =>
+  new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Jakarta',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(date);
+
+const noteDateKey = (value) => {
+  if (!value) return null;
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.getTime())) return null;
+  return toJakartaYMD(date);
+};
+
+const isWithinWindow = (isoKey) => {
+  if (!isoKey) return false;
+  const today = toJakartaYMD();
+  const windowStart = toJakartaYMD(new Date(new Date().getTime() - (DAYS_WINDOW - 1) * 24 * 60 * 60 * 1000));
+  return isoKey >= windowStart && isoKey <= today;
+};
 
 export default function MoodDistributionCard() {
-  const dailyLogs = useSiklusStore((s) => s.dailyLogs || []);
+  const insights = useSiklusStore((s) => s.insights);
+  const dailyNotes = useSiklusStore((s) => s.dailyNotes);
 
-  // Aggregate counts from the last 30 days of dailyLogs
-  const { counts, legendEntries, chartData, hasData } = useMemo(() => {
-    const counts = Object.create(null);
+  const fallbackCounts = useMemo(() => {
+    if (!Array.isArray(dailyNotes) || !dailyNotes.length) return null;
 
-    for (const log of dailyLogs) {
-      if (!log?.mood) continue;
-      if (!MOOD_LABELS[log.mood]) continue;
-      if (!inLastNDays(log.date, DAYS_WINDOW)) continue;
-      counts[log.mood] = (counts[log.mood] || 0) + 1;
-    }
+    const counts = {};
+    dailyNotes.forEach((note) => {
+      const mood = typeof note?.mood === 'string' ? note.mood.toLowerCase() : null;
+      if (!mood || !MOOD_LABELS[mood]) return;
+
+      const dateKey = noteDateKey(note.date);
+      if (!isWithinWindow(dateKey)) return;
+
+      counts[mood] = (counts[mood] || 0) + 1;
+    });
+
+    return counts;
+  }, [dailyNotes]);
+
+  const { legendEntries, chartData, hasData } = useMemo(() => {
+    const rawDistribution = insights?.moodDistributionLast30d || {};
+    const counts = rawDistribution && Object.keys(rawDistribution).length ? rawDistribution : fallbackCounts || {};
 
     const legendEntries = Object.entries(MOOD_LABELS)
       .map(([mood, meta]) => ({
         mood,
         label: meta.label,
         color: meta.color,
-        count: counts[mood] || 0,
+        count: Number(counts[mood]) || 0,
       }))
-      .filter((e) => e.count > 0)
+      .filter((entry) => entry.count > 0)
       .sort((a, b) => b.count - a.count);
 
-    const chartData = legendEntries.reduce((acc, e) => {
-      acc[e.mood] = e.count;
+    const chartData = legendEntries.reduce((acc, entry) => {
+      acc[entry.mood] = entry.count;
       return acc;
     }, {});
 
-    return { counts, legendEntries, chartData, hasData: legendEntries.length > 0 };
-  }, [dailyLogs]);
+    return { legendEntries, chartData, hasData: legendEntries.length > 0 };
+  }, [insights?.moodDistributionLast30d, fallbackCounts]);
 
   const colorMap = useMemo(() => {
-    const m = {};
-    for (const [key, v] of Object.entries(MOOD_LABELS)) m[key] = v.color;
-    return m;
+    const colors = {};
+    Object.entries(MOOD_LABELS).forEach(([mood, meta]) => {
+      colors[mood] = meta.color;
+    });
+    return colors;
   }, []);
 
   return (
@@ -94,7 +118,7 @@ export default function MoodDistributionCard() {
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center p-8 text-center">
-            <p className="text-slate-500 dark:text-slate-400">Belum ada catatan mood dalam {DAYS_WINDOW} hari terakhir.</p>
+            <p className="text-slate-500 dark:text-slate-400">Belum ada catatan mood dalam {DAYS_WINDOW} hari terakhir</p>
           </div>
         )}
       </div>
