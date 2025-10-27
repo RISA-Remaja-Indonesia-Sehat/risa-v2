@@ -34,8 +34,8 @@ const useBookingData = create((set) => ({
       return { success: false, error: 'Tanggal dan jam harus diisi' };
     }
     
-    // Create proper datetime
-    const dateTimeString = `${formData.tanggal}T${formData.jam}:00.000Z`;
+    // Create datetime with WIB timezone (+07:00)
+    const dateTimeString = `${formData.tanggal}T${formData.jam}:00+07:00`;
     console.log('DateTime string:', dateTimeString);
     
     // Map frontend data to backend schema

@@ -11,6 +11,14 @@ export default function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const { user, isLoggedIn, logout, initAuth } = useAuthStore();
 
+    const closeMobileMenu = () => {
+        setIsMenuOpen(false);
+        const menu = document.getElementById("mobile-menu");
+        if (menu) {
+            menu.classList.add("translate-x-full");
+        }
+    };
+
     useEffect(() => {
         initAuth();
 
@@ -47,9 +55,9 @@ export default function Navbar() {
       <ul className="hidden md:flex gap-6 text-gray-700 font-medium">
         <li><Link href="/mini-game" className="hover:text-pink-500">Mini Games</Link></li>
         <li><Link href="/article" className="hover:text-pink-500">Artikel</Link></li>
+        <li><Link href="/missions" className="hover:text-pink-500">Misi Harian</Link></li>
         <li><Link href="/siklusku" className="hover:text-pink-500">Siklusku</Link></li>
         <li><Link href="/vaksin-hpv" className="hover:text-pink-500">Vaksin HPV</Link></li>
-        <li><Link href="/missions" className="hover:text-pink-500">Misi Harian</Link></li>
       </ul>
 
       {/** Right Section */}
@@ -132,11 +140,11 @@ export default function Navbar() {
           </div>
         )}
         
-        <Link href="/mini-game" className="hover:text-pink-500">Mini Games</Link>
-        <Link href="/article" className="hover:text-pink-500">Artikel</Link>
-        <Link href="/siklusku" className="hover:text-pink-500">Siklusku</Link>
-        <Link href="/vaksin-hpv" className="hover:text-pink-500">Vaksin HPV</Link>
-        <Link href="/missions" className="hover:text-pink-500">Misi Harian</Link>
+        <Link href="/mini-game" className="hover:text-pink-500" onClick={closeMobileMenu}>Mini Games</Link>
+        <Link href="/article" className="hover:text-pink-500" onClick={closeMobileMenu}>Artikel</Link>
+        <Link href="/missions" className="hover:text-pink-500" onClick={closeMobileMenu}>Misi Harian</Link>
+        <Link href="/siklusku" className="hover:text-pink-500" onClick={closeMobileMenu}>Siklusku</Link>
+        <Link href="/vaksin-hpv" className="hover:text-pink-500" onClick={closeMobileMenu}>Vaksin HPV</Link>
       </div>
     </nav>
   )

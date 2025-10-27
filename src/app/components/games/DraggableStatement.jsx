@@ -26,9 +26,9 @@ export default function DraggableStatement({ id, statement }) {
             {...attributes}
             // Tambahkan data-handler-id agar GSAP di file utama bisa menarget elemen ini
             data-handler-id={id} 
-            className="bg-white rounded-xl p-6 shadow-2xl select-none transition-transform duration-300 relative current-statement-card"
+            className="bg-white rounded-xl p-6 shadow-2xl select-none transition-transform duration-300 relative current-statement-card z-10"
         >
-            <p className="text-xl font-semibold">{statement}</p>
+            <p className="md:text-xl font-semibold">{statement}</p>
             <p className="text-xs text-gray-400 mt-3">Tekan sebentar lalu Seret — atau ketuk tombol di bawah ini.</p>
         </div>
     );

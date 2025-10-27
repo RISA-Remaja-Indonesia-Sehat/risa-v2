@@ -17,6 +17,7 @@ import {
     VolumeX,
 } from "lucide-react";
 import BackButton from "../../components/games/BackButton";
+import Image from "next/image";
 
 // Data terms
 const termsAndDefs = [
@@ -270,6 +271,23 @@ export default function MemoryGamePage() {
         }
     }, [flipped, addMatched]);
 
+  // Jika layar terlalu kecil, tampilkan instruksi putar HP dengan overlay gelap
+  if (isMobileTooSmall) {
+    return (
+      <div style={{ backgroundColor: 'rgba(0,0,0,0.9)' }} className="w-full min-h-screen flex flex-col justify-center items-center p-6 z-50">
+        <div className="text-6xl mb-4">
+          <Image
+           src="https://img.icons8.com/ios/100/EBEBEB/rotate-to-landscape--v1.png"
+           alt="rotate your phone"
+           width={96} 
+           height={96}
+           />
+        </div>
+        <h3 className="text-white text-lg font-semibold">Putar HP-mu</h3>
+        <p className="text-white/80 text-sm mt-2 text-center">Untuk pengalaman terbaik, putar perangkatmu ke orientasi landscape.</p>
+      </div>
+    );
+  }
 
     return (
         <main>

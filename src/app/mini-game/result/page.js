@@ -46,7 +46,7 @@ const MemoryDetailCard = ({ pair, index }) => (
   </div>
 );
 
-// Card untuk detail jawaban Quiz/MythFact (Pertanyaan)
+// Card untuk detail jawaban Quiz/mitosfakta (Pertanyaan)
 const QuizDetailCard = ({ answer, index }) => (
   <div
     className={`p-4 md:p-5 rounded-xl shadow-inner transition-all 
