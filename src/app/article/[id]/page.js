@@ -6,6 +6,7 @@ import CommentSection from '@/app/components/articles/CommentSection';
 import CommentForm from '@/app/components/articles/CommentForm';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import ArticleTracker from '@/app/components/articles/ArticleTracker';
 
 async function getArticle(id) {
   try {
@@ -36,6 +37,7 @@ export default async function ArticlePage({ params }) {
   const { title, imageUrl, imageAlt, content, opinion } = article;
   return (
     <>
+      <ArticleTracker />
       <section className="container my-12 mx-auto lg:flex items-center gap-6 overflow-hidden" id="article">
           <div className="p-6">
             <Image src={imageUrl} width={500} height={500} priority={true} className="w-full lg:w-4xl mb-4" alt={imageAlt} />
@@ -60,7 +62,7 @@ export default async function ArticlePage({ params }) {
           </div>
 
           {/*  Game */}
-          <aside className="bg-white rounded-sm shadow-lg h-fit max-w-72 lg:w-1/2 p-6 ml-4">
+          <aside className="bg-white rounded-sm border-1 border-solid-gray shadow-lg h-fit max-w-72 lg:w-1/2 p-6 ml-4">
               <div>
                   <h4 className="mb-2 font-medium">Drag & Drop Challenge</h4>
                   <Image src="/image/game-item.png" width={300} height={300} alt="Game Item" className="mb-4" />

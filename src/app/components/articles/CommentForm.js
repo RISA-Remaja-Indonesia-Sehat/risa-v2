@@ -1,12 +1,18 @@
 'use client';
 import { useState } from 'react';
 import useCommentStore from '../../store/useCommentStore';
+import useMissions from '../../store/useMissions';
+import useStickers from '../../store/useStickers';
 import CustomButton from '../ui/CustomButton';
+import StickerRewardAnimation from '../ui/StickerRewardAnimation';
 
 export default function CommentForm() {
   const [userComment, setUserComment] = useState('');
   const [showSuccess, setShowSuccess] = useState(false);
+  const [showAnimation, setShowAnimation] = useState(false);
   const { addComment } = useCommentStore();
+  const { trackComment } = useMissions();
+  const { addStickers, updateStickersToServer } = useStickers();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,6 +29,8 @@ export default function CommentForm() {
     }
     
     await addComment(userComment);
+    trackComment(addStickers, () => setShowAnimation(true), updateStickersToServer);
+    console.log('di bawah track comment');
     setUserComment('');
     setShowSuccess(true);
     
@@ -54,6 +62,11 @@ export default function CommentForm() {
           Komentar berhasil dikirim!
         </div>
       )}
+      
+      <StickerRewardAnimation 
+        show={showAnimation} 
+        onComplete={() => setShowAnimation(false)} 
+      />
     </>
   );
 }

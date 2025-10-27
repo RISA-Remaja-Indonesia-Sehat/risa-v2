@@ -14,6 +14,7 @@ import { ArrowBigLeft } from 'lucide-react';
 import DraggableStatement from '../../components/games/DraggableStatement'; 
 import DroppableZone from '../../components/games/DroppableZone'; 
 import { gsap } from 'gsap';
+import BackButton from '../../components/games/BackButton';
 
 // Data Pertanyaan 
 const statements = [
@@ -262,6 +263,7 @@ export default function MythFactGame() {
         };
     }, []); 
 
+ 
     const handleBack = () => {
          alert("Kembali ke Halaman Game (Simulasi navigasi)");
     };
@@ -284,6 +286,8 @@ export default function MythFactGame() {
                 <main className="w-full max-w-4xl px-4 relative z-10">
                     {/* Header */}
                     <div className="flex items-center gap-4 mb-6">
+                       
+                       <BackButton />
                         <button
                             id="backBtn"
                             className="w-12 h-12 flex items-center justify-center rounded-full bg-pink-400 text-white shadow-md hover:shadow-lg hover:bg-pink-500 transition-all duration-300 transform hover:-translate-x-1"
