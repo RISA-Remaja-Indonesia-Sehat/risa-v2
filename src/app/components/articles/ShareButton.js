@@ -26,6 +26,7 @@ export default function ShareButton({ title, articleId }) {
         }).then(() => {
           console.log('About to call trackShare');
           trackShare(addStickers, () => setShowAnimation(true), updateStickersToServer);
+          console.log('di bawah track share');
         }).catch(console.error);
       } else {
         navigator.clipboard.writeText(`${shareText} - ${shareUrl}`)

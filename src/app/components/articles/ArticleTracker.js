@@ -19,6 +19,7 @@ export default function ArticleTracker() {
       // When user reaches 90% of article, count as read
       if (scrollPercentage >= 90) {
         trackArticleRead(addStickers, () => setShowAnimation(true), updateStickersToServer);
+        console.log("Di bawah track article read");
         window.removeEventListener('scroll', handleScroll);
       }
     };
