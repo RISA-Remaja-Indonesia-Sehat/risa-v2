@@ -24,11 +24,13 @@ export default function ShareButton({ title, articleId }) {
           text: shareText,
           url: shareUrl
         }).then(() => {
+          console.log('About to call trackShare');
           trackShare(addStickers, () => setShowAnimation(true), updateStickersToServer);
         }).catch(console.error);
       } else {
         navigator.clipboard.writeText(`${shareText} - ${shareUrl}`)
           .then(() => {
+            console.log('About to call trackShare');
             trackShare(addStickers, () => setShowAnimation(true), updateStickersToServer);
           })
           .catch(() => {

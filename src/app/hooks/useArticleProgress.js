@@ -12,11 +12,13 @@ export default function useArticleProgress() {
       const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
       const scrollPercentage = (scrollTop / scrollHeight) * 100;
 
-      // When user reaches 90% of article, count as read
+      console.log('Scroll percentage:', scrollPercentage); // Debug log
+
       if (scrollPercentage >= 90) {
-        trackArticleRead(addStickers);
-        window.removeEventListener('scroll', handleScroll);
-      }
+  console.log('Scroll 90%, calling trackArticleRead');
+  trackArticleRead(addStickers); // Pastikan ini dipanggil
+  window.removeEventListener('scroll', handleScroll);
+}
     };
 
     window.addEventListener('scroll', handleScroll);

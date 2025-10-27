@@ -1,5 +1,15 @@
 import { create } from 'zustand';
 
+// Tambah state untuk track hari terakhir load
+let lastLoadDate = null;
+
+// Tambah utility untuk get today in WIB (di frontend)
+const getTodayWIBFrontend = () => {
+  const now = new Date();
+  now.setHours(now.getHours() + 7); // Adjust ke WIB
+  return new Date(now.getFullYear(), now.getMonth(), now.getDate()).toDateString();
+};
+
 const useMissions = create((set, get) => ({
   missions: [], // Master missions
   missionLogs: [], // User logs (hari ini)
@@ -41,18 +51,28 @@ const useMissions = create((set, get) => ({
 
   // Auto-create daily missions
   loadDailyMissions: async () => {
-    const token = localStorage.getItem('token');
-    if (!token) return;
-
-    try {
-      await fetch('http://localhost:3001/api/missions/daily', {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-    } catch (error) {
-      console.error('Error creating daily missions:', error);
+  const token = localStorage.getItem('token');
+  if (!token) {
+    console.error('No token for loadDailyMissions');
+    return;
+  }
+  try {
+    console.log('Calling loadDailyMissions');
+    const response = await fetch('http://localhost:3001/api/missions/daily', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    console.log('loadDailyMissions response status:', response.status);
+    if (response.ok) {
+      const result = await response.json();
+      console.log('Daily missions created:', result);
+    } else {
+      console.error('Failed to create daily missions:', response.status);
     }
-  },
+  } catch (error) {
+    console.error('Error in loadDailyMissions:', error);
+  }
+},
 
   // Combine missions with logs (hanya return misi yang ada log hari ini)
 getCombinedMissions: () => {
@@ -115,62 +135,105 @@ startMission: async (missionId) => {
 },
 
 
-  // Complete mission step (call progress endpoint)
-  completeMissionStep: async (missionId, addStickers, onRewardAnimation) => {
-    const token = localStorage.getItem('token');
-    if (!token) return;
+  // Complete mission step (dengan validasi ketat)
+completeMissionStep: async (missionId, addStickers, onRewardAnimation) => {
+  console.log('completeMissionStep called for missionId:', missionId); // Tambah log awal
 
-    try {
-      const response = await fetch('http://localhost:3001/api/missions/progress', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ mission_id: missionId })
-      });
+  const token = localStorage.getItem('token');
+  if (!token) {
+    console.error('No token found');
+    return;
+  }
 
-      console.log(response);
-      if (response.ok) {
-        const result = await response.json();
-        set((state) => ({
-          missionLogs: state.missionLogs.map(log =>
-            log.mission_id === missionId ? result.data : log
-          )
-        }));
+  // Tambah log lebih detail
+console.log('completeMissionStep called for missionId:', missionId);
 
-        if (result.data.completed) {
-          const mission = get().missions.find(m => m.id === missionId);
-          if (mission) {
-            addStickers(mission.reward);
-            onRewardAnimation?.();
-          }
-        }
+const { missionLogs } = get();
+const log = missionLogs.find(log => log.mission_id === missionId);
+console.log('Log found:', log);
+
+if (!log || log.status !== 'in_progress' || log.completed) {
+  console.warn('Validation failed:', { hasLog: !!log, status: log?.status, completed: log?.completed });
+  return;
+}
+
+// Pastikan fetch dikirim
+console.log('Sending POST to /progress');
+try {
+  const response = await fetch('http://localhost:3001/api/missions/progress', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ mission_id: missionId })
+  });
+
+  console.log('Response received:', response.status);
+  if (response.ok) {
+    const result = await response.json();
+    console.log('Result:', result);
+
+    // Update state
+    set((state) => ({
+      missionLogs: state.missionLogs.map(log =>
+        log.mission_id === missionId ? result.data : log
+      )
+    }));
+
+    // Reward only if newly completed
+    if (result.data.completed && !log.completed) {
+      console.log('Rewarding for completion');
+      const mission = get().missions.find(m => m.id === missionId);
+      if (mission) {
+        addStickers(mission.reward);
+        onRewardAnimation?.();
       }
-    } catch (error) {
-      console.error('Error completing mission step:', error);
     }
-  },
+  } else {
+    console.error('Bad response:', response.status, await response.text());
+  }
+} catch (error) {
+  console.error('Fetch error:', error);
+}
+},
 
-  // Trackers (ensure called only for daily missions)
+  // Trackers (tambahkan validasi misi harian)
   trackArticleRead: (addStickers, onRewardAnimation) => {
-    get().completeMissionStep(1, addStickers, onRewardAnimation);
+    const { missionLogs } = get();
+    const log = missionLogs.find(log => log.mission_id === 1 && log.status === 'in_progress');
+    if (log) get().completeMissionStep(1, addStickers, onRewardAnimation);
   },
   trackShare: (addStickers, onRewardAnimation) => {
-    get().completeMissionStep(4, addStickers, onRewardAnimation);
+    const { missionLogs } = get();
+    const log = missionLogs.find(log => log.mission_id === 4 && log.status === 'in_progress');
+    if (log) get().completeMissionStep(4, addStickers, onRewardAnimation);
   },
   trackComment: (addStickers, onRewardAnimation) => {
-    get().completeMissionStep(5, addStickers, onRewardAnimation);
+    const { missionLogs } = get();
+    const log = missionLogs.find(log => log.mission_id === 5 && log.status === 'in_progress');
+    if (log) get().completeMissionStep(5, addStickers, onRewardAnimation);
   },
 
-  // Init: Load all in parallel
-  initMissions: async () => {
+initMissions: async () => {
+  const today = getTodayWIBFrontend(); // Pastikan ini benar
+  if (lastLoadDate !== today) {
+    console.log('New day detected, reloading missions');
+    lastLoadDate = today;
+    // Force reload semua
     await Promise.all([
       get().loadMissions(),
-      get().loadDailyMissions(),
+      get().loadDailyMissions(), // Pastikan ini dipanggil
       get().loadMissionLogs()
     ]);
+  } else {
+    console.log('Same day, only loading logs');
+    await get().loadMissionLogs();
+    // Optional: Uncomment untuk force create setiap load (untuk test)
+    // await get().loadDailyMissions();
   }
+},
+  
 }));
 
 export default useMissions;

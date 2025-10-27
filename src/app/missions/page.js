@@ -17,6 +17,7 @@ export default function MissionPage() {
 
   useEffect(() => {
     const loadData = async () => {
+      console.log('Loading mission data');
       setLoading(true);
       await initMissions(); // Load daily logs (sudah include mission data)
       const combined = getCombinedMissions();
@@ -29,22 +30,22 @@ export default function MissionPage() {
   // Countdown timer (unchanged)
   useEffect(() => {
     const calculateTimeLeft = () => {
-      // Gunakan WIB untuk akurasi
       const now = new Date();
-      now.setHours(now.getHours() + 7); // Adjust to WIB
       const tomorrow = new Date(now);
       tomorrow.setDate(tomorrow.getDate() + 1);
-      tomorrow.setHours(0, 0, 0, 0); // Midnight WIB
-      const difference = tomorrow - now; // Now in WIB
-      
-      if (difference > 0) {
-        setTimeLeft({
-          hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-          minutes: Math.floor((difference / 1000 / 60) % 60),
-          seconds: Math.floor((difference / 1000) % 60)
-        });
-      }
-    };
+      tomorrow.setHours(0, 0, 0, 0);
+
+        const difference = tomorrow - now;
+        
+        if (difference > 0) {
+          setTimeLeft({
+            hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+            minutes: Math.floor((difference / 1000 / 60) % 60),
+            seconds: Math.floor((difference / 1000) % 60)
+          });
+        }
+      };
+
 
     calculateTimeLeft();
     const timer = setInterval(calculateTimeLeft, 1000);

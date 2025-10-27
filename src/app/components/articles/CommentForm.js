@@ -30,6 +30,7 @@ export default function CommentForm() {
     
     await addComment(userComment);
     trackComment(addStickers, () => setShowAnimation(true), updateStickersToServer);
+    console.log('Comment tracked');
     setUserComment('');
     setShowSuccess(true);
     
