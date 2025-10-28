@@ -1,4 +1,4 @@
-const API_BASE = 'http://server-risa.vercel.app';
+const API_BASE = 'https://server-risa.vercel.app';
 
 const getBaseUrl = () => {
   return API_BASE;
