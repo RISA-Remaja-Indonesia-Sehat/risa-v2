@@ -52,7 +52,7 @@ export default function Navbar() {
       </div>
 
       {/** Menu Desktop */}
-      <ul className="hidden md:flex gap-6 text-gray-700 font-medium">
+      <ul className="hidden md:flex gap-6 text-gray-700 font-medium text-center text-sm lg:text-base items-center">
         <li><Link href="/mini-game" className="hover:text-pink-500">Mini Games</Link></li>
         <li><Link href="/article" className="hover:text-pink-500">Artikel</Link></li>
         <li><Link href="/missions" className="hover:text-pink-500">Misi Harian</Link></li>
