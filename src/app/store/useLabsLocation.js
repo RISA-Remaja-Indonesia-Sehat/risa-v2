@@ -4,9 +4,9 @@ const useLabsLocation = create((set) => ({
     labs: [],
     fetchLabs: async () => {
       try {
-        const response = await fetch('https://68d5e386e29051d1c0afdc9e.mockapi.io/api/lab-prodia/locations');
+        const response = await fetch('https://server-risa.vercel.app/api/labs');
         const data = await response.json();
-        set({ labs: data });
+        set({ labs: data.data });
       } catch (error) {
         console.error('Error fetching labs:', error);
       }

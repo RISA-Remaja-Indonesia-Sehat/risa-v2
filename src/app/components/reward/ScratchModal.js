@@ -109,7 +109,7 @@ export default function ScratchModal({ show, selectedReward, voucherCode, onClos
                   <p className="text-2xl font-bold text-pink-600 tracking-wider">{voucherCode}</p>
                 </div>
                 <p className="text-sm text-gray-600 mb-4">
-                  Gunakan kode ini di <strong>Laurier Official Store Shopee</strong>
+                  Gunakan kode ini di <strong>Shopee</strong>
                 </p>
                 <button
                   onClick={copyToClipboard}

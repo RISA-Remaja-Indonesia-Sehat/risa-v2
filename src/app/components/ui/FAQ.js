@@ -25,10 +25,6 @@ export default function FAQ() {
     {
       question: "Berapa kali harus vaksin HPV?",
       answer: "Jadwal vaksin HPV tergantung usia: untuk usia 9-14 tahun cukup 2 dosis dengan jarak 6-12 bulan. Untuk usia 15 tahun ke atas diperlukan 3 dosis dengan jadwal 0, 1-2, dan 6 bulan."
-    },
-    {
-      question: "Apakah vaksin HPV ditanggung asuransi?",
-      answer: "Ya, beberapa asuransi kesehatan seperti Prudential dan Allianz menanggung biaya vaksin HPV. Kami bermitra dengan asuransi-asuransi tersebut untuk memberikan kemudahan pembayaran. Silakan konsultasi untuk mengetahui coverage asuransi Anda."
     }
   ];
 

@@ -30,9 +30,6 @@ export default function LabsMarker() {
               <p className="text-sm text-gray-600 flex items-center gap-2">
                 <span>📍</span> {lab.address}
               </p>
-              <p className="text-sm text-gray-600 flex items-center gap-2">
-                <span>📞</span> {lab.phone}
-              </p>
             </div>
           </div>
         </Popup>
