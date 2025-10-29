@@ -110,24 +110,24 @@ export default function Home() {
    
 
       {/* HERO */}
-      <section className="w-full py-16 px-2 lg:px-16 flex flex-col lg:flex-row items-center justify-between bg-pink-100/90">
-        <div className="lg:w-1/2 space-y-6">
+      <section className="w-full py-16 px-2 lg:px-16 flex flex-col lg:flex-row sm:items-center sm:justify-between bg-pink-100/90">
+        <div className="p-2 space-y-2 lg:space-y-6">
           <h1 ref={addFadeSlide} className="text-3xl lg:text-6xl font-bold text-pink-600">
             Yuk, Main & Jadi Juara!
           </h1>
-          <p ref={addFadeSlide} className="text-gray-700 md:text-lg">
+          <p ref={addFadeSlide} className="text-gray-700 md:text-lg mb-8">
             Kumpulin poin, seru-seruan, dan lihat siapa yang juara di leaderboard!
           </p>
-          <div ref={addFadeSlide} className="flex gap-4">
-            <Link href="/memoryGames">
-              <CustomButton title="Mainkan Sekarang!" className="button-11 text-nowrap px-4 py-2 lg:px-6 lg:py-4 animate-pulse-slow" />
+          <div ref={addFadeSlide} className="flex flex-col sm:flex-row gap-4">
+            <Link href="#game">
+              <CustomButton title="Mainkan Sekarang!" className="w-full flex justify-center text-nowrap px-4 py-2 lg:px-6 lg:py-4 animate-pulse-slow" />
             </Link>
             <Link href="#leaderboard">
-              <CustomButton title="Leaderboard" className="button-10 px-4 py-2 lg:px-6 lg:py-4  animate-pulse-slow" />
+              <CustomButton title="Leaderboard" className="w-full flex justify-center px-4 py-2 lg:px-6 lg:py-4  animate-pulse-slow" />
             </Link>
           </div>
         </div>
-        <div ref={addScaleIn} className="lg:w-1/2 mt-6 md:mt-0 flex justify-center">
+        <div ref={addScaleIn} className="w-full md:max-w-1/2 mt-6 md:mt-0 flex justify-center mx-auto">
           <Image
             src={Herogame}
             alt="Hero Illustration"
@@ -139,7 +139,7 @@ export default function Home() {
         </div>
       </section>
       
-      <main className="max-w-full mx-auto px-4 md:px-6 lg:px-8 py-8 space-y-16 overflow-hidden">
+      <main className="max-w-full mx-auto px-4 md:px-6 lg:px-8 py-8 space-y-16 overflow-hidden" id="game">
         <section className="w-full py-10 px-6 md:px-16 flex flex-col items-center">
           <h2 ref={addFadeSlide} className="text-3xl font-extrabold text-pink-700 mb-3">
             🎮 Game Kamu
@@ -169,7 +169,6 @@ export default function Home() {
               linkgame="/mini-game/drag-drop"
             />
           </div>
-          <CardSwap></CardSwap>
         </section>
         
 

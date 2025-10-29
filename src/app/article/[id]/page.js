@@ -100,7 +100,7 @@ export default async function ArticlePage({ params }) {
             />
 
             <Link
-              href="/drag-drop-game"
+              href="/mini-game/drag-drop"
               target="_blank"
               rel="noopener noreferrer"
             >
