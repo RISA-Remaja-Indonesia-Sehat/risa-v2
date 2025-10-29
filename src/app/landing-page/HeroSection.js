@@ -43,7 +43,7 @@ export default function HeroSection() {
     <section ref={heroRef} className="container my-4 mx-auto" id="hero">
         <div className="p-4">
         <h1 className="text-3xl md:text-4xl text-center font-bold mb-4 md:mb-6 hero-title opacity-0">Berani Tahu, Berani Lindungi Diri</h1>
-        <p className="text-center text-gray-600 leading-6 mb-8 max-w-2xl mx-auto hero-text opacity-0">Belajar tentang pubertas, cinta, dan kesehatan reproduksi kini bisa semudah bermain. Jelajahi game interaktif yang bikin kamu paham tubuhmu dengan cara seru, aman, dan menyenangkan.</p>
+        <p className="text-center text-gray-600 leading-6 mb-8 max-w-2xl mx-auto hero-text opacity-0">Belajar tentang pubertas, cinta, dan kesehatan reproduksi kini bisa semudah bermain. Jelajahi game interaktif yang bikin kamu paham tubuhmu dengan cara seru dan menyenangkan.</p>
         
         <div className="w-fit mx-auto mb-12 hero-button opacity-0">
             <Link href="/mini-game">
