@@ -151,7 +151,7 @@ const PLACEHOLDER_COPY = {
     title: 'Terjadi Kesalahan',
     message: 'Gagal memuat data. Silakan coba lagi.',
     showPulse: false,
-    imageSrc: '/image/placeholder-error.png',
+    imageSrc: '/image/placeholder-loading.png',
     imageAlt: 'Ilustrasi error',
   },
 };
