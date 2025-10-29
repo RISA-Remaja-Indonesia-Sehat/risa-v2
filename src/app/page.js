@@ -25,7 +25,7 @@ export default function Home() {
                   <Image width={100} height={100} src="/image/hero-ai.png" alt="AI RISA" className="mx-auto md:w-fit md:h-32"/>
                 </div>
                 <h3 className="font-semibold text-gray-800 mb-3 text-lg">AI RISA</h3>
-                <p className="text-sm text-gray-600 leading-6">Fitur AI yang dipersonalisasi untuk memberikan rekomendasi artikel edukatif yang relevan dengan kebutuhanmu</p>
+                <p className="text-sm text-gray-600 leading-6">AI yang dipersonalisasi untuk merekomendasikan artikel edukatif yang relevan dengan kebutuhanmu</p>
               </div>
               <div className="p-6 hover:-translate-y-2 duration-300 ease-out">
                 <div className="w-fit mx-auto mb-4">
