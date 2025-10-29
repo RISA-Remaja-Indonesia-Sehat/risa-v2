@@ -31,6 +31,10 @@ export default function SearchBox() {
     if (searchQuery.trim()) {
       // Add search logic here
       console.log('Searching for:', searchQuery);
+      const resultUrl = `/search?query=${encodeURIComponent(searchQuery.trim())}`;
+      window.location.href = resultUrl;
+
+      // Close search box after search
       setIsOpen(false);
       setSearchQuery('');
     }

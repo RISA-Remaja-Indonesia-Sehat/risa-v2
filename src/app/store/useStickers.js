@@ -1,27 +1,15 @@
 import { create } from "zustand";
-import useAuthStore from "./useAuthStore";
 
 const useStickers = create((set, get) => {
   // Initialize stickers from user data
-  const { user } = useAuthStore.getState();
-  const initialStickers = user?.stickers ? user.stickers : 0;
+  // const { user } = useAuthStore.getState();
+  // const initialStickers = user?.stickers ? user.stickers : 0;
 
   return {
-    stickers: initialStickers,
+    stickers: 0,
     initialized: false,
 
-    initStickers: async (forceRefresh = false) => {
-      // Use localStorage cache if not forcing refresh
-      // if (!forceRefresh && get().initialized) {
-      //   const userData = localStorage.getItem('user');
-      //   if (userData) {
-      //     const user = JSON.parse(userData);
-      //     if (user.stickers !== undefined) {
-      //       set({ stickers: user.stickers });
-      //       return;
-      //     }
-      //   }
-      // }
+    initStickers: async () => {
 
       const token = localStorage.getItem("token");
       const userData = localStorage.getItem("user");
@@ -60,10 +48,6 @@ const useStickers = create((set, get) => {
         console.error("Error fetching user stickers:", error);
         set({ stickers: 0, initialized: true });
       }
-    },
-
-    refreshStickers: async () => {
-      return get().initStickers(true);
     },
 
     addStickers: async (amount) => {
