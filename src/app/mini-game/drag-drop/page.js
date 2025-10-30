@@ -261,13 +261,20 @@ export default function MitosFaktaGame() {
         > 
             <div className="min-h-screen flex items-start justify-center py-12 relative overflow-visible">
                 {/* Full background gradient dan dekorasi */}
-                <div className="absolute inset-0 bg-pink-50 -z-20 min-h-screen"></div>
+                <div className="absolute inset-0 bg-pink-50 -z-20 min-h-screen" style={{
+                    backgroundImage: "url('/image/bg-dragdrop.jpeg')", // Ganti dengan URL gambar latar belakang kamu
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    backgroundRepeat: "no-repeat",
+                }}></div>
                 <div
                     className="absolute top-10 left-10 w-40 h-40 bg-pink-200 rounded-full opacity-40 blur-3xl -z-10 shadow-[0_20px_60px_rgba(248,155,177,0.4)] animate-pulse">
                 </div>
                 {/* ... (dekorasi lainnya) ... */}
 
-                <main className="w-full max-w-4xl px-4 relative z-10">
+                <main className="w-full max-w-4xl px-4 relative z-10 
+                      bg-white/40 backdrop-blur-md 
+                      p-8 rounded-3xl shadow-xl border border-white/50">
                     {/* Header */}
                     <div className="flex items-center gap-4 mb-6">
                        
