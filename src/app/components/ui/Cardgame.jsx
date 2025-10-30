@@ -1,12 +1,18 @@
 "use client";
 
 import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/app/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/app/components/ui/card";
 import { EnhancedButton } from "@/app/components/games/EnhancedButton";
 import { Badge } from "@/app/components/ui/badge";
 import { Clock, Target, Trophy, Users } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation"; 
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 const GameCard = ({
   title,
@@ -28,6 +34,32 @@ const GameCard = ({
 
   const router = useRouter();
 
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  // Fungsi enter fullscreen (target elemen utama halaman home)
+  const enterFullscreen = () => {
+    const element = document.documentElement; // Atau gunakan ref jika ada di Home.jsx
+    if (element && document.fullscreenEnabled) {
+      element
+        .requestFullscreen()
+        .then(() => {
+          setIsFullscreen(true);
+        })
+        .catch((err) => {
+          console.warn("Fullscreen gagal:", err);
+        });
+    } else {
+      console.warn("Fullscreen tidak didukung.");
+    }
+  };
+  // Handler untuk tombol "Mulai Main"
+  const handlePlay = () => {
+    enterFullscreen(); // Panggil fullscreen dulu
+    setTimeout(() => {
+      router.push(linkgame); // Navigate setelah delay kecil untuk memastikan fullscreen aktif
+    }, 100); // Delay 100ms
+    onPlay(); // Panggil onPlay existing
+  };
+
   return (
     <Card className="group relative max-w-screen md:min-w-md overflow-hidden backdrop-blur-md bg-white/70 hover:bg-white/90 border border-pink-200 rounded-xl hover:scale-105 transition-transform duration-300 shadow-lg hover:shadow-xl">
       {/* Gradient background floating effect */}
@@ -43,7 +75,9 @@ const GameCard = ({
       </CardHeader>
 
       <CardContent className="relative z-10 space-y-4">
-        <p className="text-gray-600 leading-relaxed hidden sm:block">{description}</p>
+        <p className="text-gray-600 leading-relaxed hidden sm:block">
+          {description}
+        </p>
 
         <div className="flex gap-2">
           <Badge className={difficultyColors[difficulty]}>
@@ -71,7 +105,7 @@ const GameCard = ({
         </div>
 
         <EnhancedButton
-          onClick={()=> router.push(`${linkgame}`) && onPlay()}
+          onClick={handlePlay}
           disabled={isCompleted}
           variant={isCompleted ? "ghost" : "default"}
           size="lg"

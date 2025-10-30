@@ -63,6 +63,8 @@ export default function MitosFaktaGame() {
     // 2. STATE UNTUK DND-KIT VISUAL FEEDBACK
     const [activeDragId, setActiveDragId] = useState(null); 
     const [isOverDropzoneId, setIsOverDropzoneId] = useState(null); 
+
+    const [isFullscreen, setIsFullscreen] = useState(true);
     
     // Ref Audio (untuk implementasi audio nyata)
     const bgMusicRef = useRef(null);
@@ -71,6 +73,36 @@ export default function MitosFaktaGame() {
 
     const currentStatement = statements[currentIndex];
     const progressWidth = ((currentIndex + 1) / TOTAL_QUESTIONS) * 100;
+
+    useEffect(() => {
+        const nav = document.querySelector("nav");
+        const footer = document.querySelector("footer");
+    
+        const previousNavDisplay = nav?.style.display;
+        const previousFooterDisplay = footer?.style.display;
+    
+        if (nav) nav.style.display = "none";
+        if (footer) footer.style.display = "none";
+    
+        return () => {
+          if (nav) nav.style.display = previousNavDisplay ?? "";
+          if (footer) footer.style.display = previousFooterDisplay ?? "";
+        };
+      }, []);
+    
+      // Fungsi exit fullscreen
+      const exitFullscreen = useCallback(() => {
+        if (document.exitFullscreen) {
+          document
+            .exitFullscreen()
+            .then(() => {
+              setIsFullscreen(false);
+            })
+            .catch((err) => {
+              console.warn("Exit fullscreen gagal:", err);
+            });
+        }
+      }, []);
 
     // 💡 KONFIGURASI SENSOR (PENTING UNTUK SMOOTHNESS MOBILE/TOUCH)
     const sensors = useSensors(
@@ -85,6 +117,7 @@ export default function MitosFaktaGame() {
     // 💡 FUNGSI END GAME (LOGIC SIMPAN DATA DAN REDIRECT)
     const endGame = useCallback(() => {
         setIsGameActive(false);
+        
         const endTime = Date.now();
         let duration = Math.floor((endTime - startTime.current) / 1000);
 
@@ -107,12 +140,16 @@ export default function MitosFaktaGame() {
         };
 
         localStorage.setItem('gameResult', JSON.stringify(finalData));
-        
+
+        // Tambah: Exit fullscreen otomatis sebelum redirect
+        if (isFullscreen) {
+            exitFullscreen();
+        }        
      
         console.log("Game Ended. Redirecting to result page...");
          if (typeof window !== 'undefined') window.location.href = '/mini-game/result'; 
 
-    }, []);
+    }, [isFullscreen, exitFullscreen]);
 
     // 💡 FUNGSI HANDLE ANSWER (LOGIC & FEEDBACK)
     const handleAnswer = useCallback((choice) => {
