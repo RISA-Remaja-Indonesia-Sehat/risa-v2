@@ -63,6 +63,8 @@ export default function MitosFaktaGame() {
     // 2. STATE UNTUK DND-KIT VISUAL FEEDBACK
     const [activeDragId, setActiveDragId] = useState(null); 
     const [isOverDropzoneId, setIsOverDropzoneId] = useState(null); 
+
+    const [isFullscreen, setIsFullscreen] = useState(true);
     
     // Ref Audio (untuk implementasi audio nyata)
     const bgMusicRef = useRef(null);
@@ -71,6 +73,36 @@ export default function MitosFaktaGame() {
 
     const currentStatement = statements[currentIndex];
     const progressWidth = ((currentIndex + 1) / TOTAL_QUESTIONS) * 100;
+
+    useEffect(() => {
+        const nav = document.querySelector("nav");
+        const footer = document.querySelector("footer");
+    
+        const previousNavDisplay = nav?.style.display;
+        const previousFooterDisplay = footer?.style.display;
+    
+        if (nav) nav.style.display = "none";
+        if (footer) footer.style.display = "none";
+    
+        return () => {
+          if (nav) nav.style.display = previousNavDisplay ?? "";
+          if (footer) footer.style.display = previousFooterDisplay ?? "";
+        };
+      }, []);
+    
+      // Fungsi exit fullscreen
+      const exitFullscreen = useCallback(() => {
+        if (document.exitFullscreen) {
+          document
+            .exitFullscreen()
+            .then(() => {
+              setIsFullscreen(false);
+            })
+            .catch((err) => {
+              console.warn("Exit fullscreen gagal:", err);
+            });
+        }
+      }, []);
 
     // 💡 KONFIGURASI SENSOR (PENTING UNTUK SMOOTHNESS MOBILE/TOUCH)
     const sensors = useSensors(
@@ -85,6 +117,7 @@ export default function MitosFaktaGame() {
     // 💡 FUNGSI END GAME (LOGIC SIMPAN DATA DAN REDIRECT)
     const endGame = useCallback(() => {
         setIsGameActive(false);
+        
         const endTime = Date.now();
         let duration = Math.floor((endTime - startTime.current) / 1000);
 
@@ -107,12 +140,16 @@ export default function MitosFaktaGame() {
         };
 
         localStorage.setItem('gameResult', JSON.stringify(finalData));
-        
+
+        // Tambah: Exit fullscreen otomatis sebelum redirect
+        if (isFullscreen) {
+            exitFullscreen();
+        }        
      
         console.log("Game Ended. Redirecting to result page...");
          if (typeof window !== 'undefined') window.location.href = '/mini-game/result'; 
 
-    }, []);
+    }, [isFullscreen, exitFullscreen]);
 
     // 💡 FUNGSI HANDLE ANSWER (LOGIC & FEEDBACK)
     const handleAnswer = useCallback((choice) => {
@@ -261,13 +298,20 @@ export default function MitosFaktaGame() {
         > 
             <div className="min-h-screen flex items-start justify-center py-12 relative overflow-visible">
                 {/* Full background gradient dan dekorasi */}
-                <div className="absolute inset-0 bg-pink-50 -z-20 min-h-screen"></div>
+                <div className="absolute inset-0 bg-pink-50 -z-20 min-h-screen" style={{
+                    backgroundImage: "url('/image/bg-dragdrop.jpeg')", // Ganti dengan URL gambar latar belakang kamu
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    backgroundRepeat: "no-repeat",
+                }}></div>
                 <div
                     className="absolute top-10 left-10 w-40 h-40 bg-pink-200 rounded-full opacity-40 blur-3xl -z-10 shadow-[0_20px_60px_rgba(248,155,177,0.4)] animate-pulse">
                 </div>
                 {/* ... (dekorasi lainnya) ... */}
 
-                <main className="w-full max-w-4xl px-4 relative z-10">
+                <main className="w-full max-w-4xl px-4 relative z-10 
+                      bg-white/40 backdrop-blur-md 
+                      p-8 rounded-3xl shadow-xl border border-white/50">
                     {/* Header */}
                     <div className="flex items-center gap-4 mb-6">
                        

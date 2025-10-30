@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { googleLogout } from '@react-oauth/google';
 
 const useAuthStore = create(
   persist(
@@ -24,6 +25,7 @@ const useAuthStore = create(
         });
         localStorage.removeItem('token');
         localStorage.removeItem('user');
+        googleLogout();
       },
 
       initAuth: () => {

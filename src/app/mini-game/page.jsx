@@ -9,10 +9,7 @@ import  Herogame from "../../../public/image/Illustration_hero_gamification.png"
 import Trophy from "../../../public/image/piala.png"
 import CustomButton from "../components/ui/CustomButton";
 import Link from "next/link";
-import {CardContent } from "@/app/components/ui/card"
-import { Star, Timer, TrophyIcon, Users } from "lucide-react";
-import GameCard from "../components/ui/Cardgame";
-import CardSwap from "../components/games/CardSwap";
+import GameCard from "../components/ui/Cardgame";;
 import MemoIcon from "../../../public/image/memory-game.png";
 import DragIcon from "../../../public/image/drag-drop.png";
 
@@ -110,24 +107,22 @@ export default function Home() {
    
 
       {/* HERO */}
-      <section className="w-full py-16 px-2 lg:px-16 flex flex-col lg:flex-row sm:items-center sm:justify-between bg-pink-100/90">
+      <section className="w-full py-8 px-2 lg:px-16 flex flex-col lg:gap-6 lg:flex-row sm:items-center sm:justify-center">
         <div className="p-2 space-y-2 lg:space-y-6">
-          <h1 ref={addFadeSlide} className="text-3xl lg:text-6xl font-bold text-pink-600">
-            Yuk, Main & Jadi Juara!
+          <h1 ref={addFadeSlide} className="text-2xl lg:text-5xl font-bold text-pink-600">
+            Yuk, Main & Kumpulkan Poin!
           </h1>
-          <p ref={addFadeSlide} className="text-gray-700 md:text-lg mb-8">
-            Kumpulin poin, seru-seruan, dan lihat siapa yang juara di leaderboard!
-          </p>
+          <p ref={addFadeSlide} className="text-sm text-gray-700 md:text-lg mb-8">Dapatkan hingga 100 poin per game!</p>
           <div ref={addFadeSlide} className="flex flex-col sm:flex-row gap-4">
-            <Link href="#game">
-              <CustomButton title="Mainkan Sekarang!" className="w-full flex justify-center text-nowrap px-4 py-2 lg:px-6 lg:py-4 animate-pulse-slow" />
+            <Link href="/mini-game/memory">
+              <CustomButton title="Memory Card" className="w-full flex justify-center text-nowrap px-4 py-2 lg:px-6 lg:py-4 animate-pulse-slow" />
             </Link>
-            <Link href="#leaderboard">
-              <CustomButton title="Leaderboard" className="w-full flex justify-center px-4 py-2 lg:px-6 lg:py-4  animate-pulse-slow" />
+            <Link href="/mini-game/drag-drop">
+              <CustomButton title="Mitos VS Fakta" className="w-full flex justify-center px-4 py-2 lg:px-6 lg:py-4  animate-pulse-slow" />
             </Link>
           </div>
         </div>
-        <div ref={addScaleIn} className="w-full md:max-w-1/2 mt-6 md:mt-0 flex justify-center mx-auto">
+        <div ref={addScaleIn} className="p-2 mt-6 md:mt-0 hidden sm:block">
           <Image
             src={Herogame}
             alt="Hero Illustration"
@@ -139,7 +134,7 @@ export default function Home() {
         </div>
       </section>
       
-      <main className="max-w-full mx-auto px-4 md:px-6 lg:px-8 py-8 space-y-16 overflow-hidden" id="game">
+      <main className="max-w-full mx-auto px-4 md:px-6 lg:px-8 py-8 space-y-16 overflow-hidden">
         <section className="w-full py-10 px-6 md:px-16 flex flex-col items-center">
           <h2 ref={addFadeSlide} className="text-3xl font-extrabold text-pink-700 mb-3">
             🎮 Game Kamu
@@ -172,7 +167,7 @@ export default function Home() {
         </section>
         
 
-        <section className="py-10 px-6 md:px-16 text-center">
+        {/* <section className="py-10 px-6 md:px-16 text-center">
           <div className="mb-2 flex flex-col justify-center items-center">
             <svg viewBox="0 0 400 350" className="w-full max-w-[400px] h-[180px]" ref={addFadeSlide}>
               <defs>
@@ -194,10 +189,10 @@ export default function Home() {
               Kamu mendapatkan peringkat ke-1 minggu ini
             </p>
           </div>
-        </section>
+        </section> */}
 
         {/* LEADERBOARD */}
-        <section id="leaderboard" className="py-10 px-6 md:px-16">
+        {/* <section id="leaderboard" className="py-10 px-6 md:px-16">
           <h2 ref={addFadeSlide} className="text-3xl font-bold text-pink-600 mb-6">
             Leaderboard
           </h2>
@@ -225,7 +220,7 @@ export default function Home() {
               </tbody>
             </table>
           </div>
-        </section>
+        </section> */}
       </main>
 
 

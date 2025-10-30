@@ -39,7 +39,7 @@ const RotateDevicePrompt = () => {
             <RefreshCw className="w-16 h-16 animate-spin-slow mb-6 text-pink-400" />
             <h2 className="text-3xl font-extrabold mb-3">Mohon Putar Perangkat Anda</h2>
             <p className="text-lg font-medium max-w-sm">
-                Game **Memory Card** ini dirancang untuk pengalaman terbaik dalam mode **Landscape** (horizontal).
+                Game Memory Card ini dirancang untuk pengalaman terbaik dalam mode <strong>Landscape</strong>.
             </p>
             <p className="mt-4 text-sm text-gray-400">
                 Putar perangkat Anda untuk melanjutkan.
