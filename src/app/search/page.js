@@ -40,12 +40,13 @@ export default function SearchResults() {
             <li key={item.id} className="pb-2">
               <Link href={`/article/${item.id}`}>
                 <div className="flex gap-4 max-w-3xl mx-auto hover:bg-pink-50 transition-all duration-200 p-4 rounded-md cursor-pointer items-start md:items-center">
-                  <div className="flex-shrink-1 max-w-[300px]">
+                  <div className="w-full max-w-[150px] aspect-square md:aspect-video overflow-hidden">
                     <Image
                       src={item.imageUrl}
                       alt={item.imageAlt}
-                      width={500}
-                      height={500}
+                      width={300}
+                      height={300}
+                      className="w-full h-full object-cover"
                     />
                   </div>
                   <div className="space-y-3">
