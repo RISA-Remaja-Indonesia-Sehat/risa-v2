@@ -56,7 +56,6 @@ export default function Navbar() {
         <li><Link href="/mini-game" className="hover:text-pink-500">Mini Games</Link></li>
         <li><Link href="/article" className="hover:text-pink-500">Artikel</Link></li>
         <li><Link href="/missions" className="hover:text-pink-500">Misi Harian</Link></li>
-        <li><Link href="/siklusku" className="hover:text-pink-500">Siklusku</Link></li>
         <li><Link href="/vaksin-hpv" className="hover:text-pink-500">Vaksin HPV</Link></li>
       </ul>
 
@@ -143,7 +142,6 @@ export default function Navbar() {
         <Link href="/mini-game" className="hover:text-pink-500" onClick={closeMobileMenu}>Mini Games</Link>
         <Link href="/article" className="hover:text-pink-500" onClick={closeMobileMenu}>Artikel</Link>
         <Link href="/missions" className="hover:text-pink-500" onClick={closeMobileMenu}>Misi Harian</Link>
-        <Link href="/siklusku" className="hover:text-pink-500" onClick={closeMobileMenu}>Siklusku</Link>
         <Link href="/vaksin-hpv" className="hover:text-pink-500" onClick={closeMobileMenu}>Vaksin HPV</Link>
       </div>
     </nav>

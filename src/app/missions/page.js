@@ -81,8 +81,9 @@ export default function MissionPage() {
       await startMission(mission.id); // Update status
       // Redirect based on mission
       if (mission.id === 1) window.location.href = "/article";
+      if (mission.id === 2) window.location.href = "/mini-game";
+      if (mission.id === 3) window.location.href = "/article";
       if (mission.id === 4) window.location.href = "/article";
-      if (mission.id === 5) window.location.href = "/article";
       // ... (add others as needed)
     }
   };
