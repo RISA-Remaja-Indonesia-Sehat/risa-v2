@@ -171,6 +171,7 @@ export default function MitosFaktaGame() {
             correct: correctCount,
             wrong: answersLog.current.filter(a => !a.isCorrect).length,
             duration: formatDuration(duration),
+            gameType: 'DRAG_DROP',
             answers: answersLog.current.map(ans => ({
                 statement: statements.find(s => s.id === ans.questionId)?.text || ans.question,
                 userAnswer: ans.userAnswer,
@@ -182,7 +183,7 @@ export default function MitosFaktaGame() {
 
         if (isFullscreen) {
             exitFullscreen();
-        }        
+        }
         
         // Redirect ke result page
         if (typeof window !== 'undefined') window.location.href = '/mini-game/result'; 
