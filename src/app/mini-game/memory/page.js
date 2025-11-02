@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import gsap from "gsap";
 import Particles from "../../../components/Particles";
 import { useGameStore } from "../../store/useGameStore";
-import RotateDevicePrompt from "../../components/games/RotateDevicePrompt"; // NEW: Import komponen
+import RotateDevicePrompt from "../../components/games/RotateDevicePrompt";
 import {
   Gift,
   Sparkles,
@@ -19,23 +19,12 @@ import {
 import BackButton from "../../components/games/BackButton";
 import ClickSpark from "../../../components/ClickSpark";
 
-// Data terms
-const termsAndDefs = [
-  { id: 1, term: "Ovulasi", definition: "Pelepasan sel telur dari ovarium" },
-  { id: 2, term: "Menstruasi", definition: "Perdarahan bulanan dari rahim" },
-  {
-    id: 3,
-    term: "Fertilitas",
-    definition: "Kemampuan untuk menghasilkan keturunan",
-  },
-  { id: 4, term: "Kontrasepsi", definition: "Metode untuk mencegah kehamilan" },
-  {
-    id: 5,
-    term: "Spermatogenesis",
-    definition: "Proses pembentukan sperma",
-  },
-];
+// Hapus hardcoded termsAndDefs. Data akan diambil dari API.
 
+const API_ENDPOINT = "https://server-risa.vercel.app/api/memo-cards";
+const MAX_PAIRS_TO_FETCH = 4; // Kebutuhan: Ambil 4 soal
+
+// Function untuk mengacak array
 function shuffleArray(arr) {
   return arr
     .map((v) => ({ v, r: Math.random() }))
@@ -56,64 +45,38 @@ export default function MemoryGamePage() {
   const router = useRouter();
 
   // Ambil actions dari store
-  const { setResults, setPoints, setMoves, setTime, addMatched, resetGame } =
-    useGameStore();
-  const totalPairs = termsAndDefs.length;
+  const { setResults, resetGame } = useGameStore();
 
-  // State Lokal
+  // State Data & Game
+  const [initialTerms, setInitialTerms] = useState([]); // 4 Pasangan soal yang terpilih dari API
   const [cards, setCards] = useState([]);
-  const [flipped, setFlipped] = useState([]); // Array kartu yang sedang terbuka
-  const [matched, setMatched] = useState([]); // Array ID pasangan yang sudah match
-  const [moves, localSetMoves] = useState(0);
+  const [flipped, setFlipped] = useState([]);
+  const [matched, setMatched] = useState([]);
+  const [moves, localSetMoves] = useState(0); // total_moves
   const [points, localSetPoints] = useState(0);
-  const [time, localSetTime] = useState(30);
-  const [running, setRunning] = useState(true);
+  const [time, localSetTime] = useState(30); // waktu yang tersisa
+  const [maxTime, setMaxTime] = useState(30); // Durasi maksimal game (dari API)
+  const [running, setRunning] = useState(false); // Default: false, akan diset true setelah data dimuat
+  const [isLoading, setIsLoading] = useState(true); // State loading
   const [isFullscreen, setIsFullscreen] = useState(true);
 
   const timerRef = useRef(null);
-  const cardRefs = useRef({}); // Ref untuk elemen DOM kartu
-  const matchAudioRef = useRef(null); // NEW: Audio Match
-  const flipAudioRef = useRef(null); // NEW: Audio Flip
+  const cardRefs = useRef({});
+  const matchAudioRef = useRef(null);
+  const flipAudioRef = useRef(null);
 
-  useEffect(() => {
-    const nav = document.querySelector("nav");
-    const footer = document.querySelector("footer");
+  // Jumlah pasangan di game, dihitung dari data yang telah diambil.
+  const totalPairs = initialTerms.length;
 
-    const previousNavDisplay = nav?.style.display;
-    const previousFooterDisplay = footer?.style.display;
-
-    if (nav) nav.style.display = "none";
-    if (footer) footer.style.display = "none";
-
-    return () => {
-      if (nav) nav.style.display = previousNavDisplay ?? "";
-      if (footer) footer.style.display = previousFooterDisplay ?? "";
-    };
-  }, []);
-
-  // Fungsi exit fullscreen
-  const exitFullscreen = useCallback(() => {
-    if (document.exitFullscreen) {
-      document
-        .exitFullscreen()
-        .then(() => {
-          setIsFullscreen(false);
-        })
-        .catch((err) => {
-          console.warn("Exit fullscreen gagal:", err);
-        });
-    }
-  }, []);
-
-  // Init Audio & Effects
+  // --- AUDIO SETUP ---
   useEffect(() => {
     if (typeof window === "undefined") return;
 
+    // ... (Init Audio logic remains the same)
     audioRef.current = new Audio("/audio/memo-backsound.mp3");
-    matchAudioRef.current = new Audio("/audio/match.mp3"); // NEW
-    flipAudioRef.current = new Audio("/audio/flip.mp3"); // NEW
+    matchAudioRef.current = new Audio("/audio/match.mp3");
+    flipAudioRef.current = new Audio("/audio/flip.mp3");
 
-    // Atur volume
     audioRef.current.volume = 0.1;
     matchAudioRef.current.volume = 0.5;
     flipAudioRef.current.volume = 0.3;
@@ -142,112 +105,186 @@ export default function MemoryGamePage() {
       setIsPlaying(!isPlaying);
     }
   };
+  // --- END AUDIO SETUP ---
 
-  // init cards
+  // Fungsi exit fullscreen (tetap sama)
+  const exitFullscreen = useCallback(() => {
+    // ... (exitFullscreen logic remains the same)
+    if (document.exitFullscreen) {
+      document
+        .exitFullscreen()
+        .then(() => {
+          setIsFullscreen(false);
+        })
+        .catch((err) => {
+          console.warn("Exit fullscreen gagal:", err);
+        });
+    }
+  }, []);
+
+  // --- FUNGSI UTAMA: HANDLE GAME OVER (Untuk Score Endpoint) ---
+  const handleGameOver = useCallback(() => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    setRunning(false);
+
+    if (isFullscreen) {
+      exitFullscreen();
+    }
+
+    const durationPlayedSeconds = maxTime - time; // Durasi dimainkan (total - sisa)
+    const correctPairs = matched.length; // Jumlah jawaban benar (pasangan match)
+    const wrongMoves = moves - correctPairs; // Jumlah gerakan yang tidak match
+
+    // Kumpulkan Data Hasil (Final Data Structure for localStorage)
+    const finalResult = {
+      // Data untuk Result Page
+      gameType: "memory",
+      points: points,
+      time: formatDuration(durationPlayedSeconds > 0 ? durationPlayedSeconds : 0),
+      matchedCount: correctPairs,
+      totalPairs: totalPairs,
+      answers: matched.map((pairId) => {
+        const pair = initialTerms.find((item) => item.id === pairId);
+        return {
+          id: pairId,
+          term: pair.term,
+          definition: pair.definition,
+          isCorrect: true,
+        };
+      }),
+
+      gameType: "MEMO_CARD", // Untuk konsistensi penamaan di backend
+      score: points, // Mapped to score
+      duration_seconds: durationPlayedSeconds > 0 ? durationPlayedSeconds : 0,
+      total_moves: moves,
+      correct_answer: correctPairs, // Mapped to correct_answer
+      wrong_answer: wrongMoves > 0 ? wrongMoves : 0, // Mapped to wrong_answer
+    };
+
+    localStorage.setItem("gameResult", JSON.stringify(finalResult));
+    setResults(finalResult);
+
+    gsap.to("main > div", { opacity: 0, duration: 0.8 });
+
+    setTimeout(() => {
+      router.push("/mini-game/result");
+    }, 900);
+  }, [
+    matched,
+    moves,
+    points,
+    router,
+    setResults,
+    isFullscreen,
+    exitFullscreen,
+    maxTime,
+    time,
+    totalPairs, // Ditambahkan sebagai dependency
+    initialTerms, // Ditambahkan sebagai dependency untuk mendapatkan term/definition
+  ]);
+
+  // --- DATA FETCHING & GAME INITIALIZATION ---
   useEffect(() => {
-    const generated = [];
-    termsAndDefs.forEach((item) => {
-      generated.push({
-        id: `${item.id}-term`,
-        value: item.term,
-        pair: item.id,
-        type: "term",
-      });
-      generated.push({
-        id: `${item.id}-def`,
-        value: item.definition,
-        pair: item.id,
-        type: "definition",
-      });
-    });
-    setCards(shuffleArray(generated));
-    resetGame();
-  }, [resetGame]);
+    const nav = document.querySelector("nav");
+    const footer = document.querySelector("footer");
 
-  // FUNGSI UTAMA: HANDLE GAME OVER
-  const handleGameOver = useCallback(
-    (finalTime) => {
-      if (timerRef.current) clearInterval(timerRef.current);
+    const previousNavDisplay = nav?.style.display;
+    const previousFooterDisplay = footer?.style.display;
+
+    if (nav) nav.style.display = "none";
+    if (footer) footer.style.display = "none";
+
+    const fetchData = async () => {
+      setIsLoading(true);
       setRunning(false);
+      resetGame();
 
-      // Tambah: Exit fullscreen otomatis sebelum redirect
-      if (isFullscreen) {
-        exitFullscreen();
+      try {
+        const response = await fetch(API_ENDPOINT);
+        const result = await response.json();
+
+        if (result.success && result.data.length > 0) {
+          // 1. Ambil 4 soal secara acak (Randomization dari sisi client, sesuai kebutuhan)
+          const shuffledData = shuffleArray(result.data);
+          const selectedTerms = shuffledData.slice(0, MAX_PAIRS_TO_FETCH); // Ambil 4 item pertama setelah diacak
+
+          setInitialTerms(selectedTerms);
+
+          // 2. Tentukan Durasi Game
+          // Asumsi: Durasi diambil dari data pertama atau default 30
+          const durationFromApi = selectedTerms[0]?.duration || 30;
+          setMaxTime(durationFromApi);
+          localSetTime(durationFromApi);
+
+          // 3. Generate Kartu (8 kartu)
+          const generatedCards = [];
+          selectedTerms.forEach((item) => {
+            const pairId = item.id; // ID unik dari API
+            generatedCards.push({
+              id: `${pairId}-term`,
+              value: item.term,
+              pair: pairId,
+              type: "term",
+            });
+            generatedCards.push({
+              id: `${pairId}-def`,
+              value: item.definition,
+              pair: pairId,
+              type: "definition",
+            });
+          });
+
+          // Acak kartu
+          setCards(shuffleArray(generatedCards));
+          setRunning(true); // Mulai game/timer
+        } else {
+          console.error("Gagal memuat data atau data kosong:", result);
+          // TODO: Tampilkan pesan error ke user
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        // TODO: Tampilkan pesan error koneksi
+      } finally {
+        setIsLoading(false);
       }
+    };
 
-      const durationPlayed = 30 - finalTime;
+    fetchData();
 
-      // Kumpulkan Data Hasil
-      const finalResult = {
-        gameType: "memory",
-        points: points,
-        moves: moves,
-        time: formatDuration(durationPlayed > 0 ? durationPlayed : 0),
-        matchedCount: matched.length,
-        totalPairs: totalPairs,
-        answers: matched.map((pairId) => {
-          const pair = termsAndDefs.find((item) => item.id === pairId);
-          return {
-            id: pairId,
-            term: pair.term,
-            definition: pair.definition,
-            isCorrect: true,
-          };
-        }),
-      };
+    return () => {
+      if (nav) nav.style.display = previousNavDisplay ?? "";
+      if (footer) footer.style.display = previousFooterDisplay ?? "";
+      // Cleanup timer juga ada di useEffect lain
+    };
+  }, [resetGame]); // [] agar hanya dijalankan sekali saat mount
 
-      // Simpan ke Local Storage (sesuai ResultPage FIX)
-      localStorage.setItem("gameResult", JSON.stringify(finalResult));
-
-      // Update Global Store & Redirect
-      setResults(finalResult);
-
-      // Tambahkan GSAP fade out agar transisi lebih mulus
-      gsap.to("main > div", { opacity: 0, duration: 0.8 });
-
-      setTimeout(() => {
-        router.push("/mini-game/result"); // Redirect ke Result Page
-      }, 900);
-    },
-    [
-      matched,
-      moves,
-      points,
-      totalPairs,
-      router,
-      setResults,
-      isFullscreen,
-      exitFullscreen,
-    ]
-  );
-
-  // Timer jalan
+  // --- TIMER JALAN ---
   useEffect(() => {
-    if (running) {
+    if (running && maxTime > 0) {
       timerRef.current = setInterval(() => {
         localSetTime((t) => {
           if (t <= 1) {
             clearInterval(timerRef.current);
             setRunning(false);
-            handleGameOver(0);
+            handleGameOver(); // Waktu habis, game over
             return 0;
           }
-          setTime(t - 1);
           return t - 1;
         });
       }, 1000);
     }
     return () => clearInterval(timerRef.current);
-  }, [running, setTime, handleGameOver]);
+  }, [running, maxTime, handleGameOver]);
 
-  // check game end (Semua match)
+  // --- CHECK GAME END (Semua match) ---
   useEffect(() => {
-    if (matched.length === totalPairs && totalPairs > 0) {
-      handleGameOver(time);
+    // totalPairs akan > 0 jika initialTerms sudah terisi
+    if (!isLoading && totalPairs > 0 && matched.length === totalPairs) {
+      handleGameOver();
     }
-  }, [matched, time, totalPairs, handleGameOver]);
+  }, [matched, totalPairs, handleGameOver, isLoading]);
 
-  // flip card
+  // --- CARD FLIP & CHECK LOGIC (Tidak ada perubahan signifikan selain penggunaan state baru) ---
   const flipCard = (card) => {
     if (
       !running ||
@@ -257,7 +294,7 @@ export default function MemoryGamePage() {
     )
       return;
 
-    flipAudioRef.current?.play().catch((e) => console.log(e)); // NEW: Play flip sound
+    flipAudioRef.current?.play().catch((e) => console.log(e));
 
     const el = cardRefs.current[card.id];
     if (el) {
@@ -275,18 +312,17 @@ export default function MemoryGamePage() {
   // check pair
   useEffect(() => {
     if (flipped.length === 2) {
-      localSetMoves((m) => m + 1);
+      localSetMoves((m) => m + 1); // Tambah total_moves
       const [a, b] = flipped;
 
       if (a.pair === b.pair && a.type !== b.type) {
         // MATCH
-        matchAudioRef.current?.play().catch((e) => console.log(e)); // NEW: Play match sound
-        localSetPoints((p) => p + 20);
+        matchAudioRef.current?.play().catch((e) => console.log(e));
+        localSetPoints((p) => p + 20); // Poin bertambah per match
         setMatched((m) => {
-          addMatched(a.pair);
           return [...m, a.pair];
         });
-        // Animasi kartu match menjadi transparan/hilang
+        // Animasi match (tetap sama)
         [a, b].forEach((card) => {
           const el = cardRefs.current[card.id];
           if (el) {
@@ -316,11 +352,47 @@ export default function MemoryGamePage() {
         }, 900);
       }
     }
-  }, [flipped, addMatched]);
+  }, [flipped]);
 
+  // FUNGSI RESET GAME
+  const resetLocalGame = () => {
+    // Hapus animasi GSAP yang mungkin tertinggal
+    Object.values(cardRefs.current).forEach((c) => {
+      if (c) {
+        gsap.to(c, { rotateY: 0, duration: 0.35 });
+        gsap.to(c.parentNode, {
+          opacity: 1,
+          scale: 1,
+          duration: 0.1,
+        });
+      }
+    });
+
+    // Reset state lokal
+    setCards(shuffleArray(cards)); // Cukup acak ulang kartu yang sudah ada
+    setMatched([]);
+    setFlipped([]);
+    localSetMoves(0);
+    localSetPoints(0);
+    localSetTime(maxTime); // Set waktu kembali ke maxTime
+    resetGame();
+    setRunning(true);
+  };
+
+  if (isLoading) {
+    return (
+      <main className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
+        <div className="text-xl flex flex-col items-center gap-4">
+          <RotateCcw className="w-8 h-8 animate-spin text-pink-500" />
+          Memuat kartu dan istilah kesehatan...
+        </div>
+      </main>
+    );
+  }
+
+  // --- RETURN JSX (Perubahan minor di tombol reset dan stat timer) ---
   return (
     <main>
-      {/* NEW: Component Rotate Device Prompt */}
       <RotateDevicePrompt />
 
       <div className="relative min-h-screen">
@@ -328,7 +400,7 @@ export default function MemoryGamePage() {
         <div
           className="absolute inset-0 -z-10"
           style={{
-            backgroundImage: "url('/image/bg-memogame.jpeg')", // Ganti dengan URL gambar latar belakang kamu
+            backgroundImage: "url('/image/bg-memogame.jpeg')",
             backgroundSize: "cover",
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
@@ -361,9 +433,7 @@ export default function MemoryGamePage() {
                 onClick={toggleAudio}
                 aria-label={isPlaying ? "Mute" : "Unmute"}
               >
-                <div
-                  className="p-2 rounded-full bg-white/60 hover:bg-white shadow-md transition" // NEW: shadow-md
-                >
+                <div className="p-2 rounded-full bg-white/60 hover:bg-white shadow-md transition">
                   {isPlaying ? (
                     <Volume2 className="h-5 w-5 text-pink-600" />
                   ) : (
@@ -379,9 +449,8 @@ export default function MemoryGamePage() {
 
             {/* Stats */}
             <div className="flex items-center justify-between gap-3 mb-8 flex-wrap">
+              {/* Timer menggunakan maxTime dari API */}
               <div className="flex items-center gap-2 bg-pink-50/80 backdrop-blur px-4 py-2 rounded-full text-base font-bold text-pink-700 shadow-xl border border-pink-100 animate-pulse-slow">
-                {" "}
-                {/* UX BOOST */}
                 <Timer className="w-5 h-5 text-pink-500" />
                 <span className="tabular-nums">{time}s</span>
               </div>
@@ -397,7 +466,9 @@ export default function MemoryGamePage() {
 
             {/* Cards */}
             <div
-              className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-5 lg:grid-cols-5 gap-4 md:gap-6 p-2" // UX BOOST: Grid 5 kolom lebih ideal untuk 10 kartu di landscape
+              className={`grid gap-4 md:gap-6 p-2 ${
+                totalPairs === 4 ? "grid-cols-4 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-4" : "grid-cols-4" // Sesuaikan grid jika jumlah kartu berubah
+              }`}
               style={{ perspective: 1200 }}
             >
               {cards.map((card) => {
@@ -408,12 +479,12 @@ export default function MemoryGamePage() {
                     key={card.id}
                     className={`w-full aspect-square md:aspect-auto md:w-36 md:h-44 cursor-pointer transition-opacity ${
                       isMatched ? "pointer-events-none" : "hover:scale-105"
-                    }`} // Animasi match di-handle GSAP
+                    }`}
                     onClick={() => flipCard(card)}
                   >
                     <div
                       ref={(el) => (cardRefs.current[card.id] = el)}
-                      className="relative w-full h-full rounded-2xl shadow-xl transition-all" // NEW: shadow-xl
+                      className="relative w-full h-full rounded-2xl shadow-xl transition-all"
                       style={{
                         transformStyle: "preserve-3d",
                         transform:
@@ -424,21 +495,20 @@ export default function MemoryGamePage() {
                     >
                       {/* Back */}
                       <div
-                        className="absolute inset-0 flex items-center justify-center rounded-2xl backface-hidden border-4 border-pink-200/50 shadow-inner" // NEW: border tebal
+                        className="absolute inset-0 flex items-center justify-center rounded-2xl backface-hidden border-4 border-pink-200/50 shadow-inner"
                         style={{
                           background:
                             "linear-gradient(135deg,#ff7aa6,#ff5680 60%)",
                         }}
                       >
-                        <Gift className="w-10 h-10 text-white drop-shadow-lg animate-pulse-slow-reverse" />{" "}
-                        {/* UX BOOST: Animasi di cover */}
+                        <Gift className="w-10 h-10 text-white drop-shadow-lg animate-pulse-slow-reverse" />
                         <span className="absolute bottom-2 right-2 text-xs font-bold text-white/70">
                           {card.type === "term" ? "Istilah" : "Definisi"}
                         </span>
                       </div>
                       {/* Front */}
                       <div
-                        className="absolute inset-0 flex items-center justify-center rounded-2xl bg-white/95 border-4 border-pink-400 text-pink-800 font-extrabold text-sm md:text-base p-2 text-center backface-hidden shadow-2xl" // NEW: Font & Shadow
+                        className="absolute inset-0 flex items-center justify-center rounded-2xl bg-white/95 border-4 border-pink-400 text-pink-800 font-extrabold text-xs md:text-xs p-2 text-center backface-hidden shadow-2xl"
                         style={{ transform: "rotateY(180deg)" }}
                       >
                         <div className="leading-snug">{card.value}</div>
@@ -452,29 +522,8 @@ export default function MemoryGamePage() {
             {/* Footer */}
             <div className="text-center my-8 flex flex-col md:flex-row justify-center items-center gap-4">
               <button
-                onClick={() => {
-                  Object.values(cardRefs.current).forEach((c) =>
-                    gsap.to(c, { rotateY: 0, duration: 0.35 })
-                  );
-                  // Reset opacity untuk semua parent card (sebelumnya dianimasikan hilang)
-                  Object.values(cardRefs.current).forEach((c) =>
-                    gsap.to(c.parentNode, {
-                      opacity: 1,
-                      scale: 1,
-                      duration: 0.1,
-                    })
-                  );
-
-                  setCards(shuffleArray(cards));
-                  setMatched([]);
-                  setFlipped([]);
-                  localSetMoves(0);
-                  localSetPoints(0);
-                  localSetTime(30);
-                  resetGame();
-                  setRunning(true);
-                }}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-pink-500 text-white shadow-xl hover:bg-pink-600 transition font-bold" // UX BOOST: Tombol Reset lebih menonjol
+                onClick={resetLocalGame} // Menggunakan fungsi reset yang diperbarui
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-pink-500 text-white shadow-xl hover:bg-pink-600 transition font-bold"
               >
                 <RotateCcw className="w-5 h-5" />
                 Mulai Ulang Game
