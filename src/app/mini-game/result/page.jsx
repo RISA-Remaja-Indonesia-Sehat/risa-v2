@@ -9,8 +9,10 @@ import {
     ChevronLeft, Target, Repeat, Clock, CheckCircle, XCircle, Download, Trophy, ChevronRight, Zap,
 } from "lucide-react";
 import Link from "next/link";
-// --- INTEGRASI ZUSTAND / AUTH ---
+import useUserScoreStore from '../../store/useUserScoreStore';
 import useAuthStore from '../../store/useAuthStore'; 
+
+
 
 // Konstanta
 const DURATION_TO_REDIRECT = 10000;
@@ -69,23 +71,26 @@ const getMotivationalMessage = (score, isMemoryGame) => {
 };
 
 /**
- * FUNGSI UTAMA: POST SKOR KE API (FIXED LOGIC DENGAN NULL/UNDEFINED CHECK)
- * Menerima data game dan user ID yang sudah pasti ada dari Zustand.
+ * FUNGSI UTAMA: POST SKOR KE API DAN MENGAKUMULASI SKOR LOKAL
  */
-const postScoreToAPI = async (data, userId) => {
+const postScoreToAPI = async (data, userId, addLocalScoreFunction, scoreOfThisGame) => {
     
     // Safety check ID
     if (!userId || isNaN(userId) || userId <= 0) {
         console.warn("User ID tidak ditemukan atau tidak valid. Skor DIBATALKAN.");
+        
+        // JANGAN LUPA: Jika user tidak login, tetap update skor lokal
+        if (addLocalScoreFunction) {
+            addLocalScoreFunction(scoreOfThisGame); 
+            console.log("✅ [ZUSTAND] User belum login. Skor lokal diakumulasi:", scoreOfThisGame);
+        }
         return;
     }
 
     const DYNAMIC_GAME_ID = getGameId(data.gameType);
     
-    // --- 🚨 PERBAIKAN NULL CHECK DENGAN ?? 0 ---
     // Pastikan nilai selalu integer/number, bukan null atau undefined
     const pointsOrScore = data.gameType === "MEMO_CARD" ? (data.points ?? 0) : (data.score ?? 0);
-    const durationTime = parseInt(data.time, 10) ?? 30;
     const correctCount = data.gameType === "MEMO_CARD" ? (data.matchedCount ?? 0) : (data.correct ?? 0);
     
     // Hitung wrong answer untuk memory: total moves dikurangi matched count. Pastikan minimal 0.
@@ -100,13 +105,12 @@ const postScoreToAPI = async (data, userId) => {
         : ((data.correct ?? 0) + (data.wrong ?? 0)); 
     
     
-    // --- STRUKTUR DATA FINAL UNTUK BACKEND ANDA ---
-    // PASTIKAN SEMUA FIELD ADALAH INTEGER VALID
+    // --- STRUKTUR DATA FINAL UNTUK BACKEND ANDA (TIDAK DIUBAH) ---
     const scoreData = {
         user_id: parseInt(userId), // Int
         game_id: DYNAMIC_GAME_ID, // Int
         points: pointsOrScore, // Int (sesuai skema)
-        duration_seconds: 0, // Int
+        duration_seconds: 0, // Ambil dari data.time, konversi ke Int
         total_moves: totalMovesCount, // Int
         correct_answer: correctCount, // Int
         wrong_answer: finalWrongAnswer, // Int? (Opsional, tapi kita kirim Int 0 atau lebih)
@@ -136,17 +140,29 @@ const postScoreToAPI = async (data, userId) => {
 
         const result = await response.json();
         console.log("✅ Skor berhasil dikirim (Status 2xx):", result); // Logging Sukses Detail
+        
+        // --- AKUMULASI SCORE ZUSTAND LOKAL (PASTI JALAN JIKA API SUKSES) ---
+        if (addLocalScoreFunction) {
+            addLocalScoreFunction(scoreOfThisGame); 
+            console.log("✅ [ZUSTAND] Skor lokal diakumulasi dengan skor game ini:", scoreOfThisGame);
+        }
+        // -----------------------------------------------------------
+
         return result;
 
     } catch (error) {
         console.error("🚨 Gagal memposting skor ke API (Catch Error):", error.message);
+        
+        // FALLBACK: Jika API GAGAL, tetap update skor lokal untuk pengalaman pengguna yang mulus
+        if (addLocalScoreFunction) {
+            addLocalScoreFunction(scoreOfThisGame); 
+            console.log("⚠️ [ZUSTAND] API GAGAL. Skor lokal tetap diakumulasi:", scoreOfThisGame);
+        }
     }
 };
 
 
 // --- Komponen Detail Card (Tidak Berubah) ---
-
-// Card untuk detail jawaban Memory Game (Pasangan)
 const MemoryDetailCard = ({ pair, index }) => (
     <div className="p-4 md:p-5 rounded-xl shadow-inner border border-pink-200 bg-pink-50/80 transition-all hover:bg-pink-100">
         <div className="flex items-start justify-between mb-2">
@@ -154,7 +170,7 @@ const MemoryDetailCard = ({ pair, index }) => (
                 Pasangan Tepat {index + 1}
             </h3>
             <span className="flex-shrink-0 flex items-center gap-1 font-semibold text-xs px-2 py-0.5 rounded-full bg-pink-500 text-white shadow-sm">
-                <CheckCircle className="w-3 h-3" /> Matched
+                <Target className="w-3 h-3" /> Matched
             </span>
         </div>
         <p className="text-gray-700 font-medium mb-1 text-sm">
@@ -166,7 +182,6 @@ const MemoryDetailCard = ({ pair, index }) => (
     </div>
 );
 
-// Card untuk detail jawaban Quiz/mitosfakta (Pertanyaan)
 const QuizDetailCard = ({ answer, index }) => (
     <div
         className={`p-4 md:p-5 rounded-xl shadow-inner transition-all 
@@ -199,7 +214,6 @@ const QuizDetailCard = ({ answer, index }) => (
         <p className="text-gray-700 font-medium mb-3 text-sm">
             {answer.statement || "Teks Pertanyaan Tidak Ditemukan"}
         </p>
-        {/* Detail jawaban diatur lebih rapih */}
         <div className="text-xs">
             <p
                 className={`font-semibold ${
@@ -235,9 +249,31 @@ export default function ResultPage() {
     const user = useAuthStore(state => state.user);
     const initAuth = useAuthStore(state => state.initAuth);
     
-    // User ID: Ambil dari `user.id`. GANTI KE `user?.user_id` JIKA NAMA FIELDNYA BEDA!
+   
+    
+    const addScore = useUserScoreStore(state => state.addScore); 
+    const totalUserScore = useUserScoreStore(state => state.userScore);
+
+    const hasScoreBeenAdded = useRef(false);
     const DYNAMIC_USER_ID = user?.id || null; 
     // --------------------------------
+
+    // LOGIC MULTI-GAME (Ditaruh di sini agar bisa diakses useEffect dan postScoreToAPI)
+    const isMemoryGame = resultData?.gameType === "MEMO_CARD"; // Perlu cek if resultData ada
+
+    const correctLabel = isMemoryGame ? "Pasangan Tepat" : "Jawaban Benar";
+    const wrongLabel = isMemoryGame ? "Total Gerakan" : "Jawaban Salah";
+    const correctValue = isMemoryGame ? resultData?.matchedCount : resultData?.correct;
+    const wrongValue = isMemoryGame ? resultData?.moves : resultData?.wrong; // moves untuk memory, wrong untuk quiz
+    
+    // --- ✅ PERBAIKAN: DEFINISI IKON AGAR TIDAK REFERENCE ERROR ---
+    const correctIcon = isMemoryGame ? Target : CheckCircle;
+    const wrongIcon = isMemoryGame ? Repeat : XCircle; // Repeat untuk 'moves' (gerakan) di memory game
+    // -----------------------------------------------------------
+
+    // PESAN MOTIVASI DINAMIS (Hanya berdasarkan skor game saat ini)
+    const { grade, message, color, badgeColor, icon: GradeIcon } = getMotivationalMessage(resultData?.points || resultData?.score || 0, isMemoryGame);
+
 
     useEffect(() => {
         if (typeof window !== "undefined") {
@@ -249,11 +285,14 @@ export default function ResultPage() {
 
         const storedResult = localStorage.getItem("gameResult");
         let data = null;
+        let finalScoreValue = 0;
 
         if (storedResult) {
             try {
                 data = JSON.parse(storedResult);
+                finalScoreValue = data?.points || data?.score || 0;
                 setResultData(data);
+                console.log("🔥 [DEBUG] Data result dari localStorage:", data);
                 setLoading(false);
             } catch (e) {
                 console.error("Error parsing gameResult from localStorage:", e);
@@ -266,19 +305,20 @@ export default function ResultPage() {
                 .catch((err) => console.warn("Autoplay diblokir:", err));
         } else {
             setLoading(false);
+            // Memberi sedikit waktu sebelum redirect jika data tidak ada
             setTimeout(() => router.push("/mini-game/"), 500);
             return;
         }
 
 
-        // --- LOGIKA UTAMA: POST SKOR KE API ---
-        if (!scorePosted && data && DYNAMIC_USER_ID) {
-            // Panggil fungsi postScoreToAPI dengan data yang sudah di-fix
-            postScoreToAPI(data, DYNAMIC_USER_ID); 
-            setScorePosted(true); // Tandai sudah dipost
-        } else if (!scorePosted && data && !DYNAMIC_USER_ID) {
-            console.warn("User belum login/ID tidak ada. Skor tidak dikirim ke API.");
-            setScorePosted(true); // Tetap tandai true agar tidak re-run
+        if (!scorePosted && data) {
+            if (hasScoreBeenAdded.current) {
+            console.log("⚠️ REF GUARD: Mencegah eksekusi ganda akumulasi skor.");
+            return; 
+        }
+        hasScoreBeenAdded.current = true; // Tandai sudah dipanggil
+            setScorePosted(true);
+            postScoreToAPI(data, DYNAMIC_USER_ID, addScore, finalScoreValue); 
         }
         // ----------------------------------------
 
@@ -292,6 +332,7 @@ export default function ResultPage() {
             gsap.to("#motivational-message", { opacity: 1, y: 0, duration: 0.8, delay: 0.8 });
             gsap.to("#action-buttons", { opacity: 1, y: 0, duration: 0.8, delay: 1.2 });
             gsap.to("#recommendations", { opacity: 1, duration: 1, delay: 1.5 });
+            gsap.to("#total-score-card", { opacity: 1, scale: 1, duration: 1, delay: 1.2 }); // Animasi Kartu Total Skor
             setShowConfetti(true);
         }, 100);
 
@@ -304,11 +345,10 @@ export default function ResultPage() {
             completeAudioRef.current?.pause();
             completeAudioRef.current = null;
         };
-
-    }, [router, scorePosted, DYNAMIC_USER_ID, initAuth]); 
-
+    // ✅ Perbaikan Dependency Array: Menambahkan addScore dan scoreValue
+    }, [router, scorePosted, DYNAMIC_USER_ID, initAuth, addScore]); 
     
-    // --- FUNGSI DOWNLOAD HASIL ---
+    // --- FUNGSI DOWNLOAD HASIL (Tidak Berubah) ---
     const handleDownloadResult = useCallback(() => {
         if (!resultRef.current) return;
 
@@ -341,41 +381,27 @@ export default function ResultPage() {
         return (
             <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-6">
                  <p className="text-xl font-semibold text-pink-500 mb-4">
-                    {loading ? "Memuat Hasil Game..." : "Data Hasil Tidak Ditemukan 😔"}
-                </p>
-                {!loading && (
-                    <button
-                        onClick={() => router.push("/mini-game/")}
-                        className="flex items-center px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition"
-                    >
-                        <ChevronLeft className="w-5 h-5 mr-1" /> Kembali ke Daftar Game
-                    </button>
-                )}
+                     {loading ? "Memuat Hasil Game..." : "Data Hasil Tidak Ditemukan 😔"}
+                 </p>
+                 {!loading && (
+                     <button
+                         onClick={() => router.push("/mini-game/")}
+                         className="flex items-center px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition"
+                     >
+                         <ChevronLeft className="w-5 h-5 mr-1" /> Kembali ke Daftar Game
+                     </button>
+                 )}
             </div>
         );
     }
 
-
-    // LOGIC MULTI-GAME
-    const isMemoryGame = resultData.gameType === "memory";
-    const correctLabel = isMemoryGame ? "Pasangan Tepat" : "Jawaban Benar";
-    const wrongLabel = isMemoryGame ? "Total Gerakan" : "Jawaban Salah";
-    const correctValue = isMemoryGame ? resultData.matchedCount : resultData.correct;
-    const wrongValue = isMemoryGame ? resultData.moves : resultData.wrong; // moves untuk memory, wrong untuk quiz
-    const scoreValue = isMemoryGame ? resultData.points : resultData.score;
-    const correctIcon = isMemoryGame ? Target : CheckCircle;
-    const wrongIcon = isMemoryGame ? Repeat : XCircle;
-    
-
-    // PESAN MOTIVASI DINAMIS
-    const { grade, message, color, badgeColor, icon: GradeIcon } = getMotivationalMessage(scoreValue, isMemoryGame);
-
+ 
     return (
         <div className="relative min-h-screen bg-gradient-to-br from-pink-100 via-white to-gray-50">
             {showConfetti && (
                 <Confetti recycle={false} numberOfPieces={350} gravity={0.38} wind={0.03} />
             )}
-
+       
             <section className="container mx-auto px-4 pt-6">
                 <button
                     id="back-btn"
@@ -398,28 +424,39 @@ export default function ResultPage() {
                     {/* INFO POSTING SKOR (OPSIONAL, HANYA UNTUK DEBUG/INFO USER) */}
                     {DYNAMIC_USER_ID ? (
                         <p className="text-gray-500 mb-8 text-lg font-medium">
-                            Skor ini telah **berhasil dikirim** atas nama User ID: **{DYNAMIC_USER_ID}**
-                        </p>
+                            Skor game ini telah berhasil dikirim!   </p>
                     ) : (
                         <p className="text-red-500 mb-8 text-lg font-medium">
-                            Anda belum login. Skor **TIDAK** dikirimkan ke Papan Skor!
+                            Anda belum login. Skor TIDAK dikirimkan ke Papan Skor, hanya diakumulasi lokal.
                         </p>
                     )}
+                    
+                    {/* 1. KARTU TOTAL SKOR KESELURUHAN (BARU) */}
+                    <div 
+                        id="total-score-card"
+                        className="p-3 md:p-4 mb-8 bg-purple-50/80 rounded-xl shadow-lg border-2 border-purple-200 mx-auto max-w-lg opacity-0 transform scale-0"
+                    >
+                        <div className="flex items-center justify-center gap-3">
+                            <Trophy className="w-6 h-6 text-purple-600" />
+                            <span className="text-lg font-bold text-purple-700">TOTAL POIN KESELURUHAN ANDA:</span>
+                            <span className="text-3xl font-extrabold text-purple-800">{totalUserScore}</span>
+                        </div>
+                    </div>
                     
                     <div
                         id="score-container"
                         className="bg-white p-6 md:p-10 rounded-3xl shadow-2xl shadow-pink-100/50 opacity-0 transform scale-0"
                     >
-                        {/* 2. Score Circle */}
+                        {/* 2. Score Circle (Skor Game Saat Ini) */}
                         <div className="w-48 h-48 md:w-64 md:h-64 mx-auto mb-8 bg-gradient-to-br from-pink-500 to-rose-600 rounded-full flex flex-col items-center justify-center text-white shadow-xl shadow-pink-400/50 transition-shadow duration-500">
                             <span className="text-base font-medium opacity-80">
-                                {isMemoryGame ? "TOTAL POIN" : "FINAL SCORE"}
+                                {isMemoryGame ? "POIN GAME INI" : "FINAL SCORE INI"}
                             </span>
                             <span
                                 id="score-number"
                                 className="text-6xl md:text-7xl font-bold"
                             >
-                                {scoreValue}
+                                {resultData?.points || resultData?.score || 0}
                             </span>
                         </div>
 
@@ -454,9 +491,10 @@ export default function ResultPage() {
                                     className={`w-10 h-10 md:w-14 md:h-14 mx-auto mb-1 rounded-full flex items-center justify-center 
                                     ${isMemoryGame ? "bg-pink-100" : "bg-green-100"}`}
                                 >
+                                    {/* ✅ Perbaikan: Menggunakan variabel correctIcon yang sudah didefinisikan */}
                                     {React.createElement(correctIcon, {
                                         className: `w-5 h-5 md:w-7 md:h-7 ${
-                                          isMemoryGame ? "text-pink-600" : "text-green-600"
+                                            isMemoryGame ? "text-pink-600" : "text-green-600"
                                         }`,
                                     })}
                                 </div>
@@ -476,9 +514,10 @@ export default function ResultPage() {
                                     className={`w-10 h-10 md:w-14 md:h-14 mx-auto mb-1 rounded-full flex items-center justify-center 
                                     ${isMemoryGame ? "bg-purple-100" : "bg-red-100"}`}
                                 >
+                                    {/* ✅ Perbaikan: Menggunakan variabel wrongIcon yang sudah didefinisikan */}
                                     {React.createElement(wrongIcon, {
                                         className: `w-5 h-5 md:w-7 md:h-7 ${
-                                          isMemoryGame ? "text-purple-600" : "text-red-600"
+                                            isMemoryGame ? "text-purple-600" : "text-red-600"
                                         }`,
                                     })}
                                 </div>
@@ -533,7 +572,8 @@ export default function ResultPage() {
                             {isMemoryGame ? "Tepat" : "Benar/Salah"}
                         </h2>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                            {resultData.answers.map((answer, index) =>
+                            {/* PENTING: Gunakan operator '||' untuk memastikan resultData.answers ada sebelum di-map */}
+                            {(resultData.answers || []).map((answer, index) =>
                                 isMemoryGame ? (
                                     <MemoryDetailCard key={index} pair={answer} index={index} />
                                 ) : (
@@ -553,7 +593,7 @@ export default function ResultPage() {
                         </h3>
 
                         <p className="text-center text-lg text-gray-600 mb-6">
-                            Score kamu {scoreValue}? Jangan khawatir! Artikel ini akan bantu
+                            Score kamu {resultData?.points || resultData?.score || 0}? Jangan khawatir! Artikel ini akan bantu
                             tingkatkan pengetahuan dan poin di game berikutnya. 🚀
                         </p>
 
@@ -618,17 +658,18 @@ export default function ResultPage() {
                                 className="group block transition duration-300 transform hover:translate-y-[-8px] shadow-xl hover:shadow-pink-200/50 rounded-xl overflow-hidden bg-white border border-gray-100"
                             >
                                 <div className="p-4 flex flex-col h-full">
+                                    {/* ... (lanjutan di sini) */}
                                     <div className="h-40 w-full relative mb-3">
                                         <Image
-                                            src={"/image/article-image-3.png"}
+                                            src="/image/article-image-3.png"
                                             fill
                                             sizes="(max-width: 768px) 100vw, 33vw"
                                             style={{ objectFit: "contain" }}
-                                            alt="Ilustrasi Menstruasi Pertama"
+                                            alt="Ilustrasi Menstruasi"
                                         />
                                     </div>
                                     <h4 className="font-bold lg:text-lg text-gray-800 text-center leading-snug p-2 group-hover:text-pink-600 transition">
-                                        Menstruasi Pertama: Kenapa dan Gak Usah Takut
+                                        Mengenal Siklus Menstruasi: Kapan Harus Khawatir?
                                     </h4>
                                     <div className="mt-2 text-center">
                                         <span className="text-base text-pink-500 font-medium flex items-center justify-center gap-1">

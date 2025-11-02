@@ -15,6 +15,7 @@ import MemoIcon from "../../../public/image/memory-game.png";
 import DragIcon from "../../../public/image/drag-drop.png";
 import axios from 'axios';
 
+
 gsap.registerPlugin(ScrollTrigger);
 
 const GAMES_ENDPOINT = "https://server-risa.vercel.app/api/mini-games";
@@ -25,7 +26,7 @@ const GameCardLegend = ({ title, description, linkgame, icon, type, gameId, poin
   const pointsText = type === 'DRAG_DROP' ? 'FACT FINDER' : 'MEMORY CHALLENGE';
 
   const DynamicIcon = type === 'DRAG_DROP' ? Target : Clock;
-
+  
   return (
     <div
       className={`p-1 bg-white border-8 border-double ${mainColor} rounded-2xl shadow-xl shadow-pink-500/30 transition-all duration-300 transform hover:scale-[1.02] cursor-pointer relative overflow-hidden`}
@@ -35,6 +36,8 @@ const GameCardLegend = ({ title, description, linkgame, icon, type, gameId, poin
           <DynamicIcon size={16} className="mr-2 text-yellow-300" />
           {pointsText} QUEST
         </div>
+   
+    
 
         <div className="bg-yellow-400 text-gray-900 font-extrabold px-3 py-0.5 rounded-full shadow-md text-sm uppercase transform rotate-2">
           {points} PTS
@@ -61,7 +64,7 @@ const GameCardLegend = ({ title, description, linkgame, icon, type, gameId, poin
         </div>
 
         <p className="text-gray-600 mb-6 text-sm border-t border-dashed border-gray-200 pt-4 mt-4">{description}</p>
-
+    
         <Link href={`${linkgame}?gameId=${gameId}`} passHref>
           <button
             className={`w-full bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-black py-3 rounded-lg shadow-lg shadow-yellow-400/50 transition-all duration-200 uppercase tracking-widest text-lg transform hover:scale-[1.01] flex items-center justify-center`}

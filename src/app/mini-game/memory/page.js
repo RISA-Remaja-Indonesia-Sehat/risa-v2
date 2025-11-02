@@ -59,6 +59,7 @@ export default function MemoryGamePage() {
   const [running, setRunning] = useState(false); // Default: false, akan diset true setelah data dimuat
   const [isLoading, setIsLoading] = useState(true); // State loading
   const [isFullscreen, setIsFullscreen] = useState(true);
+  const [isGameOver, setIsGameOver] = useState(false);
 
   const timerRef = useRef(null);
   const cardRefs = useRef({});
@@ -124,6 +125,10 @@ export default function MemoryGamePage() {
 
   // --- FUNGSI UTAMA: HANDLE GAME OVER (Untuk Score Endpoint) ---
   const handleGameOver = useCallback(() => {
+
+    if (isGameOver) return; // Cegah multiple calls
+    setIsGameOver(true);
+
     if (timerRef.current) clearInterval(timerRef.current);
     setRunning(false);
 
@@ -180,7 +185,8 @@ export default function MemoryGamePage() {
     maxTime,
     time,
     totalPairs, // Ditambahkan sebagai dependency
-    initialTerms, // Ditambahkan sebagai dependency untuk mendapatkan term/definition
+    initialTerms,
+    isGameOver // Ditambahkan sebagai dependency untuk mendapatkan term/definition
   ]);
 
   // --- DATA FETCHING & GAME INITIALIZATION ---
@@ -282,7 +288,7 @@ export default function MemoryGamePage() {
     if (!isLoading && totalPairs > 0 && matched.length === totalPairs) {
       handleGameOver();
     }
-  }, [matched, totalPairs, handleGameOver, isLoading]);
+  }, [matched, totalPairs, handleGameOver, isLoading, isGameOver]);
 
   // --- CARD FLIP & CHECK LOGIC (Tidak ada perubahan signifikan selain penggunaan state baru) ---
   const flipCard = (card) => {
