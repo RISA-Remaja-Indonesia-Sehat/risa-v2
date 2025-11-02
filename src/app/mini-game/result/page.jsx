@@ -84,18 +84,18 @@ const postScoreToAPI = async (data, userId) => {
     
     // --- 🚨 PERBAIKAN NULL CHECK DENGAN ?? 0 ---
     // Pastikan nilai selalu integer/number, bukan null atau undefined
-    const pointsOrScore = data.gameType === "memory" ? (data.points ?? 0) : (data.score ?? 0);
+    const pointsOrScore = data.gameType === "MEMO_CARD" ? (data.points ?? 0) : (data.score ?? 0);
     const durationTime = parseInt(data.time, 10) ?? 30;
-    const correctCount = data.gameType === "memory" ? (data.matchedCount ?? 0) : (data.correct ?? 0);
+    const correctCount = data.gameType === "MEMO_CARD" ? (data.matchedCount ?? 0) : (data.correct ?? 0);
     
     // Hitung wrong answer untuk memory: total moves dikurangi matched count. Pastikan minimal 0.
     const wrongCountMemory = (data.moves ?? 0) - correctCount;
     
-    const finalWrongAnswer = data.gameType === "memory"
+    const finalWrongAnswer = data.gameType === "MEMO_CARD"
         ? Math.max(0, wrongCountMemory) // Minimum 0
         : (data.wrong ?? 0); // Ambil dari data.wrong jika quiz, default 0
         
-    const totalMovesCount = data.gameType === "memory" 
+    const totalMovesCount = data.gameType === "MEMO_CARD" 
         ? (data.moves ?? 0) 
         : ((data.correct ?? 0) + (data.wrong ?? 0)); 
     
