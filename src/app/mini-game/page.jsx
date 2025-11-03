@@ -47,53 +47,49 @@ const GameCardLegend = ({
 
   return (
     <div
-      className={`p-1 bg-white border-8 border-double ${mainColor} rounded-2xl shadow-xl shadow-pink-500/30 transition-all duration-300 transform hover:scale-[1.02] cursor-pointer relative overflow-hidden`}
-    >
-      <div
-        className={`w-full ${mainColor} py-2 px-4 text-white font-black text-xs uppercase rounded-t-xl flex items-center justify-between`}
-      >
-        <div className="flex items-center">
-          <DynamicIcon size={16} className="mr-2 text-yellow-300" />
-          {pointsText} QUEST
-        </div>
+  className="relative p-4 bg-gradient-to-br from-pink-50 to-yellow-100 rounded-2xl shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer overflow-hidden"
+  style={{ perspective: '1000px' }} // Efek 3D sederhana
+>
+  {/* Layer 3D bawah untuk kedalaman */}
+  <div className="absolute inset-0 bg-pink-100 rounded-2xl transform translate-z-0 opacity-50"></div>
 
-        <div className="bg-yellow-400 text-gray-900 font-extrabold px-3 py-0.5 rounded-full shadow-md text-sm uppercase transform rotate-2">
-          {points} PTS
-        </div>
-      </div>
-
-      <div className={`p-6 border-b-4 ${accentColor} bg-white rounded-b-xl`}>
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex-shrink-0">
-            <Image
-              src={icon}
-              alt={title}
-              width={120}
-              height={100}
-              className="drop-shadow-lg p-2 bg-yellow-50 border-3 border-yellow-400 rounded-full"
-            />
-          </div>
-
-          <div className="flex-grow ml-4">
-            <h3 className="text-md md:text-xl font-black text-gray-900 leading-snug">
-              {title}
-            </h3>
-          </div>
-        </div>
-
-        <p className="text-gray-600 mb-6 text-sm border-t border-dashed border-gray-200 pt-4 mt-4">
-          {description}
-        </p>
-
-        <Link href={`${linkgame}?gameId=${gameId}`} passHref>
-          <button
-            className={`w-full bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-black py-3 rounded-lg shadow-lg shadow-yellow-400/50 transition-all duration-200 uppercase tracking-widest text-lg transform hover:scale-[1.01] flex items-center justify-center`}
-          >
-            <Zap size={20} className="mr-2" /> MULAI GAME
-          </button>
-        </Link>
-      </div>
+  {/* Header */}
+  <div className="relative bg-pink-200 py-2 px-3 text-pink-700 font-bold text-xs uppercase rounded-t-xl flex items-center justify-between z-10">
+    <div className="flex items-center">
+      <DynamicIcon size={14} className="mr-2 text-yellow-400" />
+      {pointsText} Quest
     </div>
+    <div className="bg-yellow-200 text-pink-800 font-semibold px-2 py-1 rounded-full text-xs">
+      {points} PTS
+    </div>
+  </div>
+
+  {/* Body */}
+  <div className="relative bg-white p-4 rounded-b-xl border-t-2 border-yellow-200 z-10">
+    <div className="flex items-center mb-3">
+      <Image
+        src={icon}
+        alt={title}
+        width={80}
+        height={80}
+        className="rounded-full border-2 border-pink-200 shadow-md"
+      />
+      <h3 className="ml-3 text-lg font-bold text-pink-700 leading-tight">
+        {title}
+      </h3>
+    </div>
+
+    <p className="text-gray-600 text-sm mb-4 leading-relaxed">
+      {description}
+    </p>
+
+    <Link href={`${linkgame}?gameId=${gameId}`} passHref>
+      <button className="w-full bg-yellow-300 hover:bg-yellow-400 text-pink-800 font-bold py-2 px-4 rounded-lg shadow-md transition-all duration-200 flex items-center justify-center text-sm hover:scale-102">
+        <Zap size={16} className="mr-2" /> Mulai Game
+      </button>
+    </Link>
+  </div>
+</div>
   );
 };
 
@@ -326,11 +322,11 @@ export default function Home() {
         <section className="w-full flex flex-col items-center">
           <h2
             ref={addFadeSlide}
-            className="text-4xl font-black text-pink-700 mb-2 border-b-4 border-yellow-500 pb-1 flex items-center"
+            className="text-3xl lg:text-4xl font-black text-pink-700 mb-2 pb-1 flex items-center"
           >
-            <Gamepad2Icon size={32} className="mr-3 text-pink-600" /> GAME BOARD
+            <Gamepad2Icon size={32} className="mr-3 text-pink-500" /> GAME BOARD
           </h2>
-          <p className="text-gray-600 text-xl text-center mb-12">
+          <p className="text-gray-600 lg:text-xl text-center mb-12">
             Pilih Game kamu. Selesaikan untuk mendapatkan poin kompetisi dan
             menjadi yang terbaik!
           </p>
