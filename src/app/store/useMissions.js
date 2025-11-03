@@ -223,7 +223,7 @@ const useMissions = create((set, get) => ({
     const log = missionLogs.find(
       (log) => log.mission_id === 5 && log.status === "in_progress"
     );
-    if (log) get().completeMissionStep(5, addStickers, onRewardAnimation);
+    if (log) get().completeMissionStep(3, addStickers, onRewardAnimation);
   },
   trackGame: (addStickers, onRewardAnimation) => {
     const { missionLogs } = get();

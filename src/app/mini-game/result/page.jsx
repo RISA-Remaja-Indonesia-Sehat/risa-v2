@@ -473,12 +473,12 @@ export default function ResultPage() {
           {/* INFO POSTING SKOR (OPSIONAL, HANYA UNTUK DEBUG/INFO USER) */}
           {DYNAMIC_USER_ID ? (
             <p className="text-gray-500 mb-8 text-lg font-medium">
-              Skor ini telah **berhasil dikirim** atas nama User ID: **
-              {DYNAMIC_USER_ID}**
+              Skor ini telah berhasil dikirim!
+             
             </p>
           ) : (
             <p className="text-red-500 mb-8 text-lg font-medium">
-              Anda belum login. Skor **TIDAK** dikirimkan ke Papan Skor!
+              Anda belum login. Skor TIDAK dikirimkan ke Papan Skor!
             </p>
           )}
 
