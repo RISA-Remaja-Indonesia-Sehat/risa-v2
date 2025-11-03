@@ -7,7 +7,7 @@ const API_KEY = process.env.GEMINI_API_KEY;
 
 const genAI = new GoogleGenerativeAI(API_KEY);
 const CONFIGURED_MODEL = 'gemini-2.5-flash';
-const MODEL_CANDIDATES = [CONFIGURED_MODEL, 'gemini-2.0-flash'].filter(Boolean);
+const MODEL_CANDIDATES = [CONFIGURED_MODEL, 'gemini-2.0-flash', 'gemini-2.5-pro'].filter(Boolean);
 const MASTER_ARTICLE_LIST = [
   {
     id: 1,
