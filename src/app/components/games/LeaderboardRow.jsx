@@ -126,7 +126,7 @@ const LeaderboardRow = ({ player, rank, isTop3, isPlaceholder }) => {
 
             {/* Skor */}
             <div className="text-right flex flex-col items-end flex-shrink-0">
-                <span ref={scoreRef} className={`text-3xl md:text-4xl font-extrabold ${rank === 1 ? 'text-amber-600' : 'text-pink-700'} ${isPlaceholder ? 'text-gray-400' : ''}`}>
+                <span ref={scoreRef} className={`text-xl md:text-2xl font-extrabold ${rank === 1 ? 'text-amber-600' : 'text-pink-700'} ${isPlaceholder ? 'text-gray-400' : ''}`}>
                     {player.totalPoints.toLocaleString()} 
                 </span>
                 <span className="text-xs text-gray-500 font-medium">POINTS</span>

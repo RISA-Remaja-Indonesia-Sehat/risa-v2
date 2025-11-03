@@ -390,7 +390,7 @@ export default function ResultPage() {
       {/* RESULT SECTION */}
       <section className="container mx-auto px-4 py-8 md:py-12" ref={resultRef} data-capture-root>
         <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-2xl md:text-3xl font-black text-pink-700 mb-2 drop-shadow-md">🎉 SELAMAT YA, KAMU KEREN! 🎉</h1>
+          <h1 className="text-2xl md:text-3xl font-black text-pink-500 mb-2 drop-shadow-md">Kamu mendapat</h1>
 
           <div id="score-container" className="bg-white p-6 md:p-10 rounded-3xl shadow-2xl shadow-pink-100/50 opacity-0 transform scale-0">
             {/* Score Circle */}
@@ -404,10 +404,10 @@ export default function ResultPage() {
             <div id="motivational-message" className={`p-4 md:p-5 rounded-2xl shadow-lg mx-auto max-w-lg mb-3 opacity-0 transform translate-y-10 border-b-4 border-pink-200 ${badgeColor}`}>
               <div className="flex items-center justify-center gap-3">
                 <GradeIcon className={`w-8 h-8 ${color}`} />
-                <span className={`text-4xl md:text-5xl font-extrabold ${color}`}>{grade}</span>
+                <span className={`text-2xl md:text-3xl font-extrabold ${color}`}>{grade}</span>
                 <GradeIcon className={`w-8 h-8 ${color}`} />
               </div>
-              <p className={`text-lg md:text-xl font-bold mt-3 ${color} leading-snug`}>{message}</p>
+              <p className={`text-md md:text-xl font-bold mt-3 ${color} leading-snug`}>{message}</p>
             </div>
 
             {/* Action buttons */}
@@ -488,7 +488,7 @@ export default function ResultPage() {
               </>
             ) : (
               <>
-                <p className="text-center text-lg text-gray-600 mb-6">Score kamu {scoreValue}? Jangan khawatir! Artikel ini akan bantu tingkatkan pengetahuan dan poin di game berikutnya. 🚀</p>
+                <p className="text-center text-lg text-gray-600 mb-6">Yuk dibaca! Artikel ini akan bantu tingkatkan pengetahuan dan poin di game berikutnya. 🚀</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                   <Link href="/article/1" className="group block transition duration-300 transform hover:translate-y-[-4px] shadow-xl hover:shadow-pink-200/50 rounded-xl overflow-hidden bg-white border border-gray-100 ">
                     <div className="p-4 flex flex-col h-full">
