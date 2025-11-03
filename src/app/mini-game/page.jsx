@@ -14,6 +14,7 @@ import Link from "next/link";
 import MemoIcon from "../../../public/image/memory-game.png";
 import DragIcon from "../../../public/image/drag-drop.png";
 import axios from 'axios';
+import PinkProwessLeaderboard from "../components/games/PinkProwessLeaderboard";
 
 
 gsap.registerPlugin(ScrollTrigger);
@@ -82,6 +83,14 @@ export default function Home() {
   const [miniGames, setMiniGames] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const [leaderboardVisible, setLeaderboardVisible] = useState(false);
+
+  const handleToggleLeaderboard = () => {
+    setLeaderboardVisible((prev) => !prev);
+  };
+
+  const headerRef = useRef(null);
 
   const fadeSlideRef = useRef([]);
   const scaleInRef = useRef([]);
@@ -265,38 +274,64 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="w-full flex flex-col items-center py-12 bg-white rounded-3xl shadow-2xl border-4 border-yellow-500 relative overflow-hidden">
+<section className="w-full flex flex-col items-center py-12 
+            bg-white rounded-3xl shadow-2xl border-4 border-amber-500 relative overflow-hidden">
+            
+            {/* Background */}
+            <div className="absolute inset-0 opacity-10 bg-gradient-to-r from-pink-200 to-yellow-200"></div>
 
-          <div className="absolute inset-0 opacity-10 bg-gradient-to-r from-pink-200 to-yellow-200"></div>
+            {/* Live Ranking Badge */}
+            <div ref={headerRef} className="bg-red-600 text-white font-black text-sm px-4 py-1.5 rounded-full 
+                shadow-lg mb-6 uppercase tracking-widest flex items-center z-10 transform scale-105">
+                <TrendingUp size={18} className="mr-1" />
+                Live Ranking
+            </div>
 
-          <div className="bg-red-600 text-white font-black text-xs px-3 py-1 rounded-full shadow-lg mb-4 uppercase tracking-widest flex items-center z-10">
-            <TrendingUp size={16} className="mr-1" />
-            Live Ranking
-          </div>
-
-          <Image ref={trophyRef} src={TrophyImage} alt="Competition Trophy" width={150} height={150} className="mb-6 drop-shadow-xl z-10" style={{ opacity: 0, scale: 0 }} />
-
-          <h2 className="text-4xl font-black text-pink-700 mb-3 drop-shadow-sm z-10">
-            Papan Skor Top Players
-          </h2>
-
-          <p className="text-gray-800 text-xl text-center max-w-2xl mb-8 font-bold z-10">
-            Ayo! Setiap sesi game yang kamu selesaikan akan langsung mengatrol posisimu. Main sekarang, lihat namamu melesat ke puncak Leaderboard Real-Time ini!
-          </p>
-
-          <Link href="/mini-game/leaderboard">
-            <CustomButton
-              title="LIHAT LEADERBOARD REAL-TIME"
-              className="mt-4 p-3 bg-yellow-500 hover:bg-yellow-600 shadow-lg shadow-yellow-400/50 text-xl font-bold"
+            {/* Trophy Image/Placeholder */}
+            <Image 
+                ref={trophyRef} 
+                src={TrophyImage} // Ganti dengan URL/Import gambar trofi Anda
+                alt="Competition Trophy" 
+                width={150} 
+                height={150} 
+                className="mb-6 drop-shadow-xl z-10" 
+                style={{ opacity: 0, scale: 0 }} 
             />
-          </Link>
 
+            {/* Judul & Deskripsi */}
+            <h2 className="text-4xl font-black text-pink-700 mb-3 drop-shadow-sm z-10">
+                Papan Skor Top Players
+            </h2>
 
-          <div className="flex space-x-4 mt-6 text-gray-500 z-10">
-            <Rocket size={20} className="text-pink-600" />
-            <Users size={20} />
-            <Trophy size={20} className="text-yellow-600" />
-          </div>
+            <p className="text-gray-800 text-xl text-center max-w-2xl mb-8 font-bold z-10">
+                Ayo! Setiap sesi game yang kamu selesaikan akan langsung mengatrol posisimu. Main sekarang, lihat namamu melesat ke puncak Leaderboard Real-Time ini!
+            </p>
+
+            {/* Tombol Toggle */}
+            <CustomButton
+                title={leaderboardVisible ? "SEMBUNYIKAN LEADERBOARD" : "LIHAT LEADERBOARD REAL-TIME"}
+                className="mt-4 p-3 bg-yellow-500 hover:bg-yellow-600 shadow-lg shadow-yellow-400/50 
+                    text-xl font-bold z-10 transition-transform duration-300 hover:scale-[1.03]"
+                onClick={handleToggleLeaderboard}
+            />
+
+            {/* Ikon Footer */}
+            <div className="flex space-x-4 mt-6 text-gray-500 z-10">
+                <Rocket size={24} className="text-pink-600" />
+                <Users size={24} />
+                <Trophy size={24} className="text-yellow-600" />
+            </div>
+
+            {/* WRAPPER LEADERBOARD DENGAN TRANSISI HALUS */}
+            <div className={`w-full mt-8 px-4 transition-all duration-500 ease-in-out overflow-hidden
+                ${leaderboardVisible 
+                    ? 'max-h-[1000px] opacity-100 pt-4'
+                    : 'max-h-0 opacity-0 pt-0'           
+                }`}
+            >
+               
+                <PinkProwessLeaderboard />
+            </div>
 
         </section>
       </main>
