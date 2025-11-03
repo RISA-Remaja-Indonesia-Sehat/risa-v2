@@ -111,7 +111,7 @@ export default function PinkProwessLeaderboard() {
 
   if (loading) {
     return (
-      <div className="min-h-[500px] flex items-center justify-center p-8 border-4 border-pink-300">
+      <div className="min-h-[500px] flex items-center justify-center p-8">
         <p className="text-xl font-semibold text-pink-500 flex items-center gap-2 animate-pulse">
           <Loader2 className="w-6 h-6 animate-spin" /> Memuat Papan Skor...
         </p>
