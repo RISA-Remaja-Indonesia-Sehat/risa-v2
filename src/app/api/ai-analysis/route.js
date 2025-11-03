@@ -7,13 +7,7 @@ const API_KEY = process.env.GEMINI_API_KEY;
 
 const genAI = new GoogleGenerativeAI(API_KEY);
 const CONFIGURED_MODEL = 'gemini-2.5-flash';
-// - 'gemini-2.5-pro' can be safety-blocked for some prompts; prefer flash + 2.0 fallback
-const MODEL_CANDIDATES = [
-  CONFIGURED_MODEL, // preferred: 'gemini-2.5-flash'
-  'gemini-2.0-flash', // solid fallback
-  // Fallbacks to 1.x if needed
-  'gemini-1.5-pro-latest',
-].filter(Boolean);
+const MODEL_CANDIDATES = [CONFIGURED_MODEL, 'gemini-2.0-flash'].filter(Boolean);
 const MASTER_ARTICLE_LIST = [
   {
     id: 1,
