@@ -473,8 +473,8 @@ export default function ResultPage() {
           {/* INFO POSTING SKOR (OPSIONAL, HANYA UNTUK DEBUG/INFO USER) */}
           {DYNAMIC_USER_ID ? (
             <p className="text-gray-500 mb-8 text-lg font-medium">
-              Skor ini telah berhasil dikirim atas nama User ID: 
-              {DYNAMIC_USER_ID}
+              Skor ini telah berhasil dikirim!
+             
             </p>
           ) : (
             <p className="text-red-500 mb-8 text-lg font-medium">
@@ -632,11 +632,12 @@ export default function ResultPage() {
             className="mt-20 pt-10 border-t-4 border-pink-300 opacity-0"
           >
             <h3 className="text-xl md:text-2xl font-extrabold text-center text-pink-600 mb-8 drop-shadow-sm">
-              Halo! Saya AI RISA. Saya lihat score kamu {scoreValue}.
+              💡 Berdasarkan Performamu, Yuk Baca Ini untuk Score Lebih Tinggi!
             </h3>
 
             <p className="text-center text-lg text-gray-600 mb-6">
-              Untuk membantu Anda belajar lebih lanjut, saya rekomendasikan artikel ini:
+              Score kamu {scoreValue}? Jangan khawatir! Artikel ini akan bantu
+              tingkatkan pengetahuan dan poin di game berikutnya. 🚀
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">

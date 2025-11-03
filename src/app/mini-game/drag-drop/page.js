@@ -170,7 +170,7 @@ export default function MitosFaktaGame() {
             score: correctCount * 20, 
             correct: correctCount,
             wrong: answersLog.current.filter(a => !a.isCorrect).length,
-            duration: formatDuration(duration),
+            duration_seconds: 0,
             gameType: 'DRAG_DROP',
             answers: answersLog.current.map(ans => ({
                 statement: statements.find(s => s.id === ans.questionId)?.text || ans.question,
