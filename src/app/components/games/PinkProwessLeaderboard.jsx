@@ -132,10 +132,10 @@ export default function PinkProwessLeaderboard() {
   return (
     <div
       ref={containerRef}
-      className="relative p-4 md:p-8 bg-gradient-to-br from-pink-50 to-rose-100 rounded-2xl shadow-2xl shadow-pink-300/50 max-w-4xl mx-auto opacity-0 min-h-[500px] overflow-hidden"
+      className="relative p-2 md:p-4 bg-gradient-to-br from-pink-50 to-rose-100 rounded-2xl shadow-2xl shadow-pink-300/50 max-w-4xl mx-auto opacity-0 min-h-[500px] overflow-hidden"
     >
 
-      <div className="space-y-3 p-4 max-h-[500px] overflow-y-auto scrollbar-thin scrollbar-thumb-pink-300 scrollbar-track-pink-50 relative">
+      <div className="space-y-3 p-2 relative">
         {leaderboard.map((player, index) => (
           <div key={player.userId} ref={(el) => (rowsRef.current[index] = el)}>
             <LeaderboardRow

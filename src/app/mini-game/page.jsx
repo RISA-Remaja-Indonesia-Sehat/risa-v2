@@ -47,49 +47,49 @@ const GameCardLegend = ({
 
   return (
     <div
-  className="relative p-4 bg-gradient-to-br from-pink-50 to-yellow-100 rounded-2xl shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer overflow-hidden"
-  style={{ perspective: '1000px' }} // Efek 3D sederhana
->
-  {/* Layer 3D bawah untuk kedalaman */}
-  <div className="absolute inset-0 bg-pink-100 rounded-2xl transform translate-z-0 opacity-50"></div>
+      className="relative p-4 bg-gradient-to-br from-pink-50 to-yellow-100 rounded-2xl shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer overflow-hidden"
+      style={{ perspective: "1000px" }} // Efek 3D sederhana
+    >
+      {/* Layer 3D bawah untuk kedalaman */}
+      <div className="absolute inset-0 bg-pink-100 rounded-2xl transform translate-z-0 opacity-50"></div>
 
-  {/* Header */}
-  <div className="relative bg-pink-200 py-2 px-3 text-pink-700 font-bold text-xs uppercase rounded-t-xl flex items-center justify-between z-10">
-    <div className="flex items-center">
-      <DynamicIcon size={14} className="mr-2 text-yellow-400" />
-      {pointsText} Quest
+      {/* Header */}
+      <div className="relative bg-pink-200 py-2 px-3 text-pink-700 font-bold text-xs uppercase rounded-t-xl flex items-center justify-between z-10">
+        <div className="flex items-center">
+          <DynamicIcon size={14} className="mr-2 text-yellow-400" />
+          {pointsText} Quest
+        </div>
+        <div className="bg-yellow-200 text-pink-800 font-semibold px-2 py-1 rounded-full text-xs">
+          {points} PTS
+        </div>
+      </div>
+
+      {/* Body */}
+      <div className="relative bg-white p-4 rounded-b-xl border-t-2 border-yellow-200 z-10">
+        <div className="flex items-center mb-3">
+          <Image
+            src={icon}
+            alt={title}
+            width={80}
+            height={80}
+            className="rounded-full border-2 border-pink-200 shadow-md"
+          />
+          <h3 className="ml-3 text-lg font-bold text-pink-700 leading-tight">
+            {title}
+          </h3>
+        </div>
+
+        <p className="text-gray-600 text-sm mb-4 leading-relaxed">
+          {description}
+        </p>
+
+        <Link href={`${linkgame}?gameId=${gameId}`} passHref>
+          <button className="w-full bg-yellow-300 hover:bg-yellow-400 text-pink-800 font-bold py-2 px-4 rounded-lg shadow-md transition-all duration-200 flex items-center justify-center text-sm hover:scale-102">
+            <Zap size={16} className="mr-2" /> Mulai Game
+          </button>
+        </Link>
+      </div>
     </div>
-    <div className="bg-yellow-200 text-pink-800 font-semibold px-2 py-1 rounded-full text-xs">
-      {points} PTS
-    </div>
-  </div>
-
-  {/* Body */}
-  <div className="relative bg-white p-4 rounded-b-xl border-t-2 border-yellow-200 z-10">
-    <div className="flex items-center mb-3">
-      <Image
-        src={icon}
-        alt={title}
-        width={80}
-        height={80}
-        className="rounded-full border-2 border-pink-200 shadow-md"
-      />
-      <h3 className="ml-3 text-lg font-bold text-pink-700 leading-tight">
-        {title}
-      </h3>
-    </div>
-
-    <p className="text-gray-600 text-sm mb-4 leading-relaxed">
-      {description}
-    </p>
-
-    <Link href={`${linkgame}?gameId=${gameId}`} passHref>
-      <button className="w-full bg-yellow-300 hover:bg-yellow-400 text-pink-800 font-bold py-2 px-4 rounded-lg shadow-md transition-all duration-200 flex items-center justify-center text-sm hover:scale-102">
-        <Zap size={16} className="mr-2" /> Mulai Game
-      </button>
-    </Link>
-  </div>
-</div>
   );
 };
 
@@ -340,7 +340,6 @@ export default function Home() {
           className="w-full flex flex-col items-center py-12 
       bg-gradient-to-br from-pink-50 to-yellow-50 rounded-3xl shadow-lg border-4 border-pink-300 relative overflow-hidden"
         >
-
           {/* Live Ranking Badge */}
           <div
             ref={headerRef}
@@ -368,23 +367,21 @@ export default function Home() {
           </h2>
 
           <p className="text-gray-700 text-lg text-center max-w-xl mb-8 z-10">
-      Lihat peringkat real-time. Main sekarang dan naik ke puncak!
-    </p>
+            Lihat peringkat real-time. Main sekarang dan naik ke puncak!
+          </p>
+
+          <PinkProwessLeaderboard />
 
           {/* Tombol Toggle */}
-          <CustomButton
-            title={
-              leaderboardVisible
-                ? "Sembunyikan"
-                : "Lihat Leaderboard"
-            }
+          {/* <CustomButton
+            title={leaderboardVisible ? "Sembunyikan" : "Lihat Leaderboard"}
             className="mt-4 p-3  
                     text-xl font-bold"
             onClick={handleToggleLeaderboard}
-          />
+          /> */}
 
           {/* WRAPPER LEADERBOARD DENGAN TRANSISI HALUS */}
-          <div
+          {/* <div
             className={`w-full mt-8 px-4 transition-all duration-500 ease-in-out overflow-hidden
                 ${
                   leaderboardVisible
@@ -393,7 +390,7 @@ export default function Home() {
                 }`}
           >
             <PinkProwessLeaderboard />
-          </div>
+          </div> */}
         </section>
       </main>
     </div>
