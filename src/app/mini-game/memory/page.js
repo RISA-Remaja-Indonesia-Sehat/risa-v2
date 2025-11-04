@@ -54,8 +54,8 @@ export default function MemoryGamePage() {
   const [matched, setMatched] = useState([]);
   const [moves, localSetMoves] = useState(0); // total_moves
   const [points, localSetPoints] = useState(0);
-  const [time, localSetTime] = useState(30); // waktu yang tersisa
-  const [maxTime, setMaxTime] = useState(30); // Durasi maksimal game (dari API)
+  const [time, localSetTime] = useState(60); // waktu yang tersisa
+  const [maxTime, setMaxTime] = useState(60); // Durasi maksimal game (dari API)
   const [running, setRunning] = useState(false); // Default: false, akan diset true setelah data dimuat
   const [isLoading, setIsLoading] = useState(true); // State loading
   const [isFullscreen, setIsFullscreen] = useState(true);
@@ -125,7 +125,6 @@ export default function MemoryGamePage() {
 
   // --- FUNGSI UTAMA: HANDLE GAME OVER (Untuk Score Endpoint) ---
   const handleGameOver = useCallback(() => {
-
     if (isGameOver) return; // Cegah multiple calls
     setIsGameOver(true);
 
@@ -145,7 +144,9 @@ export default function MemoryGamePage() {
       // Data untuk Result Page
       gameType: "memory",
       points: points,
-      time: formatDuration(durationPlayedSeconds > 0 ? durationPlayedSeconds : 0),
+      time: formatDuration(
+        durationPlayedSeconds > 0 ? durationPlayedSeconds : 0
+      ),
       matchedCount: correctPairs,
       totalPairs: totalPairs,
       answers: matched.map((pairId) => {
@@ -186,7 +187,7 @@ export default function MemoryGamePage() {
     time,
     totalPairs, // Ditambahkan sebagai dependency
     initialTerms,
-    isGameOver // Ditambahkan sebagai dependency untuk mendapatkan term/definition
+    isGameOver, // Ditambahkan sebagai dependency untuk mendapatkan term/definition
   ]);
 
   // --- DATA FETCHING & GAME INITIALIZATION ---
@@ -433,8 +434,14 @@ export default function MemoryGamePage() {
           {/* Content */}
           <div className="p-6 max-w-6xl mx-auto relative z-10">
             {/* Header */}
-            <div className="flex items-center gap-3 mb-6">
-              <BackButton />
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <BackButton />
+                <h1 className="text-2xl font-extrabold text-pink-600 flex items-center gap-2">
+                  <Sparkles className="w-6 h-6 text-pink-500" />
+                  Memory Game
+                </h1>
+              </div>
               <button
                 onClick={toggleAudio}
                 aria-label={isPlaying ? "Mute" : "Unmute"}
@@ -447,33 +454,56 @@ export default function MemoryGamePage() {
                   )}
                 </div>
               </button>
-              <h1 className="text-2xl font-extrabold text-pink-600 flex items-center gap-2">
-                <Sparkles className="w-6 h-6 text-pink-500" />
-                Memory Game Kesehatan
-              </h1>
             </div>
 
-            {/* Stats */}
-            <div className="flex items-center justify-between gap-3 mb-8 flex-wrap">
-              {/* Timer menggunakan maxTime dari API */}
-              <div className="flex items-center gap-2 bg-pink-50/80 backdrop-blur px-4 py-2 rounded-full text-base font-bold text-pink-700 shadow-xl border border-pink-100 animate-pulse-slow">
-                <Timer className="w-5 h-5 text-pink-500" />
-                <span className="tabular-nums">{time}s</span>
+            {/* Stats - DIPERBAIKI: Timer dipindah ke top-center, diperbesar, dan ditambah progress bar */}
+            <div className="flex flex-col items-center gap-4 mb-8">
+              {/* Timer di top-center, lebih besar dan menonjol */}
+              <div className="relative w-full bg-pink-100/90 backdrop-blur px-6 py-3 rounded-full shadow-xl border-2 border-pink-300 animate-pulse-slow">
+                <div className="flex justify-center items-center gap-2 text-lg font-bold text-pink-700">
+                  <Timer
+                    className={`w-6 h-6 ${
+                      time <= 10
+                        ? "text-red-500 animate-bounce"
+                        : "text-pink-500"
+                    }`}
+                  />
+                  <span className="tabular-nums text-xl">{time}s</span>
+                </div>
+                {/* Progress Bar untuk Timer - Visual cue waktu tersisa */}
+                <div className="w-full bg-pink-200 rounded-full h-2 mt-2 overflow-hidden">
+                  <div
+                    className="bg-yellow-400 h-full rounded-full transition-all duration-1000 ease-linear"
+                    style={{ width: `${(time / maxTime) * 100}%` }}
+                  ></div>
+                </div>
+                {/* Notifikasi jika waktu hampir habis */}
+                {time <= 10 && (
+                  <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold animate-bounce">
+                    Waktu hampir habis! 🚨
+                  </div>
+                )}
               </div>
-              <div className="flex items-center gap-2 bg-white/90 backdrop-blur px-4 py-2 rounded-full text-base font-bold text-gray-700 shadow-md border border-gray-100">
-                <Target className="w-5 h-5 text-purple-500" />
-                <span className="tabular-nums">{points} poin</span>
-              </div>
-              <div className="flex items-center gap-2 bg-white/90 backdrop-blur px-4 py-2 rounded-full text-base font-bold text-gray-700 shadow-md border border-gray-100">
-                <Repeat className="w-5 h-5 text-blue-500" />
-                <span className="tabular-nums">{moves} gerakan</span>
+
+              {/* Poin dan Gerakan tetap di bawah, lebih kecil untuk balance */}
+              <div className="flex items-center justify-center gap-4 flex-wrap">
+                <div className="flex items-center gap-2 bg-white/90 backdrop-blur px-4 py-2 rounded-full text-base font-bold text-gray-700 shadow-md border border-gray-100">
+                  <Target className="w-5 h-5 text-purple-500" />
+                  <span className="tabular-nums">{points} poin</span>
+                </div>
+                <div className="flex items-center gap-2 bg-white/90 backdrop-blur px-4 py-2 rounded-full text-base font-bold text-gray-700 shadow-md border border-gray-100">
+                  <Repeat className="w-5 h-5 text-blue-500" />
+                  <span className="tabular-nums">{moves} gerakan</span>
+                </div>
               </div>
             </div>
 
             {/* Cards */}
             <div
               className={`grid gap-4 md:gap-6 p-2 ${
-                totalPairs === 4 ? "grid-cols-4 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-4" : "grid-cols-4" // Sesuaikan grid jika jumlah kartu berubah
+                totalPairs === 4
+                  ? "grid-cols-4 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-4"
+                  : "grid-cols-4" // Sesuaikan grid jika jumlah kartu berubah
               }`}
               style={{ perspective: 1200 }}
             >
