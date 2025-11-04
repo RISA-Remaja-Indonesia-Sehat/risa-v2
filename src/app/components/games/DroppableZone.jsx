@@ -40,7 +40,7 @@ const DroppableZone = React.forwardRef(({ id, type, isOverId, handleAnswer }, re
                     ${type === 'myth' ? 'bg-red-100' : 'bg-green-100'}`}>
                     {type === 'myth' ? '❌' : '✅'}
                 </div>
-                <h3 className="text-2xl font-extrabold tracking-wide text-gray-700">{type.toUpperCase()}</h3>
+                <h3 className="text-2xl font-extrabold tracking-wide text-gray-700">{type === "myth" ? "MITOS" : "FAKTA"}</h3>
             </div>
         </div>
     );
