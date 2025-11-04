@@ -325,7 +325,7 @@ export default function MemoryGamePage() {
       if (a.pair === b.pair && a.type !== b.type) {
         // MATCH
         matchAudioRef.current?.play().catch((e) => console.log(e));
-        localSetPoints((p) => p + 20); // Poin bertambah per match
+        localSetPoints((p) => p + 25); // Poin bertambah per match
         setMatched((m) => {
           return [...m, a.pair];
         });
