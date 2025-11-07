@@ -1,6 +1,6 @@
 # RISA
 
-RISA (Remaja Indonesia SehAt) adalah platform edukasi digital interaktif untuk remaja perempuan Indonesia usia 13–19 tahun yang dirancang agar pembelajaran seputar kesehatan reproduksi dan seksual terasa menyenangkan, aman, dan tidak menggurui.
+RISA (Remaja Indonesia SehAt) adalah platform edukasi digital interaktif untuk remaja perempuan Indonesia usia 13–19 tahun yang dirancang agar pembelajaran seputar kesehatan seksual dan reproduksi terasa menyenangkan, aman, dan tidak menggurui.
 Dibangun dengan Next.js, RISA menggabungkan mini game interaktif, rekomendasi cerdas berbasis AI, artikel edukatif, serta fitur praktis seperti informasi vaksin HPV.
 **Akses disini:** [https://risa-v2.vercel.app](https://risa-v2.vercel.app)
 
@@ -12,7 +12,7 @@ Dibangun dengan Next.js, RISA menggabungkan mini game interaktif, rekomendasi ce
 
 * Mitos vs Fakta: Game drag-and-drop yang mengajak pengguna membedakan antara mitos dan fakta seputar kesehatan reproduksi.
 * Memory Game: Latih daya ingat sambil mengenal topik kesehatan remaja.
-* Elemen Gamifikasi: Kumpulkan poin, buka reward, dan pantau progres belajar.
+* Elemen Gamifikasi: Kumpulkan poin, buka reward, dan tukar dengan hadiah menarik.
 
 ### Pembelajaran Berbasis AI
 

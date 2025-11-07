@@ -371,26 +371,6 @@ export default function Home() {
           </p>
 
           <PinkProwessLeaderboard />
-
-          {/* Tombol Toggle */}
-          {/* <CustomButton
-            title={leaderboardVisible ? "Sembunyikan" : "Lihat Leaderboard"}
-            className="mt-4 p-3  
-                    text-xl font-bold"
-            onClick={handleToggleLeaderboard}
-          /> */}
-
-          {/* WRAPPER LEADERBOARD DENGAN TRANSISI HALUS */}
-          {/* <div
-            className={`w-full mt-8 px-4 transition-all duration-500 ease-in-out overflow-hidden
-                ${
-                  leaderboardVisible
-                    ? "max-h-[1000px] opacity-100 pt-4"
-                    : "max-h-0 opacity-0 pt-0"
-                }`}
-          >
-            <PinkProwessLeaderboard />
-          </div> */}
         </section>
       </main>
     </div>

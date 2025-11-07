@@ -11,27 +11,27 @@ export default function ETicket({ show, onClose, bookingId }) {
   const { getBookingById } = useBookingData();
 
   useEffect(() => {
+    const fetchBookingData = async () => {
+      setLoading(true);
+      try {
+        const result = await getBookingById(bookingId);
+        if (result.success) {
+          setBookingData(result.data);
+        } else {
+          alert('Gagal memuat data booking');
+        }
+      } catch (error) {
+        console.error('Error fetching booking:', error);
+        alert('Terjadi kesalahan saat memuat data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
     if (show && bookingId) {
       fetchBookingData();
     }
-  }, [show, bookingId]);
-
-  const fetchBookingData = async () => {
-    setLoading(true);
-    try {
-      const result = await getBookingById(bookingId);
-      if (result.success) {
-        setBookingData(result.data);
-      } else {
-        alert('Gagal memuat data booking');
-      }
-    } catch (error) {
-      console.error('Error fetching booking:', error);
-      alert('Terjadi kesalahan saat memuat data');
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [show, bookingId, getBookingById]);
 
   const handleDownloadJPG = async () => {
     if (!ticketRef.current || !bookingData) return;
@@ -185,11 +185,13 @@ export default function ETicket({ show, onClose, bookingId }) {
             </div>
             
             <div style={{borderTop: '1px solid #f9a8d4', paddingTop: '16px', marginTop: '16px'}}>
-              <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px'}}>
+              <div style={{display: 'flex', marginBottom: '8px'}}>
                 <div>
                   <p style={{color: '#6b7280', margin: '0 0 4px 0'}}>Lab Tujuan</p>
                   <p style={{fontWeight: 'bold', color: '#382b22', margin: '0'}}>{bookingData?.lab?.name}</p>
                 </div>
+              </div>
+              <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px'}}>
                 <div>
                   <p style={{color: '#6b7280', margin: '0 0 4px 0'}}>Tanggal</p>
                   <p style={{fontWeight: 'bold', color: '#382b22', margin: '0'}}>{new Date(bookingData?.date_time).toLocaleDateString('id-ID', { timeZone: 'Asia/Jakarta' })}</p>

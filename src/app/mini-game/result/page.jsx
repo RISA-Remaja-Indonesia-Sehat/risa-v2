@@ -13,6 +13,7 @@ import useStickers from '../../store/useStickers';
 
 import StickerRewardAnimation from '../../components/ui/StickerRewardAnimation';
 import CustomButton from '../../components/ui/CustomButton';
+import { Spinner } from '@/app/components/ui/spinner';
 
 // Konstanta
 const DURATION_TO_REDIRECT = 10000;
@@ -297,7 +298,6 @@ export default function ResultPage() {
         ease: 'expo.out',
         boxShadow: '0px 25px 50px -12px rgba(236, 72, 153, 0.4)',
       });
-      gsap.fromTo('#stats-grid > div', { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, stagger: 0.15, delay: 0.5 });
       gsap.to('#back-btn', { opacity: 1, duration: 0.5, delay: 0.2 });
       gsap.to('#result-list', { opacity: 1, duration: 0.8, delay: 1 });
       gsap.to('#motivational-message', { opacity: 1, y: 0, duration: 0.8, delay: 0.8 });
@@ -449,7 +449,7 @@ export default function ResultPage() {
                         </div>
                         {isAiLoading ? (
                           <div className="flex items-center gap-2 text-gray-600">
-                            <div className="w-4 h-4 border-2 border-pink-400 border-t-transparent rounded-full animate-spin"></div>
+                            <Spinner className="size-4 text-pink-400" />
                             <span>Menyusun rekomendasi personalmu…</span>
                           </div>
                         ) : (
