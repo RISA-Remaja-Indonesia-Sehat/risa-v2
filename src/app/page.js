@@ -22,17 +22,10 @@ export default function Home() {
               </div>
               <div className="p-6 hover:-translate-y-2 duration-300 ease-out">
                 <div className="w-fit mx-auto mb-4">
-<<<<<<< HEAD
-                  <Image width={80} height={80} src="/image/hero-privacy.png" alt="Keamanan Data" className="mx-auto md:w-32 md:h-32"/>
-                </div>
-                <h3 className="font-semibold text-gray-800 mb-3 text-lg">AI RISA</h3>
-                <p className="text-sm text-gray-600 leading-6">Fitur AI guna memberikan rekomendasi artikel edukatif sesuai dengan kebutuhanmu</p>
-=======
                   <Image width={100} height={100} src="/image/hero-ai.png" alt="AI RISA" className="mx-auto md:w-fit md:h-32"/>
                 </div>
                 <h3 className="font-semibold text-gray-800 mb-3 text-lg">AI RISA</h3>
                 <p className="text-sm text-gray-600 leading-6">AI yang dipersonalisasi untuk merekomendasikan artikel edukatif yang relevan dengan kebutuhanmu</p>
->>>>>>> dev
               </div>
               <div className="p-6 hover:-translate-y-2 duration-300 ease-out">
                 <div className="w-fit mx-auto mb-4">

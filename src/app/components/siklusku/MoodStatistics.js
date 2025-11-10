@@ -5,23 +5,31 @@ import {
   Pie,
   Cell,
   ResponsiveContainer,
-  Legend,
   Tooltip,
 } from "recharts";
 import useSiklusStore from "../../store/useSiklusStore";
 import { Smile, Frown, Meh, Heart, Brain, Zap } from "lucide-react";
 
+const MOOD_CONFIG = {
+  senang: { color: "#fbbf24", icon: Smile, label: "Senang" },
+  sedih: { color: "#60a5fa", icon: Frown, label: "Sedih" },
+  kesal: { color: "#f87171", icon: Zap, label: "Kesal" },
+  "biasa saja": { color: "#a3a3a3", icon: Meh, label: "Biasa Saja" },
+  cemas: { color: "#c084fc", icon: Brain, label: "Cemas" },
+  overthinking: { color: "#fb7185", icon: Heart, label: "Overthinking" },
+};
+
+const MOOD_INSIGHTS = {
+  senang: "Bulan ini kamu sering merasa bahagia! Pertahankan hal-hal positif yang membuatmu senang.",
+  sedih: "Sepertinya bulan ini cukup berat untukmu. Ingat, perasaan ini normal dan akan berlalu.",
+  kesal: "Mood kamu sering naik turun bulan ini. Coba teknik pernapasan saat merasa kesal.",
+  "biasa saja": "Mood kamu cenderung stabil bulan ini. Itu bagus untuk keseimbangan emosi!",
+  cemas: "Kamu sering merasa cemas bulan ini. Cobalah journaling atau berbicara dengan orang terdekat.",
+  overthinking: "Pikiran kamu sering berputar-putar. Coba teknik mindfulness untuk menenangkan pikiran.",
+};
+
 const MoodStatistics = () => {
   const { dailyNotes } = useSiklusStore();
-
-  const moodConfig = {
-    senang: { color: "#fbbf24", icon: Smile, label: "Senang" },
-    sedih: { color: "#60a5fa", icon: Frown, label: "Sedih" },
-    kesal: { color: "#f87171", icon: Zap, label: "Kesal" },
-    "biasa saja": { color: "#a3a3a3", icon: Meh, label: "Biasa Saja" },
-    cemas: { color: "#c084fc", icon: Brain, label: "Cemas" },
-    overthinking: { color: "#fb7185", icon: Heart, label: "Overthinking" },
-  };
 
   const moodData = useMemo(() => {
     const moodCount = {};
@@ -46,12 +54,14 @@ const MoodStatistics = () => {
       }
     });
 
-    return Object.entries(moodCount).map(([mood, count]) => ({
-      name: moodConfig[mood]?.label || mood,
-      value: count,
-      color: moodConfig[mood]?.color || "#gray-400",
-      percentage: Math.round((count / thisMonthNotes.length) * 100),
-    }));
+    return Object.entries(moodCount)
+      .map(([mood, count]) => ({
+        name: MOOD_CONFIG[mood]?.label || mood,
+        value: count,
+        color: MOOD_CONFIG[mood]?.color || "#9ca3af",
+        percentage: Math.round((count / thisMonthNotes.length) * 100),
+      }))
+      .sort((a, b) => b.value - a.value);
   }, [dailyNotes]);
 
   const topMoods = moodData.slice(0, 3);
@@ -59,31 +69,16 @@ const MoodStatistics = () => {
     (note) => note !== null
   ).length;
 
-  const generateInsight = () => {
+  const generateInsight = useMemo(() => {
     if (moodData.length === 0)
       return "Mulai catat mood harianmu untuk mendapatkan insight!";
 
     const topMood = moodData[0];
-    const insights = {
-      senang:
-        "Bulan ini kamu sering merasa bahagia! Pertahankan hal-hal positif yang membuatmu senang.",
-      sedih:
-        "Sepertinya bulan ini cukup berat untukmu. Ingat, perasaan ini normal dan akan berlalu.",
-      kesal:
-        "Mood kamu sering naik turun bulan ini. Coba teknik pernapasan saat merasa kesal.",
-      "biasa saja":
-        "Mood kamu cenderung stabil bulan ini. Itu bagus untuk keseimbangan emosi!",
-      cemas:
-        "Kamu sering merasa cemas bulan ini. Cobalah journaling atau berbicara dengan orang terdekat.",
-      overthinking:
-        "Pikiran kamu sering berputar-putar. Coba teknik mindfulness untuk menenangkan pikiran.",
-    };
-
     return (
-      insights[topMood.name.toLowerCase()] ||
+      MOOD_INSIGHTS[topMood.name.toLowerCase()] ||
       "Terus catat mood harianmu untuk insight yang lebih akurat!"
     );
-  };
+  }, [moodData]);
 
   if (totalEntries === 0) {
     return (
@@ -142,7 +137,7 @@ const MoodStatistics = () => {
             </h4>
             {topMoods.map((mood, index) => {
               const IconComponent =
-                Object.values(moodConfig).find(
+                Object.values(MOOD_CONFIG).find(
                   (config) => config.label === mood.name
                 )?.icon || Meh;
 
@@ -185,7 +180,7 @@ const MoodStatistics = () => {
               Insight Mood Bulanan
             </h4>
             <p className="text-gray-600 text-sm leading-relaxed">
-              {generateInsight()}
+              {generateInsight}
             </p>
           </div>
         </div>

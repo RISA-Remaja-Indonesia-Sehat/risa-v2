@@ -25,6 +25,14 @@ Dibangun dengan Next.js, RISA menggabungkan mini game interaktif, rekomendasi ce
 * Kategori topik meliputi: menstruasi, pubertas, HIV/AIDS, hubungan sehat, dan perawatan diri.
 * Kuis interaktif dan fitur komentar untuk memperdalam pemahaman.
 
+### SiklusKu - Pelacakan Menstruasi Cerdas
+
+* **Kalender Menstruasi**: Catat siklus haid dengan mudah dan dapatkan prediksi fase berikutnya.
+* **Analisis AI**: Rekomendasi artikel dan insight berdasarkan fase menstruasi yang sedang dialami.
+* **Daily Notes**: Catat mood, gejala, dan aktivitas harian untuk pemahaman pola yang lebih baik.
+* **Statistik Mood**: Visualisasi data mood bulanan dengan pie chart interaktif.
+* **Insight Personal**: Dapatkan saran dan tips sesuai dengan pola siklus menstruasi.
+
 ### Alat Kesehatan Digital
 
 * Informasi Vaksin HPV: Panduan lokasi, harga, dan jadwal vaksin.
@@ -55,6 +63,8 @@ Dibangun dengan Next.js, RISA menggabungkan mini game interaktif, rekomendasi ce
 | Autentikasi      | JWT + Google OAuth      |
 | Animasi          | GSAP, Canvas Confetti   |
 | UI Components    | Radix UI, Lucide Icons  |
+| Charts           | Recharts                |
+| Date Picker      | React Day Picker        |
 
 ---
 
@@ -106,12 +116,16 @@ src/
 ├── app/
 │   ├── article/          # Halaman & API artikel
 │   ├── mini-game/        # Game edukatif interaktif
+│   ├── siklusku/         # Pelacakan menstruasi & analisis AI
 │   ├── vaksin-hpv/       # Informasi & booking vaksin
 │   ├── reward/           # Sistem hadiah & stiker
 │   ├── components/       # Komponen UI dan fungsional
+│   │   ├── siklusku/     # Komponen khusus SiklusKu
+│   │   ├── games/        # Komponen mini-game
+│   │   ├── articles/     # Komponen artikel
+│   │   └── ui/           # Komponen UI umum
 │   ├── store/            # Zustand stores
-│   └── landing-page/     # Tampilan utama
-├── components/           # Komponen global (animasi, card, stack)
+│   └── api/              # API routes (AI analysis)
 └── lib/                  # Utility & fungsi logika
 ```
 
