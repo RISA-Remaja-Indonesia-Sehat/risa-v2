@@ -2,8 +2,8 @@
 import { useEffect, useState } from "react";
 import { ExternalLink, Sparkles } from "lucide-react";
 import useSiklusStore from "../../store/useSiklusStore";
-import useAuthStore from "../../store/useAuthStore";
 import Image from "next/image";
+import { Spinner } from "../ui/spinner";
 
 const ArticleRecommendations = () => {
   const { recommendedArticles, currentPhase } = useSiklusStore();
@@ -66,15 +66,7 @@ const ArticleRecommendations = () => {
     }
   }, [recommendedArticles]);
 
-  const getPhaseColor = () => {
-    const colors = {
-      menstruasi: "from-red-200 to-pink-200",
-      folikular: "from-green-200 to-emerald-200",
-      ovulasi: "from-yellow-200 to-orange-200",
-      luteal: "from-purple-200 to-indigo-200",
-    };
-    return colors[currentPhase] || "from-pink-200 to-yellow-200";
-  };
+
 
   if (!currentPhase && articles.length === 0) {
     return (
@@ -149,12 +141,7 @@ const ArticleRecommendations = () => {
           </p>
         </div>
       ) : (
-        <div className="text-center py-8">
-          <div className="text-4xl mb-4">📚</div>
-          <p className="text-gray-500">
-            Sedang menyiapkan rekomendasi artikel untukmu...
-          </p>
-        </div>
+        <Spinner className="size-6 text-pink-500 mx-auto my-3" />
       )}
     </div>
   );

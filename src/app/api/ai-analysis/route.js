@@ -43,19 +43,19 @@ const MASTER_ARTICLE_LIST = [
   },
   {
     id: 5,
-    title: 'Lindungi Dirimu! Cara Kenali dan Hadapi Pelecehan Seksual dengan Bijak',
-    href: '/article/5',
-    image: '/image/article-image-5.png',
-    alt: 'Ilustrasi pelecehan seksual / keamanan',
-    topics: ['pelecehan', 'keamanan digital', 'persetujuan', 'seks'],
-  },
-  {
-    id: 6,
     title: 'Pubertas Perempuan: Kenali Tubuhmu dan Jaga Nilai Dirimu!',
-    href: '/article/6',
+    href: '/article/5',
     image: '/image/article-image-6.jpg',
     alt: 'Ilustrasi pubertas perempuan',
     topics: ['pubertas', 'kesehatan reproduksi', 'remaja', 'self-esteem'],
+  },
+  {
+    id: 6,
+    title: 'Lindungi Dirimu! Cara Kenali dan Hadapi Pelecehan Seksual dengan Bijak',
+    href: '/article/6',
+    image: '/image/article-image-5.png',
+    alt: 'Ilustrasi pelecehan seksual / keamanan',
+    topics: ['pelecehan', 'keamanan digital', 'persetujuan', 'seks'],
   },
   {
     id: 7,
