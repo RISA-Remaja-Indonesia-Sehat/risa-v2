@@ -42,12 +42,12 @@ export default function HeroSection() {
   return (
     <section ref={heroRef} className="container my-4 mx-auto" id="hero">
         <div className="p-4">
-        <h1 className="text-3xl md:text-4xl text-center font-bold mb-4 md:mb-6 hero-title opacity-0">Belajar Sambil Bermain Bersama RISA</h1>
-        <p className="text-center text-gray-600 leading-6 mb-8 max-w-2xl mx-auto hero-text opacity-0">Belajar seputar pubertas, cinta, dan kesehatan reproduksi lewat mini games interaktif yang seru dan mudah dipahami</p>
+        <h1 className="text-3xl md:text-4xl text-center font-bold mb-4 md:mb-6 hero-title opacity-0">Berani Tahu, Berani Lindungi Diri</h1>
+        <p className="text-center text-gray-600 leading-6 mb-8 max-w-2xl mx-auto hero-text opacity-0">Belajar tentang pubertas, cinta, dan kesehatan reproduksi lewat games seru. AI RISA bakal kasih rekomendasi artikel edukatif yang bikin kamu makin paham dan percaya diri.</p>
         
         <div className="w-fit mx-auto mb-12 hero-button opacity-0">
-            <Link href="/article">
-                <CustomButton className="px-6 py-3 text-base font-semibold" title="Mainkan Game Sekarang" />
+            <Link href="/mini-game">
+                <CustomButton className="px-6 py-3 text-base font-semibold" title="Coba Sekarang" />
             </Link>
         </div>
 

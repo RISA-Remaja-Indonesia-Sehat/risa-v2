@@ -31,6 +31,10 @@ export default function SearchBox() {
     if (searchQuery.trim()) {
       // Add search logic here
       console.log('Searching for:', searchQuery);
+      const resultUrl = `/search?query=${encodeURIComponent(searchQuery.trim())}`;
+      window.location.href = resultUrl;
+
+      // Close search box after search
       setIsOpen(false);
       setSearchQuery('');
     }
@@ -58,7 +62,7 @@ export default function SearchBox() {
 
       {/* Search Input */}
       {isOpen && (
-        <div className="absolute right-0 sm:right-0 top-12 w-screen sm:w-96 max-w-sm sm:max-w-none -mr-6 sm:mr-0 bg-white border border-pink-200 rounded-2xl shadow-lg p-4 z-50">
+        <div className="absolute right-0 sm:right-0 top-12 w-screen sm:w-96 max-w-sm sm:max-w-none -mr-[50px] sm:mr-0 bg-white border border-pink-200 rounded-2xl shadow-lg p-4 z-50">
           <form onSubmit={handleSearch} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
             <div className="flex-1 relative">
               <input
@@ -91,7 +95,7 @@ export default function SearchBox() {
           <div className="mt-3 pt-3 border-t border-pink-100">
             <p className="text-xs text-gray-500 mb-2">Pencarian populer:</p>
             <div className="flex flex-wrap gap-2">
-              {['Menstruasi', 'HPV', 'Mood tracker', 'Tips kesehatan'].map((tag) => (
+              {['Menstruasi', 'HPV', 'Tips kesehatan'].map((tag) => (
                 <button
                   key={tag}
                   onClick={() => {

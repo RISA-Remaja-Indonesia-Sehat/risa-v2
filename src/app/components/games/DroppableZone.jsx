@@ -16,13 +16,13 @@ const DroppableZone = React.forwardRef(({ id, type, isOverId, handleAnswer }, re
     const baseClass = "relative p-6 rounded-2xl text-center border-2 shadow-lg cursor-pointer transition-all duration-300";
     
     // Tentukan warna dasar
-    const typeClasses = type === 'mitos'
+    const typeClasses = type === 'myth'
         ? "border-pink-200 bg-gradient-to-br from-pink-50 to-white"
         : "border-green-200 bg-gradient-to-br from-green-50 to-white";
 
     // Tentukan kelas highlight saat aktif
     const activeClasses = isActive 
-        ? (type === 'mitos' 
+        ? (type === 'myth' 
             ? 'scale-[1.07] ring-4 ring-red-400/50 border-red-400 shadow-xl' 
             : 'scale-[1.07] ring-4 ring-green-400/50 border-green-400 shadow-xl') 
         : 'hover:scale-[1.05]';
@@ -37,10 +37,10 @@ const DroppableZone = React.forwardRef(({ id, type, isOverId, handleAnswer }, re
             <div className="relative">
                 <div
                     className={`w-20 h-20 rounded-full mx-auto mb-4 flex items-center justify-center text-3xl shadow-inner 
-                    ${type === 'mitos' ? 'bg-red-100' : 'bg-green-100'}`}>
-                    {type === 'mitos' ? '❌' : '✅'}
+                    ${type === 'myth' ? 'bg-red-100' : 'bg-green-100'}`}>
+                    {type === 'myth' ? '❌' : '✅'}
                 </div>
-                <h3 className="text-2xl font-extrabold tracking-wide text-gray-700">{type.toUpperCase()}</h3>
+                <h3 className="text-2xl font-extrabold tracking-wide text-gray-700">{type === "myth" ? "MITOS" : "FAKTA"}</h3>
             </div>
         </div>
     );

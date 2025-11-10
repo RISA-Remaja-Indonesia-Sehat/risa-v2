@@ -45,7 +45,7 @@ export default function ShareButton({ title, articleId }) {
     return () => {
       shareBtn.removeEventListener('click', shareArticle);
     };
-  }, [title, articleId]);
+  }, [title, articleId, addStickers, trackShare, updateStickersToServer]);
 
   return (
     <>

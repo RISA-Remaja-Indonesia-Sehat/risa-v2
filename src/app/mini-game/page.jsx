@@ -1,30 +1,116 @@
-"use client"
+"use client";
 
-import { useLayoutEffect, useRef } from "react";
+import { useLayoutEffect, useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import confetti from "canvas-confetti";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import  Herogame from "../../../public/image/Illustration_hero_gamification.png"
-import Trophy from "../../../public/image/piala.png"
+import {
+  Trophy,
+  Zap,
+  Clock,
+  Gamepad2Icon,
+  TrendingUp,
+  Users,
+  Target,
+  Rocket,
+} from "lucide-react";
+
+import Herogame from "../../../public/image/Illustration_hero_gamification.png";
+import TrophyImage from "../../../public/image/piala.png";
 import CustomButton from "../components/ui/CustomButton";
 import Link from "next/link";
-import {CardContent } from "@/app/components/ui/card"
-import { Star, Timer, TrophyIcon, Users } from "lucide-react";
-import GameCard from "../components/ui/Cardgame";
-import CardSwap from "../components/games/CardSwap";
 import MemoIcon from "../../../public/image/memory-game.png";
 import DragIcon from "../../../public/image/drag-drop.png";
+import axios from "axios";
+import PinkProwessLeaderboard from "../components/games/PinkProwessLeaderboard";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const GAMES_ENDPOINT = "https://server-risa.vercel.app/api/mini-games";
+
+const GameCardLegend = ({
+  title,
+  description,
+  linkgame,
+  icon,
+  type,
+  gameId,
+  points,
+}) => {
+  const mainColor = type === "DRAG_DROP" ? "bg-pink-400" : "bg-pink-600";
+  const accentColor =
+    type === "DRAG_DROP" ? "border-pink-600" : "border-pink-300";
+  const pointsText = type === "DRAG_DROP" ? "FACT FINDER" : "MEMORY CHALLENGE";
+
+  const DynamicIcon = type === "DRAG_DROP" ? Target : Clock;
+
+  return (
+    <div
+      className="relative p-4 bg-gradient-to-br from-pink-50 to-yellow-100 rounded-2xl shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer overflow-hidden"
+      style={{ perspective: "1000px" }} // Efek 3D sederhana
+    >
+      {/* Layer 3D bawah untuk kedalaman */}
+      <div className="absolute inset-0 bg-pink-100 rounded-2xl transform translate-z-0 opacity-50"></div>
+
+      {/* Header */}
+      <div className="relative bg-pink-200 py-2 px-3 text-pink-700 font-bold text-xs uppercase rounded-t-xl flex items-center justify-between z-10">
+        <div className="flex items-center">
+          <DynamicIcon size={14} className="mr-2 text-yellow-400" />
+          {pointsText} Quest
+        </div>
+        <div className="bg-yellow-200 text-pink-800 font-semibold px-2 py-1 rounded-full text-xs">
+          {points} PTS
+        </div>
+      </div>
+
+      {/* Body */}
+      <div className="relative bg-white p-4 rounded-b-xl border-t-2 border-yellow-200 z-10">
+        <div className="flex items-center mb-3">
+          <Image
+            src={icon}
+            alt={title}
+            width={80}
+            height={80}
+            className="rounded-full border-2 border-pink-200 shadow-md"
+          />
+          <h3 className="ml-3 text-lg font-bold text-pink-700 leading-tight">
+            {title}
+          </h3>
+        </div>
+
+        <p className="text-gray-600 text-sm mb-4 leading-relaxed">
+          {description}
+        </p>
+
+        <Link href={`${linkgame}?gameId=${gameId}`} passHref>
+          <button className="w-full bg-yellow-300 hover:bg-yellow-400 text-pink-800 font-bold py-2 px-4 rounded-lg shadow-md transition-all duration-200 flex items-center justify-center text-sm hover:scale-102">
+            <Zap size={16} className="mr-2" /> Mulai Game
+          </button>
+        </Link>
+      </div>
+    </div>
+  );
+};
+
 export default function Home() {
+  const [miniGames, setMiniGames] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const [leaderboardVisible, setLeaderboardVisible] = useState(false);
+
+  const handleToggleLeaderboard = () => {
+    setLeaderboardVisible((prev) => !prev);
+  };
+
+  const headerRef = useRef(null);
+
   const fadeSlideRef = useRef([]);
   const scaleInRef = useRef([]);
   const fadeSlideUpRef = useRef([]);
   const trophyRef = useRef(null);
 
-  // supaya nggak duplicate
   fadeSlideRef.current = [];
   scaleInRef.current = [];
   fadeSlideUpRef.current = [];
@@ -40,9 +126,106 @@ export default function Home() {
       fadeSlideUpRef.current.push(el);
   };
 
+  useEffect(() => {
+    const fetchGames = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const response = await axios.get(GAMES_ENDPOINT);
+        const result = response.data;
+
+        if (result.success && Array.isArray(result.data)) {
+          setMiniGames(result.data);
+        } else {
+          throw new Error("Format data games tidak valid.");
+        }
+      } catch (err) {
+        const errorMessage = err.response
+          ? `Gagal memuat: Status ${err.response.status}`
+          : "Terjadi kesalahan koneksi jaringan.";
+        setError(errorMessage);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchGames();
+  }, []);
+
+  const getGameCardDetails = (game) => {
+    const defaultPoints = 100;
+    switch (game.type) {
+      case "MEMO_CARD":
+        return {
+          description:
+            "Uji daya ingat dan kecepatan mencocokkan istilah kunci kesehatan reproduksi dalam batas waktu.",
+          linkgame: `/mini-game/memory`,
+          icon: MemoIcon,
+          points: defaultPoints,
+        };
+      case "DRAG_DROP":
+        return {
+          description:
+            "Analisis dan pilah informasi untuk menentukan mitos versus fakta secara akurat dan raih skor tertinggi.",
+          linkgame: `/mini-game/drag-drop`,
+          icon: DragIcon,
+          points: defaultPoints,
+        };
+      default:
+        return {
+          description: "Deskripsi game belum tersedia. Hubungi tim developer.",
+          linkgame: `#`,
+          icon: MemoIcon,
+          points: 0,
+        };
+    }
+  };
+
+  const renderGameCards = () => {
+    if (isLoading) {
+      return (
+        <>
+          <div className="w-full h-56 bg-pink-100 rounded-2xl animate-pulse shadow-md"></div>
+          <div className="w-full h-56 bg-pink-100 rounded-2xl animate-pulse shadow-md"></div>
+        </>
+      );
+    }
+
+    if (error) {
+      return (
+        <p className="text-red-600 text-center col-span-full py-10 border border-red-300 bg-red-50 rounded-lg font-semibold">
+          ❌ Kesalahan Server: {error}
+        </p>
+      );
+    }
+
+    if (miniGames.length === 0) {
+      return (
+        <p className="text-gray-500 text-center col-span-full py-10 text-xl font-medium">
+          ❌ Belum ada mini-game yang di-publish.
+        </p>
+      );
+    }
+
+    return miniGames.map((game) => {
+      const details = getGameCardDetails(game);
+
+      return (
+        <GameCardLegend
+          key={game.id}
+          gameId={game.id}
+          title={game.title}
+          type={game.type}
+          description={details.description}
+          linkgame={details.linkgame}
+          icon={details.icon}
+          points={details.points}
+        />
+      );
+    });
+  };
+
   useLayoutEffect(() => {
     let ctx = gsap.context(() => {
-      // fade slide
       fadeSlideRef.current.forEach((el, i) => {
         gsap.to(el, {
           opacity: 1,
@@ -52,8 +235,6 @@ export default function Home() {
           ease: "back.out(1.7)",
         });
       });
-
-      // scale in
       scaleInRef.current.forEach((el, i) => {
         gsap.to(el, {
           opacity: 1,
@@ -63,8 +244,6 @@ export default function Home() {
           ease: "elastic.out(1, 0.6)",
         });
       });
-
-      // fade slide up
       fadeSlideUpRef.current.forEach((el, i) => {
         gsap.to(el, {
           opacity: 1,
@@ -75,7 +254,6 @@ export default function Home() {
         });
       });
 
-      // trophy + confetti
       if (trophyRef.current) {
         gsap.fromTo(
           trophyRef.current,
@@ -83,51 +261,52 @@ export default function Home() {
           {
             opacity: 1,
             scale: 1,
-            duration: 1.2,
-            ease: "power2.out",
+            duration: 1.5,
+            ease: "elastic.out(1, 0.5)",
             scrollTrigger: {
               trigger: trophyRef.current,
               start: "top 80%",
               toggleActions: "play none none none",
-              onEnter: () => {
-                confetti({
-                  particleCount: 500,
-                  spread: 90,
-                  origin: { y: 0.6 },
-                });
-              },
             },
           }
         );
       }
     });
-
     return () => ctx.revert();
   }, []);
 
   return (
-    <div className="bg-gradient-to-br from-pink-100 via-white to-yellow-100">
-   
-
-      {/* HERO */}
-      <section className="w-full py-16 px-2 lg:px-16 flex flex-col lg:flex-row items-center justify-between bg-pink-100/90">
-        <div className="lg:w-1/2 space-y-6">
-          <h1 ref={addFadeSlide} className="text-3xl lg:text-6xl font-bold text-pink-600">
-            Yuk, Main & Jadi Juara!
+    <div className="bg-gradient-to-br from-pink-100 via-white to-yellow-100 min-h-screen">
+      <section className="w-full py-8 px-2 lg:px-16 flex flex-col lg:gap-6 lg:flex-row sm:items-center sm:justify-center">
+        <div className="p-2 space-y-2 lg:space-y-6">
+          <h1
+            ref={addFadeSlide}
+            className="text-2xl lg:text-5xl font-bold text-pink-600"
+          >
+            Yuk, Main & Kumpulkan Poin!
           </h1>
-          <p ref={addFadeSlide} className="text-gray-700 md:text-lg">
-            Kumpulin poin, seru-seruan, dan lihat siapa yang juara di leaderboard!
+          <p
+            ref={addFadeSlide}
+            className="text-sm text-gray-700 md:text-lg mb-8"
+          >
+            Dapatkan hingga 100 poin per game!
           </p>
-          <div ref={addFadeSlide} className="flex gap-4">
-            <Link href="/memoryGames">
-              <CustomButton title="Mainkan Sekarang!" className="button-11 text-nowrap px-4 py-2 lg:px-6 lg:py-4 animate-pulse-slow" />
+          <div ref={addFadeSlide} className="flex flex-col sm:flex-row gap-4">
+            <Link href="/mini-game/memory">
+              <CustomButton
+                title="Memory Card"
+                className="w-full flex justify-center text-nowrap px-4 py-2 lg:px-6 lg:py-4 bg-purple-600 hover:bg-purple-700 shadow-xl animate-pulse-slow"
+              />
             </Link>
-            <Link href="#leaderboard">
-              <CustomButton title="Leaderboard" className="button-10 px-4 py-2 lg:px-6 lg:py-4  animate-pulse-slow" />
+            <Link href="/mini-game/drag-drop">
+              <CustomButton
+                title="Mitos VS Fakta"
+                className="w-full flex justify-center px-4 py-2 lg:px-6 lg:py-4 bg-purple-600 hover:bg-purple-700 shadow-xl animate-pulse-slow"
+              />
             </Link>
           </div>
         </div>
-        <div ref={addScaleIn} className="lg:w-1/2 mt-6 md:mt-0 flex justify-center">
+        <div ref={addScaleIn} className="p-2 mt-6 md:mt-0 hidden sm:block">
           <Image
             src={Herogame}
             alt="Hero Illustration"
@@ -138,98 +317,62 @@ export default function Home() {
           />
         </div>
       </section>
-      
-      <main className="max-w-full mx-auto px-4 md:px-6 lg:px-8 py-8 space-y-16 overflow-hidden">
-        <section className="w-full py-10 px-6 md:px-16 flex flex-col items-center">
-          <h2 ref={addFadeSlide} className="text-3xl font-extrabold text-pink-700 mb-3">
-            🎮 Game Kamu
-          </h2>
-          <p className="text-gray-600 text-sm md:text-lg text-center">Belajar sambil bermain! Kumpulan mini games seru untuk menguji dan meningkatkan pengetahuanmu tentang kesehatan reproduksi.</p>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 mt-8 items-center w-full max-w-6xl mx-auto">
-            <GameCard
-              title="Memory Cards"
-              description="Uji pengetahuanmu dengan mencocokkan pasangan kartu seputar kesehatan reproduksi."
-              points={100}
-              timeEstimate="30 detik"
-              difficulty="Mudah"
-              completedBy={50}
-              icon={MemoIcon}
-              onPlay={() => console.log("Playing Memory Cards")}
-              linkgame="/mini-game/memory"
-            />
-            <GameCard
-              title="Mitos VS Fakta"
-              description="Jawab pertanyaan seputar kesehatan reproduksi dalam waktu terbatas."
-              points={100}
-              timeEstimate="45 detik"
-              difficulty="Sedang"
-              completedBy={30}
-              icon={DragIcon}
-              onPlay={() => console.log("Playing Quick Quiz")}
-              linkgame="/mini-game/drag-drop"
-            />
-          </div>
-          <CardSwap></CardSwap>
-        </section>
-        
 
-        <section className="py-10 px-6 md:px-16 text-center">
-          <div className="mb-2 flex flex-col justify-center items-center">
-            <svg viewBox="0 0 400 350" className="w-full max-w-[400px] h-[180px]" ref={addFadeSlide}>
-              <defs>
-                <path id="curveSelamat" d="M 0,300 A 300,200 0 0 1 400,300" />
-              </defs>
-              <text fill="black" fontSize="80" fontWeight="bold" textAnchor="middle">
-                <textPath startOffset="50%" href="#curveSelamat">SELAMAT</textPath>
-              </text>
-            </svg>
-            <Image
-              ref={trophyRef}
-              src={Trophy}
-              alt="Trophy"
-              width={200}
-              height={200}
-              className="relative mt-4"
-            />
-            <p className="mt-4 text-lg font-semibold px-4 py-1">
-              Kamu mendapatkan peringkat ke-1 minggu ini
-            </p>
+      <main className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-16 space-y-20 overflow-hidden">
+        <section className="w-full flex flex-col items-center">
+          <h2
+            ref={addFadeSlide}
+            className="text-3xl lg:text-4xl font-black text-pink-700 mb-2 pb-1 flex items-center"
+          >
+            <Gamepad2Icon size={32} className="mr-3 text-pink-500" /> GAME BOARD
+          </h2>
+          <p className="text-gray-600 lg:text-xl text-center mb-12">
+            Pilih Game kamu. Selesaikan untuk mendapatkan poin kompetisi dan
+            menjadi yang terbaik!
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 w-full">
+            {renderGameCards()}
           </div>
         </section>
 
-        {/* LEADERBOARD */}
-        <section id="leaderboard" className="py-10 px-6 md:px-16">
-          <h2 ref={addFadeSlide} className="text-3xl font-bold text-pink-600 mb-6">
-            Leaderboard
-          </h2>
-          <div className="overflow-x-auto">
-            <table className="w-full bg-white rounded-xl shadow-lg overflow-hidden">
-              <thead className="bg-pink-200 text-gray-900">
-                <tr>
-                  <th className="py-3 px-4 text-left">Rank</th>
-                  <th className="py-3 px-4 text-left">Name</th>
-                  <th className="py-3 px-4 text-left">Poin</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-pink-100">
-                {[
-                  ["🥇", "Rachel Green", "1023"],
-                  ["🥈", "Robert Thomson", "985"],
-                  ["🥉", "Monica Geller", "882"],
-                ].map(([rank, name, points], i) => (
-                  <tr key={i} ref={addFadeSlideUp}>
-                    <td className="py-3 px-4">{rank}</td>
-                    <td className="py-3 px-4">{name}</td>
-                    <td className="py-3 px-4">{points}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        <section
+          className="w-full flex flex-col items-center py-12 
+      bg-gradient-to-br from-pink-50 to-yellow-50 rounded-3xl shadow-lg border-4 border-pink-300 relative overflow-hidden"
+        >
+          {/* Live Ranking Badge */}
+          <div
+            ref={headerRef}
+            className="bg-pink-600 text-white font-bold text-sm px-4 py-2 rounded-full 
+          shadow-md mb-6 uppercase tracking-wide flex items-center z-10"
+          >
+            <TrendingUp size={18} className="mr-1" />
+            Live Ranking
           </div>
+
+          {/* Trophy Image/Placeholder */}
+          <Image
+            ref={trophyRef}
+            src={TrophyImage} // Ganti dengan URL/Import gambar trofi Anda
+            alt="Competition Trophy"
+            width={150}
+            height={150}
+            className="mb-6 drop-shadow-xl z-10"
+            style={{ opacity: 0, scale: 0 }}
+          />
+
+          {/* Judul & Deskripsi */}
+          <h2 className="text-3xl font-bold text-pink-700 mb-3 z-10">
+            Papan Skor
+          </h2>
+
+          <p className="text-gray-700 text-lg text-center max-w-xl mb-8 z-10">
+            Lihat peringkat real-time. Main sekarang dan naik ke puncak!
+          </p>
+
+          <PinkProwessLeaderboard />
         </section>
       </main>
-
-
     </div>
   );
 }

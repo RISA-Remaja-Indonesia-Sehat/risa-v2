@@ -26,7 +26,7 @@ export default function ArticleTracker() {
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [trackArticleRead, addStickers]);
+  }, [trackArticleRead, addStickers, updateStickersToServer]);
 
   return (
     <StickerRewardAnimation 

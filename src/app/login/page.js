@@ -195,7 +195,6 @@ export default function LoginPage() {
               size="large"
               text="signin_with"
               shape="rectangular"
-              width="100%"
               locale="id"
               use_fedcm_for_prompt
             />
