@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import gsap from "gsap";
-import Particles from "../../../components/Particles";
+import Particles from "../../components/ui/Particles";
 import { useGameStore } from "../../store/useGameStore";
 import RotateDevicePrompt from "../../components/games/RotateDevicePrompt";
 import {
@@ -17,7 +17,7 @@ import {
   VolumeX,
 } from "lucide-react";
 import BackButton from "../../components/games/BackButton";
-import ClickSpark from "../../../components/ClickSpark";
+import ClickSpark from "../../components/ui/ClickSpark";
 
 // Hapus hardcoded termsAndDefs. Data akan diambil dari API.
 
