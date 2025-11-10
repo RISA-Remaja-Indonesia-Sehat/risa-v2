@@ -1,4 +1,4 @@
-import CardSwap, { Card } from '../../../components/CardSwap';
+import CardSwap, { Card } from '../ui/CardSwap';
 
 <div style={{ height: '600px', position: 'relative' }}>
   <CardSwap
