@@ -18,10 +18,10 @@ const ArticleRecommendations = () => {
       imageAlt: "Ilustrasi menstruasi pertama",
       description: "Panduan lengkap tentang menstruasi pertama untuk remaja",
     },
-    6: {
-      id: 6,
+    5: {
+      id: 5,
       title: "Pubertas Perempuan: Kenali Tubuhmu dan Jaga Nilai Dirimu!",
-      imageUrl: "/image/article-image-6.jpg",
+      imageUrl: "/image/article-image-5.jpg",
       imageAlt: "Ilustrasi pubertas perempuan",
       description: "Memahami perubahan tubuh saat pubertas",
     },
@@ -91,7 +91,7 @@ const ArticleRecommendations = () => {
     <div className="bg-white rounded-2xl p-8 shadow-lg">
       <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
         <Sparkles className="w-5 h-5 text-pink-500" />
-        Rekomendasi Artikel untuk Fase {currentPhase}
+        Kamu bisa baca artikel ini juga
       </h3>
 
       {articles.length > 0 ? (
