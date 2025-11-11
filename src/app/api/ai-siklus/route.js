@@ -83,7 +83,7 @@ export async function POST(request) {
         - folikular: [10] - tentang fase folikular dan energi
         - ovulasi: [9] - tentang fase ovulasi dan kesuburan
         - luteal: [8] - tentang fase luteal dan PMS
-        - unknown: [3, 6, 10] - artikel umum kesehatan reproduksi
+        - unknown: [3, 5, 10] - artikel umum kesehatan reproduksi
         
         Berikan respons JSON:
         {
@@ -117,7 +117,7 @@ export async function POST(request) {
             insight: hasRecentPeriod
               ? "Kamu sedang dalam fase menstruasi. Jaga kesehatan dan istirahat yang cukup ya!"
               : "Terus catat siklus menstruasimu untuk analisis yang lebih akurat!",
-            recommendedArticles: hasRecentPeriod ? [3, 7] : [3, 6, 10],
+            recommendedArticles: hasRecentPeriod ? [3, 7] : [3, 5, 10],
           });
         }
       } catch (parseError) {
@@ -141,7 +141,7 @@ export async function POST(request) {
             phase: "folikular",
             insight:
               "Fase folikular adalah waktu yang tepat untuk memulai aktivitas baru!",
-            recommendedArticles: [10, 6],
+            recommendedArticles: [10, 5],
           });
         }
       }
