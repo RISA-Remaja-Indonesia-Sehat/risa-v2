@@ -21,7 +21,7 @@ const ArticleRecommendations = () => {
     5: {
       id: 5,
       title: "Pubertas Perempuan: Kenali Tubuhmu dan Jaga Nilai Dirimu!",
-      imageUrl: "/image/article-image-5.jpg",
+      imageUrl: "/image/article-image-5.png",
       imageAlt: "Ilustrasi pubertas perempuan",
       description: "Memahami perubahan tubuh saat pubertas",
     },

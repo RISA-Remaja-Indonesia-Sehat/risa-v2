@@ -99,7 +99,7 @@ export default function RegisterPage() {
     setLoading(true);
     try {
       const { name, email, password } = formValues;
-      const response = await fetch('https://server-risa.vercel.app/api/users/', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, password })
@@ -133,7 +133,7 @@ export default function RegisterPage() {
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
       const decoded = jwtDecode(credentialResponse.credential);
-      const response = await fetch('https://server-risa.vercel.app/api/users/', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 

@@ -10,7 +10,7 @@ const useCommentStore = create((set, get) => ({
     
     set({ loading: true, currentArticleId: articleId });
     try {
-      const response = await fetch(`https://server-risa.vercel.app/api/article/${articleId}/comment`);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/article/${articleId}/comment`);
       const data = await response.json();
       const sortedComments = (data.data || []).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       set({ comments: sortedComments, loading: false });
@@ -43,7 +43,7 @@ const useCommentStore = create((set, get) => ({
     }));
 
     try {
-      const response = await fetch(`https://server-risa.vercel.app/api/article/${currentArticleId}/comment`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/article/${currentArticleId}/comment`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

@@ -3,7 +3,7 @@ import Link from "next/link";
 
 async function getArticles() {
   try {
-    const response = await fetch('https://server-risa.vercel.app/api/article');
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/article`);
     const data = await response.json();
     return Array.isArray(data) ? data : Object.values(data.data || {});
   } catch (error) {

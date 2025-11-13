@@ -26,7 +26,7 @@ export default function RewardPage() {
   useEffect(() => {
     const fetchRewards = async () => {
       try {
-        const response = await fetch('https://server-risa.vercel.app/api/reward');
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/reward`);
         const data = await response.json();
         setRewards(data.data);
       } catch (error) {

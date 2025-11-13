@@ -12,7 +12,7 @@ import { ChevronLeft } from "lucide-react";
 async function getArticle(id) {
   try {
     const response = await fetch(
-      `https://server-risa.vercel.app/api/article/${id}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/api/article/${id}`,
       {
         cache: "no-store",
       }
