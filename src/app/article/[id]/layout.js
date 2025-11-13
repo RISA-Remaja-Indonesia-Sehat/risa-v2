@@ -2,7 +2,7 @@ import TooltipHandler from '@/app/components/articles/TooltipHandler';
 
 async function getArticle(id) {
   try {
-    const response = await fetch(`https://server-risa.vercel.app/api/article/${id}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/article/${id}`, {
       cache: 'no-store'
     });
     

@@ -54,7 +54,7 @@ const useBookingData = create((set) => ({
     console.log('Sending booking data:', JSON.stringify(backendData, null, 2));
     
     try {
-      const response = await fetch('https://server-risa.vercel.app/api/booking', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/booking`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -105,7 +105,7 @@ const useBookingData = create((set) => ({
     }
     
     try {
-      const response = await fetch(`https://server-risa.vercel.app/api/booking/${bookingId}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/booking/${bookingId}`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,

@@ -4,7 +4,7 @@ const useVaccineTypes = create((set) => ({
   vaccineTypes:  [],
   fetchVaccineTypes: async () => {
       try {
-        const response = await fetch('https://server-risa.vercel.app/api/vaccine');
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/vaccine`);
         const data = await response.json();
         set({ vaccineTypes: data.data });
       } catch (error) {

@@ -22,7 +22,7 @@ const useStickers = create((set, get) => {
       try {
         const user = JSON.parse(userData);
         const response = await fetch(
-          `https://server-risa.vercel.app/api/users/${user.id}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/api/users/${user.id}`,
           {
             method: "GET",
             headers: {
@@ -80,7 +80,7 @@ const useStickers = create((set, get) => {
       try {
         const user = JSON.parse(userData);
         const response = await fetch(
-          `https://server-risa.vercel.app/api/users/${user.id}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/api/users/${user.id}`,
           {
             method: "PUT",
             headers: {

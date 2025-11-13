@@ -16,7 +16,7 @@ export default function SearchResults() {
 
     const fetchResults = async () => {
       const res = await fetch(
-        `https://server-risa.vercel.app/api/article/search?query=${encodeURIComponent(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/article/search?query=${encodeURIComponent(
           query
         )}`
       );

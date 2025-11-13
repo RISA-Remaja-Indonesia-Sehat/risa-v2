@@ -23,7 +23,7 @@ const useMissions = create((set, get) => ({
   loadMissions: async () => {
     set({ loading: true });
     try {
-      const response = await fetch("https://server-risa.vercel.app/api/missions");
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/missions`);
       if (response.ok) {
         const result = await response.json();
         set({ missions: result.data, loading: false });
@@ -40,7 +40,7 @@ const useMissions = create((set, get) => ({
     if (!token) return;
 
     try {
-      const response = await fetch("https://server-risa.vercel.app/api/missions/log", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/missions/log`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -62,7 +62,7 @@ const useMissions = create((set, get) => ({
     }
     try {
       console.log("Calling loadDailyMissions");
-      const response = await fetch("https://server-risa.vercel.app/api/missions/daily", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/missions/daily`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -101,7 +101,7 @@ const useMissions = create((set, get) => ({
     // Update server status
     try {
       const response = await fetch(
-  `https://server-risa.vercel.app/api/missions/log/${log.id}/status`,
+  `${process.env.NEXT_PUBLIC_API_URL}/api/missions/log/${log.id}/status`,
   {
     method: 'PUT',
     headers: {
@@ -157,7 +157,7 @@ const useMissions = create((set, get) => ({
     console.log("Sending POST to /progress");
     try {
       const response = await fetch(
-        "https://server-risa.vercel.app/api/missions/progress",
+        `${process.env.NEXT_PUBLIC_API_URL}/api/missions/progress`,
         {
           method: "POST",
           headers: {

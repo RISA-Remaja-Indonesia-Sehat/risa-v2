@@ -9,7 +9,7 @@ const useExchangeHistory = create((set, get) => ({
     if (!token) return { success: false, error: 'No token found' };
     
     try {
-      const response = await fetch('https://server-risa.vercel.app/api/reward/history', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/reward/history`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -73,7 +73,7 @@ const useExchangeHistory = create((set, get) => ({
     set({ loading: true });
     
     try {
-      const response = await fetch('https://server-risa.vercel.app/api/reward/history', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/reward/history`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,

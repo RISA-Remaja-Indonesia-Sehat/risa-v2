@@ -56,7 +56,7 @@ export default function MissionPage() {
     }
   }, [initMissions, isLoggedIn, token, user]);
 
-  // Countdown timer (unchanged)
+  // Countdown timer 
   useEffect(() => {
     const calculateTimeLeft = () => {
       const now = new Date();
