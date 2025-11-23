@@ -18,7 +18,7 @@ export default function IntroScreen({ message, onClose }) {
 
   return (
     <div
-      className="fixed inset-0 bg-zinc-500/50 z-50 flex items-center justify-center p-4 cursor-pointer"
+      className="fixed inset-0 bg-zinc-500/80 z-50 flex items-center justify-center p-4 cursor-pointer"
       onClick={onClose}
     >
       <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 max-w-3xl w-full animate-fade-in">

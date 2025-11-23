@@ -38,7 +38,7 @@ export default function Chapter3() {
   };
 
   const finishChapter = async () => {
-    await saveProgress(3, 100, true);
+    await saveProgress(3, 10, true);
     setShowCompleteDialog(true);
   };
 

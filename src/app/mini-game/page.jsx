@@ -312,6 +312,24 @@ export default function Home() {
       </section>
 
       <main className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-16 space-y-20 overflow-hidden">
+
+        <section className="w-full flex flex-col items-center">
+          <h2
+            ref={addFadeSlide}
+            className="text-3xl lg:text-4xl font-black text-pink-700 mb-2 pb-1 flex items-center"
+          >
+            <Gamepad2Icon size={32} className="mr-3 text-pink-500" /> GAME BOARD
+          </h2>
+          <p className="text-gray-600 lg:text-xl text-center mb-12">
+            Pilih Game kamu. Selesaikan untuk mendapatkan poin kompetisi dan
+            menjadi yang terbaik!
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 w-full">
+            {renderGameCards()}
+          </div>
+        </section>
+        
         <section className="w-full flex flex-col items-center">
           <Link href="/mini-game/puberty-quest" onClick={handlePubertyQuestClick}>
             <div className="w-full max-w-2xl bg-pink-600 rounded-3xl p-8 shadow-2xl hover:shadow-3xl transition-all hover:scale-105 cursor-pointer border-4 border-pink-300">
@@ -330,23 +348,6 @@ export default function Home() {
               </div>
             </div>
           </Link>
-        </section>
-
-        <section className="w-full flex flex-col items-center">
-          <h2
-            ref={addFadeSlide}
-            className="text-3xl lg:text-4xl font-black text-pink-700 mb-2 pb-1 flex items-center"
-          >
-            <Gamepad2Icon size={32} className="mr-3 text-pink-500" /> GAME BOARD
-          </h2>
-          <p className="text-gray-600 lg:text-xl text-center mb-12">
-            Pilih Game kamu. Selesaikan untuk mendapatkan poin kompetisi dan
-            menjadi yang terbaik!
-          </p>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 w-full">
-            {renderGameCards()}
-          </div>
         </section>
 
         <section
