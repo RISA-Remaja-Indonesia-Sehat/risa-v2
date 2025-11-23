@@ -19,7 +19,7 @@ const BANNERS = [
     subtitle: 'Fitur AI Terbaru',
     description: 'Dapatkan insight personal, rekomendasi makanan sehat, dan tips harian sesuai fase siklus dan mood kamu. Semua dipersonalisasi khusus untuk kamu!',
     gradient: 'from-purple-400 to-pink-300',
-    link: '#',
+    link: '/siklusku',
     emoji: '🤖'
   }
 ];
