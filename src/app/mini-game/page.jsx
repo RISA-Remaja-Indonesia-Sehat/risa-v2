@@ -48,7 +48,7 @@ const GameCardLegend = ({
   return (
     <div
       className="relative p-4 bg-gradient-to-br from-pink-50 to-yellow-100 rounded-2xl shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer overflow-hidden"
-      style={{ perspective: "1000px" }} // Efek 3D sederhana
+      style={{ perspective: "1000px" }}
     >
       {/* Layer 3D bawah untuk kedalaman */}
       <div className="absolute inset-0 bg-pink-100 rounded-2xl transform translate-z-0 opacity-50"></div>
@@ -275,6 +275,13 @@ export default function Home() {
     return () => ctx.revert();
   }, []);
 
+  const handlePubertyQuestClick = () => {
+    const nav = document.querySelector("nav");
+    const footer = document.querySelector("footer");
+    if (nav) nav.style.display = "none";
+    if (footer) footer.style.display = "none";
+  };
+
   return (
     <div className="bg-gradient-to-br from-pink-100 via-white to-yellow-100 min-h-screen">
       <section className="w-full py-8 px-2 lg:px-16 flex flex-col lg:gap-6 lg:flex-row sm:items-center sm:justify-center">
@@ -291,20 +298,6 @@ export default function Home() {
           >
             Dapatkan hingga 100 poin per game!
           </p>
-          <div ref={addFadeSlide} className="flex flex-col sm:flex-row gap-4">
-            <Link href="/mini-game/memory">
-              <CustomButton
-                title="Memory Card"
-                className="w-full flex justify-center text-nowrap px-4 py-2 lg:px-6 lg:py-4 bg-purple-600 hover:bg-purple-700 shadow-xl animate-pulse-slow"
-              />
-            </Link>
-            <Link href="/mini-game/drag-drop">
-              <CustomButton
-                title="Mitos VS Fakta"
-                className="w-full flex justify-center px-4 py-2 lg:px-6 lg:py-4 bg-purple-600 hover:bg-purple-700 shadow-xl animate-pulse-slow"
-              />
-            </Link>
-          </div>
         </div>
         <div ref={addScaleIn} className="p-2 mt-6 md:mt-0 hidden sm:block">
           <Image
@@ -319,6 +312,26 @@ export default function Home() {
       </section>
 
       <main className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-16 space-y-20 overflow-hidden">
+        <section className="w-full flex flex-col items-center">
+          <Link href="/mini-game/puberty-quest" onClick={handlePubertyQuestClick}>
+            <div className="w-full max-w-2xl bg-pink-600 rounded-3xl p-8 shadow-2xl hover:shadow-3xl transition-all hover:scale-105 cursor-pointer border-4 border-pink-300">
+              <div className="flex items-center justify-between">
+                <div className="flex-1">
+                  <h3 className="text-3xl font-bold text-white mb-2">Puberty Quest</h3>
+                  <p className="text-white text-lg mb-4">Perjalanan seru mengenal tubuhmu!</p>
+                  <p className="text-pink-100 text-sm mb-4">Selesaikan 5 chapter menarik dan pelajari tentang pubertas dengan cara yang fun dan interaktif.</p>
+                  <button className="bg-white text-pink-600 font-bold py-3 px-6 rounded-full hover:bg-pink-100 transition-all cursor-pointer">
+                    Mulai Petualangan →
+                  </button>
+                </div>
+                <div className="hidden sm:block ml-6">
+                  <Image width="80" height="80" src="https://img.icons8.com/officel/80/quest.png" alt="quest"/>
+                </div>
+              </div>
+            </div>
+          </Link>
+        </section>
+
         <section className="w-full flex flex-col items-center">
           <h2
             ref={addFadeSlide}
@@ -353,7 +366,7 @@ export default function Home() {
           {/* Trophy Image/Placeholder */}
           <Image
             ref={trophyRef}
-            src={TrophyImage} // Ganti dengan URL/Import gambar trofi Anda
+            src={TrophyImage}
             alt="Competition Trophy"
             width={150}
             height={150}
