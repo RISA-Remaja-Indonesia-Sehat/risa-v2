@@ -1,6 +1,7 @@
 import Image from "next/image";
 import HeroSection from "./landing-page/HeroSection";
 import OurStaff from "./landing-page/OurStaff";
+import FeatureBannerCarousel from "./components/FeatureBannerCarousel";
 import Link from "next/link";
 
 export default function Home() {
@@ -46,43 +47,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/** Article */}
-      <section className="container my-16 mx-auto">
-        <div className="p-4">
-          <div className="flex justify-between items-center mb-6">
-            <h4 className="font-semibold text-2xl text-gray-800">Artikel Populer</h4>
-
-            <a href="all-article.html" className="flex justify-center items-center gap-2 font-medium hover:text-pink-500 transition-colors">
-              <span className="text-base">Lihat Semua</span>
-              <Image width={24} height={24} src="https://img.icons8.com/ios/50/right.png" alt="Lihat Semua" className="w-6 h-6"/>
-            </a>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-4">
-            <div className="mb-6 hover:text-pink-600 transition-colors duration-300 cursor-pointer">
-              <Link href="/article/1">
-                <div className="bg-[url('/image/article-image-1.png')] bg-cover bg-center w-full h-56 mb-3 rounded-lg shadow-md hover:shadow-lg transition-shadow"></div>
-                <span className="font-medium">HIV? Gak Usah Panik, Yuk Kenalan Dulu!</span>
-                <p className="text-sm leading-relaxed text-gray-600">Kenalan sama HIV biar gak salah paham dan tetap bisa jaga diri.</p>
-              </Link>
-            </div>
-            <div className="mb-6 hover:text-pink-600 transition-colors duration-300 cursor-pointer">
-              <Link href="/article/2">
-                <div className="bg-[url('/image/article-image-2.png')] bg-cover bg-center w-full h-56 mb-3 rounded-lg shadow-md hover:shadow-lg transition-shadow"></div>
-                <span className="font-medium">Seks Itu Apa Sih? Biar Gak Salah Paham dan Bisa Jaga Diri!</span>
-                <p className="text-gray-600 leading-relaxed text-sm">Belajar soal seks biar gak salah langkah dan bisa jaga diri.</p>
-              </Link>
-            </div>
-            <div className="mb-6 hover:text-pink-600 transition-colors duration-300 cursor-pointer">
-              <Link href="/article/3">
-                <div className="bg-[url('/image/article-image-3.png')] bg-cover bg-center w-full h-56 mb-3 rounded-lg shadow-md hover:shadow-lg transition-shadow"></div>
-                <span className="font-medium">Menstruasi Pertama: Kenapa Bisa Terjadi dan Gak Usah Takut!</span>
-                <p className="text-gray-600 leading-relaxed text-sm">Menstruasi pertama itu alami, yuk siapin diri biar gak panik.</p>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/** Feature Banner Carousel */}
+      <FeatureBannerCarousel />
 
       <OurStaff />
 
