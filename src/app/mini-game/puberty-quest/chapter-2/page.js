@@ -45,8 +45,10 @@ export default function Chapter2() {
   const handleAnswer = (index) => {
     setSelected(index);
     setShowExp(true);
-    if (index === QUIZ_DATA.chapter2[currentQ].correct) {
-      setScore((prev) => prev + 33.33);
+    const isCorrect = index === QUIZ_DATA.chapter2[currentQ].correct;
+    
+    if (isCorrect) {
+      setScore((prev) => prev + 10);
       const audio = new Audio("/audio/correctAnswer.mp3");
       audio.play();
     } else {
@@ -60,15 +62,13 @@ export default function Chapter2() {
         setSelected(null);
         setShowExp(false);
       } else {
-        finishChapter();
+        const finalScore = score + (isCorrect ? 10 : 0);
+        finishChapter(finalScore);
       }
     }, 2000);
   };
 
-  const finishChapter = async () => {
-    const finalScore =
-      score +
-      (selected === QUIZ_DATA.chapter2[currentQ].correct ? 33.33 : 0);
+  const finishChapter = async (finalScore) => {
     await saveProgress(2, Math.round(finalScore), true);
     setShowCompleteDialog(true);
   };

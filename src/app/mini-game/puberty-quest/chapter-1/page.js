@@ -50,30 +50,32 @@ export default function Chapter1() {
   const handleAnswer = (index) => {
     setSelectedAnswer(index);
     setShowExplanation(true);
-    if (index === QUIZ_DATA.chapter1[currentQuestion].correct) {
-      setScore((prev) => prev + 33.33);
+    const isCorrect = index === QUIZ_DATA.chapter1[currentQuestion].correct;
+    
+    if (isCorrect) {
+      setScore((prev) => prev + 10);
       const audio = new Audio("/audio/correctAnswer.mp3");
       audio.play();
     } else {
       const audio = new Audio("/audio/wrongAnswer.mp3");
       audio.play();
     }
+    
     setTimeout(() => {
       if (currentQuestion < QUIZ_DATA.chapter1.length - 1) {
         setCurrentQuestion((prev) => prev + 1);
         setSelectedAnswer(null);
         setShowExplanation(false);
       } else {
-        finishChapter();
+        // Calculate final score including current answer
+        const finalScore = score + (isCorrect ? 10 : 0);
+        finishChapter(finalScore);
       }
     }, 2000);
   };
 
-  const finishChapter = async () => {
-    const finalScore =
-      score +
-      (selectedAnswer === QUIZ_DATA.chapter1[currentQuestion].correct ? 33.33 : 0);
-    await saveProgress(1, Math.round(finalScore), true);
+  const finishChapter = async (finalScore) => {
+    await saveProgress(1, finalScore, true);
     setShowCompleteDialog(true);
   };
 
@@ -163,7 +165,7 @@ export default function Chapter1() {
                   Pertanyaan {currentQuestion + 1}/{QUIZ_DATA.chapter1.length}
                 </h2>
                 <div className="bg-pink-400 text-white px-6 py-2 rounded-full font-bold shadow-md">
-                  Score: {Math.round(score)}
+                  Score: {score}
                 </div>
               </div>
               <p className="text-lg text-gray-800 mb-6">

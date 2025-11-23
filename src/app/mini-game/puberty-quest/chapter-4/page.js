@@ -34,8 +34,9 @@ export default function Chapter4() {
   const [showCompleteDialog, setShowCompleteDialog] = useState(false);
 
   const handleChoice = (good) => {
+    const newScore = score + (good ? 10 : 0);
+    
     if (good) {
-      setScore(prev => prev + 50);
       const audio = new Audio('/audio/correctAnswer.mp3');
       audio.play();
     } else {
@@ -44,19 +45,20 @@ export default function Chapter4() {
     }
     
     if (current < SCENARIOS.length - 1) {
+      setScore(newScore);
       setTimeout(() => setCurrent(prev => prev + 1), 1000);
     } else {
-      finishChapter();
+      finishChapter(newScore);
     }
   };
 
-  const finishChapter = async () => {
-    await saveProgress(4, score, true);
+  const finishChapter = async (finalScore) => {
+    await saveProgress(4, finalScore, true);
     setShowCompleteDialog(true);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-pink-50 to-yellow-100">
+    <div className="min-h-screen bg-gradient-to-br from-yellow150 via-pink150 to-yellow-100">
       <div className="max-w-4xl mx-auto px-4 py-8">
         <div className="bg-pink-400 rounded-3xl p-6 shadow-lg mb-6 border-2 border-pink-300">
           <div className="flex items-center justify-between">
@@ -89,7 +91,7 @@ export default function Chapter4() {
               <button
                 key={i}
                 onClick={() => handleChoice(opt.good)}
-                className="w-full p-5 bg-gray-50 hover:bg-pink-200 rounded-2xl border-2 border-pink-300 text-left font-semibold text-gray-800 transition-all shadow-md"
+                className="w-full p-5 bg-gray150 hover:bg-pink-200 rounded-2xl border-2 border-pink-300 text-left font-semibold text-gray-800 transition-all shadow-md"
               >
                 {opt.text}
               </button>

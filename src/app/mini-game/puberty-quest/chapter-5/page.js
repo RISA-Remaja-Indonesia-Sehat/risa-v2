@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { DndContext, closestCenter } from '@dnd-kit/core';
+import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import Swal from 'sweetalert2';
@@ -17,7 +17,7 @@ const CORRECT_ORDER = [
 ];
 
 function SortableItem({ id, text }) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
   
   return (
     <div
@@ -25,7 +25,9 @@ function SortableItem({ id, text }) {
       style={{ transform: CSS.Transform.toString(transform), transition }}
       {...attributes}
       {...listeners}
-      className="p-4 bg-pink-100 border-2 border-pink-300 rounded-2xl cursor-move font-semibold text-pink-700 shadow-md"
+      className={`p-4 bg-pink-100 border-2 border-pink-300 rounded-2xl font-semibold text-pink-700 shadow-md touch-none select-none ${
+        isDragging ? 'opacity-50 scale-105' : 'cursor-move'
+      }`}
     >
       {text}
     </div>
@@ -39,6 +41,12 @@ export default function Chapter5() {
   const [dialogState, setDialogState] = useState({ show: true, type: 'intro', message: TTS_SCRIPTS.chapter5.intro });
   const [showGameDialog, setShowGameDialog] = useState(false);
   const [showCompleteDialog, setShowCompleteDialog] = useState(false);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      distance: 8,
+    })
+  );
 
   const handleDragEnd = (event) => {
     const { active, over } = event;
@@ -89,7 +97,7 @@ export default function Chapter5() {
   };
 
   const finishChapter = async () => {
-    await saveProgress(5, 100, true);
+    await saveProgress(5, 10, true);
     setShowCompleteDialog(true);
   };
 
@@ -112,7 +120,7 @@ export default function Chapter5() {
         </div>
 
         <div className="bg-white rounded-3xl p-8 shadow-xl border-2 border-pink-200">
-          <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+          <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd} sensors={sensors}>
             <SortableContext items={items.map(i => i.id)} strategy={verticalListSortingStrategy}>
               <div className="space-y-4 mb-8">
                 {items.map((item) => (
