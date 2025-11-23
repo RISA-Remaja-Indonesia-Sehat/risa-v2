@@ -155,6 +155,7 @@ body {
   cursor: pointer;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+<<<<<<< HEAD
 
 /* Avatar Dialog Animation */
 @keyframes slideUp {
@@ -200,3 +201,5 @@ body {
 .animate-blink {
   animation: blink 1s infinite;
 }
+=======
+>>>>>>> 4c4a858a9da019452c26572145ebd2d41fc35147
