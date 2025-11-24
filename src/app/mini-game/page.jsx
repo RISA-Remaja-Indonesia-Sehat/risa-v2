@@ -2,7 +2,6 @@
 
 import { useLayoutEffect, useRef, useState, useEffect } from "react";
 import Image from "next/image";
-import confetti from "canvas-confetti";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
@@ -14,16 +13,17 @@ import {
   Users,
   Target,
   Rocket,
+  Loader,
 } from "lucide-react";
 
 import Herogame from "../../../public/image/Illustration_hero_gamification.png";
 import TrophyImage from "../../../public/image/piala.png";
-import CustomButton from "../components/ui/CustomButton";
 import Link from "next/link";
 import MemoIcon from "../../../public/image/memory-game.png";
 import DragIcon from "../../../public/image/drag-drop.png";
 import axios from "axios";
 import PinkProwessLeaderboard from "../components/games/PinkProwessLeaderboard";
+import PubertyQuestCard from "../components/puberty-quest/PubertyQuestCard";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -98,12 +98,6 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const [leaderboardVisible, setLeaderboardVisible] = useState(false);
-
-  const handleToggleLeaderboard = () => {
-    setLeaderboardVisible((prev) => !prev);
-  };
-
   const headerRef = useRef(null);
 
   const fadeSlideRef = useRef([]);
@@ -120,10 +114,6 @@ export default function Home() {
   };
   const addScaleIn = (el) => {
     if (el && !scaleInRef.current.includes(el)) scaleInRef.current.push(el);
-  };
-  const addFadeSlideUp = (el) => {
-    if (el && !fadeSlideUpRef.current.includes(el))
-      fadeSlideUpRef.current.push(el);
   };
 
   useEffect(() => {
@@ -181,14 +171,6 @@ export default function Home() {
   };
 
   const renderGameCards = () => {
-    if (isLoading) {
-      return (
-        <>
-          <div className="w-full h-56 bg-pink-100 rounded-2xl animate-pulse shadow-md"></div>
-          <div className="w-full h-56 bg-pink-100 rounded-2xl animate-pulse shadow-md"></div>
-        </>
-      );
-    }
 
     if (error) {
       return (
@@ -275,26 +257,19 @@ export default function Home() {
     return () => ctx.revert();
   }, []);
 
-  const handlePubertyQuestClick = () => {
-    const nav = document.querySelector("nav");
-    const footer = document.querySelector("footer");
-    if (nav) nav.style.display = "none";
-    if (footer) footer.style.display = "none";
-  };
-
   return (
     <div className="bg-gradient-to-br from-pink-100 via-white to-yellow-100 min-h-screen">
       <section className="w-full py-8 px-2 lg:px-16 flex flex-col lg:gap-6 lg:flex-row sm:items-center sm:justify-center">
         <div className="p-2 space-y-2 lg:space-y-6">
           <h1
             ref={addFadeSlide}
-            className="text-2xl lg:text-5xl font-bold text-pink-600"
+            className="text-2xl lg:text-5xl text-center sm:text-left font-bold text-pink-600"
           >
             Yuk, Main & Kumpulkan Poin!
           </h1>
           <p
             ref={addFadeSlide}
-            className="text-sm text-gray-700 md:text-lg mb-8"
+            className="text-sm text-gray-700 md:text-lg text-center sm:text-left mb-8"
           >
             Dapatkan hingga 100 poin per game!
           </p>
@@ -311,47 +286,20 @@ export default function Home() {
         </div>
       </section>
 
-      <main className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-16 space-y-20 overflow-hidden">
-
+      <main className="max-w-7xl mx-auto px-4 py-4 md:px-6 lg:px-8 md:py-16 space-y-20 overflow-hidden">
         <section className="w-full flex flex-col items-center">
-          <h2
-            ref={addFadeSlide}
-            className="text-3xl lg:text-4xl font-black text-pink-700 mb-2 pb-1 flex items-center"
-          >
-            <Gamepad2Icon size={32} className="mr-3 text-pink-500" /> GAME BOARD
-          </h2>
-          <p className="text-gray-600 lg:text-xl text-center mb-12">
-            Pilih Game kamu. Selesaikan untuk mendapatkan poin kompetisi dan
-            menjadi yang terbaik!
-          </p>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 w-full">
-            {renderGameCards()}
-          </div>
-        </section>
-        
-        <section className="w-full flex flex-col items-center">
-          <Link href="/mini-game/puberty-quest" onClick={handlePubertyQuestClick}>
-            <div className="w-full max-w-2xl bg-pink-600 rounded-3xl p-8 shadow-2xl hover:shadow-3xl transition-all hover:scale-105 cursor-pointer border-4 border-pink-300">
-              <div className="flex items-center justify-between">
-                <div className="flex-1">
-                  <h3 className="text-3xl font-bold text-white mb-2">Puberty Quest</h3>
-                  <p className="text-white text-lg mb-4">Perjalanan seru mengenal tubuhmu!</p>
-                  <p className="text-pink-100 text-sm mb-4">Selesaikan 5 chapter menarik dan pelajari tentang pubertas dengan cara yang fun dan interaktif.</p>
-                  <button className="bg-white text-pink-600 font-bold py-3 px-6 rounded-full hover:bg-pink-100 transition-all cursor-pointer">
-                    Mulai Petualangan →
-                  </button>
-                </div>
-                <div className="hidden sm:block ml-6">
-                  <Image width="80" height="80" src="https://img.icons8.com/officel/80/quest.png" alt="quest"/>
-                </div>
-              </div>
+          {isLoading ? (
+              <Loader className="w-6 h-6 text-pink-500 animate-spin" />
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 w-full">
+              {renderGameCards()}
+              <PubertyQuestCard />
             </div>
-          </Link>
+          )}
         </section>
 
         <section
-          className="w-full flex flex-col items-center py-12 
+          className="w-full flex flex-col items-center py-12
       bg-gradient-to-br from-pink-50 to-yellow-50 rounded-3xl shadow-lg border-4 border-pink-300 relative overflow-hidden"
         >
           {/* Live Ranking Badge */}

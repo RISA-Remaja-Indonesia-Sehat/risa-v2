@@ -112,7 +112,7 @@ export const QUIZ_DATA = {
 };
 
 export const TTS_SCRIPTS = {
-  intro: "Hei kamu! Selamat datang di Puberty Quest! Aku Risa, partner belajarmu! Siap seru-seruan sambil kenalan sama tubuh sendiri? Let's gooo!",
+  intro: "Selamat datang di Puberty Quest! Aku Risa, partner belajarmu! Siap seru-seruan sambil kenalan sama tubuh sendiri? Let's gooo!",
   chapter1: {
     intro: "Pubertas tuh kayak level naik di hidup kamu! Tubuh berubah, pikiran berubah, semuanya lagi upgrade! Dan itu normal banget!",
     game: "Oke, waktunya main! Cari perubahan tubuh yang terjadi saat pubertas. Siap? Fokus! Gaskeun!",

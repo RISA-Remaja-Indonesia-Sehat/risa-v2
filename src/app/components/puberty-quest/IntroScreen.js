@@ -1,20 +1,39 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 
 export default function IntroScreen({ message, onClose }) {
   const [displayedText, setDisplayedText] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
+  const audioRef = useRef(null);
 
   useEffect(() => {
     if (currentIndex < message.length) {
+      if (currentIndex === 0) {
+        audioRef.current = new Audio('/audio/keyboard-typing.mp3');
+        audioRef.current.loop = true;
+        audioRef.current.volume = 1;
+        audioRef.current.play().catch(() => {});
+      }
       const timeout = setTimeout(() => {
         setDisplayedText((prev) => prev + message[currentIndex]);
         setCurrentIndex((prev) => prev + 1);
       }, 50);
       return () => clearTimeout(timeout);
+    } else if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
     }
   }, [currentIndex, message]);
+
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    };
+  }, []);
 
   return (
     <div
