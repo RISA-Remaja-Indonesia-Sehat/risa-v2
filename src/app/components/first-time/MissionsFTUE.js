@@ -9,8 +9,9 @@ export default function MissionsFTUE() {
   useEffect(() => {
     const token = localStorage.getItem('token');
     const ftueStep = localStorage.getItem('ftue-step');
+    const ftueComplete = localStorage.getItem('ftue-complete');
     
-    if (token && ftueStep === '6') {
+    if (token && ftueStep === '6' && !ftueComplete) {
       setTimeout(() => {
         setShowDialog(true);
       }, 500);
