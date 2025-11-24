@@ -63,12 +63,12 @@ export default function Chapter4() {
         <div className="bg-pink-400 rounded-3xl p-6 shadow-lg mb-6 border-2 border-pink-300">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-white mb-1">Chapter 4: Pubertas & Emosi</h1>
-              <p className="text-pink-100">Kelola emosimu dengan bijak</p>
+              <h1 className="text-xl md:text-3xl font-bold text-white mb-1">Chapter 4: Pubertas & Emosi</h1>
+              <p className="text-pink-100 text-sm md:text-base">Kelola emosimu dengan bijak</p>
             </div>
             <button
               onClick={() => router.push('/mini-game/puberty-quest')}
-              className="px-4 py-2 bg-white hover:bg-pink-100 rounded-full text-pink-600 font-bold transition-all"
+              className="px-4 py-2 bg-white hover:bg-pink-100 rounded-full text-pink-600 font-bold transition-all text-sm md:text-base"
             >
               ← Kembali
             </button>
