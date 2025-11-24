@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import ChapterDialog from '../../../components/puberty-quest/ChapterDialog';
-import { QUIZ_DATA, TTS_SCRIPTS } from '../../../components/puberty-quest/quizData';
+import { TTS_SCRIPTS } from '../../../components/puberty-quest/quizData';
 import usePubertyQuestStore from '../../../store/usePubertyQuestStore';
 import { Heart, Zap, Droplet } from 'lucide-react';
 
@@ -48,12 +48,12 @@ export default function Chapter3() {
         <div className="bg-pink-400 rounded-3xl p-6 shadow-lg mb-6 border-2 border-pink-300">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-white mb-1">Chapter 3: Siklus Menstruasi</h1>
-              <p className="text-pink-100">Fase: <span className="font-bold">{PHASES[phase]}</span></p>
+              <h1 className="text-xl md:text-3xl font-bold text-white mb-1">Chapter 3: Siklus Menstruasi</h1>
+              <p className="text-pink-100 text-sm md:text-base">Fase: <span className="font-bold">{PHASES[phase]}</span></p>
             </div>
             <button
               onClick={() => router.push('/mini-game/puberty-quest')}
-              className="px-4 py-2 bg-white hover:bg-pink-100 rounded-full text-pink-600 font-bold transition-all"
+              className="px-4 py-2 bg-white hover:bg-pink-100 rounded-full text-pink-600 font-bold transition-all text-sm md:text-base"
             >
               ← Kembali
             </button>
