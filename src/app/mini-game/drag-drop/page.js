@@ -9,7 +9,7 @@ import {
     TouchSensor, 
 } from '@dnd-kit/core';
 import axios from 'axios'; 
-import { Zap, ArrowBigLeft } from 'lucide-react';
+import { Zap } from 'lucide-react';
 import DraggableStatement from '../../components/games/DraggableStatement'; 
 import DroppableZone from '../../components/games/DroppableZone'; 
 import { gsap } from 'gsap';

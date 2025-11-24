@@ -7,6 +7,7 @@ import Link from "next/link";
 import useStickers from "../store/useStickers";
 import useMissions from "../store/useMissions";
 import useAuthStore from "../store/useAuthStore";
+import MissionsFTUE from "../components/first-time/MissionsFTUE";
 
 export default function MissionPage() {
   const { stickers, initStickers } = useStickers();
@@ -108,6 +109,7 @@ export default function MissionPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-yellow-50 py-8 px-4">
+      <MissionsFTUE />
       <div className="max-w-4xl mx-auto">
         {/* Section 1: Sticker Count & Exchange */}
         <section className="bg-white rounded-3xl shadow-xl p-8 mb-8 border-2 border-pink-200">

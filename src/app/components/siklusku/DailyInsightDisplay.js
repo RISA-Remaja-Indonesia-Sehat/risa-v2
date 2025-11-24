@@ -88,8 +88,8 @@ export default function DailyInsightDisplay() {
             <Heart className="w-8 h-8 text-pink-500 fill-pink-500" />
           </div>
           <div className="flex-1">
-            <h3 className="font-bold text-pink-700 mb-3 text-lg">Insight Harianmu</h3>
-            <p className="text-gray-800 leading-relaxed text-base">{insight.insight}</p>
+            <h3 className="font-bold text-pink-700 mb-3 text-md sm:text-lg">Insight Harianmu</h3>
+            <p className="text-gray-800 leading-relaxed text-sm sm:text-base">{insight.insight}</p>
           </div>
         </div>
       </div>
@@ -99,7 +99,7 @@ export default function DailyInsightDisplay() {
         <div className="bg-white rounded-2xl p-6 border-2 border-pink-100 shadow-sm hover:shadow-md transition-shadow">
           <div className="flex items-center gap-3 mb-4">
             <Zap className="w-6 h-6 text-pink-500" />
-            <h3 className="font-bold text-pink-700 text-lg">Kegiatan yang Cocok</h3>
+            <h3 className="font-bold text-pink-700 text-md sm:text-lg">Kegiatan yang Cocok</h3>
           </div>
           <div className="space-y-3">
             {insight.activities.map((activity, idx) => (
@@ -108,7 +108,7 @@ export default function DailyInsightDisplay() {
                 className="flex items-center gap-3 p-4 bg-gradient-to-r from-pink-50 to-white rounded-xl border border-pink-100 hover:border-pink-300 transition-colors"
               >
                 <div className="w-3 h-3 bg-pink-500 rounded-full flex-shrink-0"></div>
-                <p className="text-gray-800 font-medium">{activity}</p>
+                <p className="text-gray-800 font-medium text-sm sm:text-base">{activity}</p>
               </div>
             ))}
           </div>
@@ -120,7 +120,7 @@ export default function DailyInsightDisplay() {
         <div className="bg-white rounded-2xl p-6 border-2 border-pink-100 shadow-sm hover:shadow-md transition-shadow">
           <div className="flex items-center gap-3 mb-4">
             <Apple className="w-6 h-6 text-pink-500" />
-            <h3 className="font-bold text-pink-700 text-lg">Makanan yang Cocok</h3>
+            <h3 className="font-bold text-pink-700 text-md sm:text-lg">Makanan yang Cocok</h3>
           </div>
           <div className="space-y-3">
             {insight.foods.map((food, idx) => (
@@ -129,7 +129,7 @@ export default function DailyInsightDisplay() {
                 className="flex items-center gap-3 p-4 bg-gradient-to-r from-pink-50 to-white rounded-xl border border-pink-100 hover:border-pink-300 transition-colors"
               >
                 <div className="w-3 h-3 bg-pink-500 rounded-full flex-shrink-0"></div>
-                <p className="text-gray-800 font-medium">{food}</p>
+                <p className="text-gray-800 font-medium text-sm sm:text-base">{food}</p>
               </div>
             ))}
           </div>
@@ -141,9 +141,9 @@ export default function DailyInsightDisplay() {
         <div className="bg-white rounded-2xl p-6 border-2 border-pink-100 shadow-sm hover:shadow-md transition-shadow">
           <div className="flex items-start gap-3 mb-4">
             <Heart className="w-6 h-6 text-pink-500 flex-shrink-0 mt-1" />
-            <h3 className="font-bold text-pink-700 text-lg">Tips Menghadapi Gejala</h3>
+            <h3 className="font-bold text-pink-700 text-md sm:text-lg">Tips Menghadapi Gejala</h3>
           </div>
-          <p className="text-gray-800 leading-relaxed text-base">{insight.symptomTips}</p>
+          <p className="text-gray-800 leading-relaxed text-sm sm:text-base">{insight.symptomTips}</p>
         </div>
       )}
 
@@ -155,8 +155,8 @@ export default function DailyInsightDisplay() {
               <AlertCircle className="w-8 h-8 text-pink-600 flex-shrink-0 mt-1" />
             </div>
             <div className="flex-1">
-              <h3 className="font-bold text-pink-700 mb-2 text-lg">⚠️ Perlu Konsultasi Medis</h3>
-              <p className="text-gray-800 mb-3 font-medium">{insight.consultationReason}</p>
+              <h3 className="font-bold text-pink-700 mb-2 text-md sm:text-lg">⚠️ Perlu Konsultasi Medis</h3>
+              <p className="text-gray-800 mb-3 text-sm sm:text-base font-medium">{insight.consultationReason}</p>
               <p className="text-gray-700 leading-relaxed text-sm">
                 Kami merekomendasikan untuk berkonsultasi dengan dokter spesialis kandungan atau mengunjungi rumah sakit terdekat untuk memastikan kesehatan reproduksimu. Jangan khawatir, ini adalah langkah preventif yang penting untuk kesejahteraan Anda.
               </p>

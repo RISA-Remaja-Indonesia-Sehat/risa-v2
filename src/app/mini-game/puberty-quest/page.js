@@ -2,11 +2,11 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Sparkles, Heart } from 'lucide-react';
-import useAuthStore from '../../store/useAuthStore';
 import usePubertyQuestStore from '../../store/usePubertyQuestStore';
 import IntroScreen from '../../components/puberty-quest/IntroScreen';
 import { TTS_SCRIPTS } from '../../components/puberty-quest/quizData';
 import BackButton from '@/app/components/games/BackButton';
+import PubertyQuestFTUE from '../../components/first-time/PubertyQuestFTUE';
 
 const CHAPTERS = [
   { id: 1, title: 'Awal Pubertas', description: 'Kenali tanda-tanda pubertas' },
@@ -18,13 +18,12 @@ const CHAPTERS = [
 
 export default function PubertyQuestPage() {
   const router = useRouter();
-  const { user, isLoggedIn } = useAuthStore();
   const { progress, fetchProgress, loading } = usePubertyQuestStore();
-
   const [showIntro, setShowIntro] = useState(false);
-
+  
   useEffect(() => {
-    if (!isLoggedIn) {
+    const token = localStorage.getItem('token');
+    if (!token) {
       router.push('/login');
       return;
     }
@@ -35,7 +34,7 @@ export default function PubertyQuestPage() {
     }
     
     fetchProgress();
-  }, [isLoggedIn]);
+  }, []);
 
   useEffect(() => {
     const nav = document.querySelector('nav');
@@ -69,6 +68,7 @@ export default function PubertyQuestPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-yellow-100">
+      
       {showIntro && (
         <IntroScreen message={TTS_SCRIPTS.intro} onClose={handleCloseIntro} />
       )}
@@ -78,7 +78,7 @@ export default function PubertyQuestPage() {
         {/* Hero Section */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-rose-700 mb-4">
-            🌸 Puberty Quest 🌸
+            Puberty Quest
           </h1>
           <p className="text-lg text-rose-600 max-w-2xl mx-auto">
             Perjalanan seru mengenal tubuhmu! Selesaikan setiap chapter untuk belajar lebih banyak.
@@ -184,6 +184,8 @@ export default function PubertyQuestPage() {
             })}
           </div>
         )}
+
+        {completedCount > 0 && <PubertyQuestFTUE />}
 
         {/* Info Card */}
         <div className="mt-8 bg-pink-100 rounded-2xl p-6 border-2 border-pink-300">
