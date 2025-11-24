@@ -11,6 +11,7 @@ import FloatingAddButton from "../components/siklusku/FloatingAddButton";
 import ArticleRecommendations from "../components/siklusku/ArticleRecommendations";
 import CustomButton from "../components/ui/CustomButton";
 import Link from "next/link";
+import SiklusFTUE from "../components/first-time/SiklusFTUE";
 
 const SikluskuPage = () => {
   const { isLoggedIn, token, user } = useAuthStore();
@@ -102,6 +103,8 @@ const SikluskuPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-yellow-50">
+      <SiklusFTUE />
+      
       <div className="container mx-auto px-4 py-8">
         {/* Hero Section */}
         <HeroSection />

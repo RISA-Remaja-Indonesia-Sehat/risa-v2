@@ -2,11 +2,13 @@ import Image from "next/image";
 import HeroSection from "./landing-page/HeroSection";
 import OurStaff from "./landing-page/OurStaff";
 import FeatureBannerCarousel from "./components/FeatureBannerCarousel";
-import Link from "next/link";
+import FTUEWrapper from "./components/first-time/FTUEWrapper";
 
 export default function Home() {
   return (
     <>
+      <FTUEWrapper />
+      
       <HeroSection />
 
       {/** Features */}

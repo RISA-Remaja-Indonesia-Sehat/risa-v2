@@ -9,7 +9,7 @@ const BANNERS = [
     title: '🎮 Puberty Quest',
     subtitle: 'Game Edukatif Seru',
     description: 'Jelajahi 5 chapter menarik tentang pubertas dengan cara yang fun dan interaktif. Mainkan secara gratis sekarang!',
-    gradient: 'from-pink-400 to-yellow-300',
+    gradient: 'from-pink-400 to-pink-200',
     link: '/mini-game/puberty-quest',
     emoji: '🌸'
   },

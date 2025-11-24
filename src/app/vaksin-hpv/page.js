@@ -14,6 +14,7 @@ import useModalState from '../store/useModalState';
 import FAQ from '../components/ui/FAQ';
 import VaccineInfoModal from '../components/ui/VaccineInfoModal';
 import CustomButton from '../components/ui/CustomButton';
+import VaksinFTUE from '../components/first-time/VaksinFTUE';
 
 export default function Home() {
   const { showToast, setShowToast } = useLocationToast();
@@ -79,6 +80,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen">
+      <VaksinFTUE />
       <Toast 
         message="Kami memerlukan akses lokasi untuk menunjukkan laboratorium Prodia terdekat dari lokasi Anda. Ini akan membantu Anda menemukan tempat vaksinasi HPV yang paling mudah dijangkau."
         show={showToast}
