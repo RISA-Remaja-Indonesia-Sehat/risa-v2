@@ -21,6 +21,7 @@ import TrophyImage from "../../../public/image/piala.png";
 import Link from "next/link";
 import MemoIcon from "../../../public/image/memory-game.png";
 import DragIcon from "../../../public/image/drag-drop.png";
+import CrosswordIcon from "../../../public/image/crossword.png";
 import axios from "axios";
 import PinkProwessLeaderboard from "../components/games/PinkProwessLeaderboard";
 import PubertyQuestCard from "../components/puberty-quest/PubertyQuestCard";
@@ -38,12 +39,12 @@ const GameCardLegend = ({
   gameId,
   points,
 }) => {
-  const mainColor = type === "DRAG_DROP" ? "bg-pink-400" : "bg-pink-600";
+  const mainColor = type === "DRAG_DROP" ? "bg-pink-400" : type === "CROSSWORD" ? "bg-purple-500" : "bg-pink-600";
   const accentColor =
-    type === "DRAG_DROP" ? "border-pink-600" : "border-pink-300";
-  const pointsText = type === "DRAG_DROP" ? "FACT FINDER" : "MEMORY CHALLENGE";
+    type === "DRAG_DROP" ? "border-pink-600" : type === "CROSSWORD" ? "border-purple-400" : "border-pink-300";
+  const pointsText = type === "DRAG_DROP" ? "FACT FINDER" : type === "CROSSWORD" ? "WORD PUZZLE" : "MEMORY CHALLENGE";
 
-  const DynamicIcon = type === "DRAG_DROP" ? Target : Clock;
+  const DynamicIcon = type === "DRAG_DROP" ? Target : type === "CROSSWORD" ? Rocket : Clock;
 
   return (
     <div
@@ -160,6 +161,14 @@ export default function Home() {
           icon: DragIcon,
           points: defaultPoints,
         };
+      case "CROSSWORD":
+        return {
+          description:
+            "Isi teka-teki silang dengan istilah kesehatan reproduksi. Uji pengetahuanmu sambil bermain!",
+          linkgame: `/mini-game/crossword`,
+          icon: CrosswordIcon,
+          points: defaultPoints,
+        };
       default:
         return {
           description: "Deskripsi game belum tersedia. Hubungi tim developer.",
@@ -171,6 +180,7 @@ export default function Home() {
   };
 
   const renderGameCards = () => {
+    console.log('miniGames:', miniGames);
 
     if (error) {
       return (
@@ -189,7 +199,9 @@ export default function Home() {
     }
 
     return miniGames.map((game) => {
+      console.log('game type:', game.type);
       const details = getGameCardDetails(game);
+      console.log('details:', details);
 
       return (
         <GameCardLegend
