@@ -18,13 +18,11 @@ import {
 } from "lucide-react";
 import BackButton from "../../components/games/BackButton";
 import ClickSpark from "../../components/ui/ClickSpark";
-
-// Hapus hardcoded termsAndDefs. Data akan diambil dari API.
+import useFullscreenStore from "../../store/useFullscreenStore";
 
 const API_ENDPOINT = "https://server-risa.vercel.app/api/memo-cards";
-const MAX_PAIRS_TO_FETCH = 4; // Kebutuhan: Ambil 4 soal
+const MAX_PAIRS_TO_FETCH = 4;
 
-// Function untuk mengacak array
 function shuffleArray(arr) {
   return arr
     .map((v) => ({ v, r: Math.random() }))
@@ -32,7 +30,6 @@ function shuffleArray(arr) {
     .map((x) => x.v);
 }
 
-// Function untuk format waktu
 function formatDuration(totalSeconds) {
   const mins = Math.floor(totalSeconds / 60);
   const secs = totalSeconds % 60;
@@ -44,21 +41,19 @@ export default function MemoryGamePage() {
   const [isPlaying, setIsPlaying] = useState(false);
   const router = useRouter();
 
-  // Ambil actions dari store
   const { setResults, resetGame } = useGameStore();
+  const { enterFullscreen, exitFullscreen } = useFullscreenStore();
 
-  // State Data & Game
-  const [initialTerms, setInitialTerms] = useState([]); // 4 Pasangan soal yang terpilih dari API
+  const [initialTerms, setInitialTerms] = useState([]);
   const [cards, setCards] = useState([]);
   const [flipped, setFlipped] = useState([]);
   const [matched, setMatched] = useState([]);
-  const [moves, localSetMoves] = useState(0); // total_moves
+  const [moves, localSetMoves] = useState(0);
   const [points, localSetPoints] = useState(0);
-  const [time, localSetTime] = useState(60); // waktu yang tersisa
-  const [maxTime, setMaxTime] = useState(60); // Durasi maksimal game (dari API)
-  const [running, setRunning] = useState(false); // Default: false, akan diset true setelah data dimuat
-  const [isLoading, setIsLoading] = useState(true); // State loading
-  const [isFullscreen, setIsFullscreen] = useState(true);
+  const [time, localSetTime] = useState(60);
+  const [maxTime, setMaxTime] = useState(60);
+  const [running, setRunning] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [isGameOver, setIsGameOver] = useState(false);
 
   const timerRef = useRef(null);
@@ -66,14 +61,16 @@ export default function MemoryGamePage() {
   const matchAudioRef = useRef(null);
   const flipAudioRef = useRef(null);
 
-  // Jumlah pasangan di game, dihitung dari data yang telah diambil.
   const totalPairs = initialTerms.length;
 
-  // --- AUDIO SETUP ---
+  useEffect(() => {
+    enterFullscreen();
+    return () => useFullscreenStore.getState().reset();
+  }, [enterFullscreen]);
+
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    // ... (Init Audio logic remains the same)
     audioRef.current = new Audio("/audio/memo-backsound.mp3");
     matchAudioRef.current = new Audio("/audio/match.mp3");
     flipAudioRef.current = new Audio("/audio/flip.mp3");
@@ -83,9 +80,7 @@ export default function MemoryGamePage() {
     flipAudioRef.current.volume = 0.3;
 
     audioRef.current.loop = true;
-    audioRef.current.play().catch((e) => {
-      // Autoplay diblokir
-    });
+    audioRef.current.play().catch((e) => {});
     setIsPlaying(true);
 
     return () => {
@@ -106,47 +101,22 @@ export default function MemoryGamePage() {
       setIsPlaying(!isPlaying);
     }
   };
-  // --- END AUDIO SETUP ---
 
-  // Fungsi exit fullscreen (tetap sama)
-  const exitFullscreen = useCallback(() => {
-    // ... (exitFullscreen logic remains the same)
-    if (document.exitFullscreen) {
-      document
-        .exitFullscreen()
-        .then(() => {
-          setIsFullscreen(false);
-        })
-        .catch((err) => {
-          console.warn("Exit fullscreen gagal:", err);
-        });
-    }
-  }, []);
-
-  // --- FUNGSI UTAMA: HANDLE GAME OVER (Untuk Score Endpoint) ---
   const handleGameOver = useCallback(() => {
-    if (isGameOver) return; // Cegah multiple calls
+    if (isGameOver) return;
     setIsGameOver(true);
 
     if (timerRef.current) clearInterval(timerRef.current);
     setRunning(false);
 
-    if (isFullscreen) {
-      exitFullscreen();
-    }
+    const durationPlayedSeconds = maxTime - time;
+    const correctPairs = matched.length;
+    const wrongMoves = moves - correctPairs;
 
-    const durationPlayedSeconds = maxTime - time; // Durasi dimainkan (total - sisa)
-    const correctPairs = matched.length; // Jumlah jawaban benar (pasangan match)
-    const wrongMoves = moves - correctPairs; // Jumlah gerakan yang tidak match
-
-    // Kumpulkan Data Hasil (Final Data Structure for localStorage)
     const finalResult = {
-      // Data untuk Result Page
-      gameType: "memory",
+      gameType: "MEMO_CARD",
       points: points,
-      time: formatDuration(
-        durationPlayedSeconds > 0 ? durationPlayedSeconds : 0
-      ),
+      time: formatDuration(durationPlayedSeconds > 0 ? durationPlayedSeconds : 0),
       matchedCount: correctPairs,
       totalPairs: totalPairs,
       answers: matched.map((pairId) => {
@@ -158,13 +128,11 @@ export default function MemoryGamePage() {
           isCorrect: true,
         };
       }),
-
-      gameType: "MEMO_CARD", // Untuk konsistensi penamaan di backend
-      score: points, // Mapped to score
+      score: points,
       duration_seconds: durationPlayedSeconds > 0 ? durationPlayedSeconds : 0,
       total_moves: moves,
-      correct_answer: correctPairs, // Mapped to correct_answer
-      wrong_answer: wrongMoves > 0 ? wrongMoves : 0, // Mapped to wrong_answer
+      correct_answer: correctPairs,
+      wrong_answer: wrongMoves > 0 ? wrongMoves : 0,
     };
 
     localStorage.setItem("gameResult", JSON.stringify(finalResult));
@@ -172,7 +140,8 @@ export default function MemoryGamePage() {
 
     gsap.to("main > div", { opacity: 0, duration: 0.8 });
 
-    setTimeout(() => {
+    setTimeout(async () => {
+      await exitFullscreen();
       router.push("/mini-game/result");
     }, 900);
   }, [
@@ -181,26 +150,15 @@ export default function MemoryGamePage() {
     points,
     router,
     setResults,
-    isFullscreen,
-    exitFullscreen,
     maxTime,
     time,
-    totalPairs, // Ditambahkan sebagai dependency
+    totalPairs,
     initialTerms,
-    isGameOver, // Ditambahkan sebagai dependency untuk mendapatkan term/definition
+    isGameOver,
+    exitFullscreen,
   ]);
 
-  // --- DATA FETCHING & GAME INITIALIZATION ---
   useEffect(() => {
-    const nav = document.querySelector("nav");
-    const footer = document.querySelector("footer");
-
-    const previousNavDisplay = nav?.style.display;
-    const previousFooterDisplay = footer?.style.display;
-
-    if (nav) nav.style.display = "none";
-    if (footer) footer.style.display = "none";
-
     const fetchData = async () => {
       setIsLoading(true);
       setRunning(false);
@@ -211,22 +169,18 @@ export default function MemoryGamePage() {
         const result = await response.json();
 
         if (result.success && result.data.length > 0) {
-          // 1. Ambil 4 soal secara acak (Randomization dari sisi client, sesuai kebutuhan)
           const shuffledData = shuffleArray(result.data);
-          const selectedTerms = shuffledData.slice(0, MAX_PAIRS_TO_FETCH); // Ambil 4 item pertama setelah diacak
+          const selectedTerms = shuffledData.slice(0, MAX_PAIRS_TO_FETCH);
 
           setInitialTerms(selectedTerms);
 
-          // 2. Tentukan Durasi Game
-          // Asumsi: Durasi diambil dari data pertama atau default 30
           const durationFromApi = selectedTerms[0]?.duration || 30;
           setMaxTime(durationFromApi);
           localSetTime(durationFromApi);
 
-          // 3. Generate Kartu (8 kartu)
           const generatedCards = [];
           selectedTerms.forEach((item) => {
-            const pairId = item.id; // ID unik dari API
+            const pairId = item.id;
             generatedCards.push({
               id: `${pairId}-term`,
               value: item.term,
@@ -241,31 +195,19 @@ export default function MemoryGamePage() {
             });
           });
 
-          // Acak kartu
           setCards(shuffleArray(generatedCards));
-          setRunning(true); // Mulai game/timer
-        } else {
-          console.error("Gagal memuat data atau data kosong:", result);
-          // TODO: Tampilkan pesan error ke user
+          setRunning(true);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
-        // TODO: Tampilkan pesan error koneksi
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchData();
+  }, [resetGame]);
 
-    return () => {
-      if (nav) nav.style.display = previousNavDisplay ?? "";
-      if (footer) footer.style.display = previousFooterDisplay ?? "";
-      // Cleanup timer juga ada di useEffect lain
-    };
-  }, [resetGame]); // [] agar hanya dijalankan sekali saat mount
-
-  // --- TIMER JALAN ---
   useEffect(() => {
     if (running && maxTime > 0) {
       timerRef.current = setInterval(() => {
@@ -273,7 +215,7 @@ export default function MemoryGamePage() {
           if (t <= 1) {
             clearInterval(timerRef.current);
             setRunning(false);
-            handleGameOver(); // Waktu habis, game over
+            handleGameOver();
             return 0;
           }
           return t - 1;
@@ -283,15 +225,12 @@ export default function MemoryGamePage() {
     return () => clearInterval(timerRef.current);
   }, [running, maxTime, handleGameOver]);
 
-  // --- CHECK GAME END (Semua match) ---
   useEffect(() => {
-    // totalPairs akan > 0 jika initialTerms sudah terisi
     if (!isLoading && totalPairs > 0 && matched.length === totalPairs) {
       handleGameOver();
     }
   }, [matched, totalPairs, handleGameOver, isLoading, isGameOver]);
 
-  // --- CARD FLIP & CHECK LOGIC (Tidak ada perubahan signifikan selain penggunaan state baru) ---
   const flipCard = (card) => {
     if (
       !running ||
@@ -316,20 +255,15 @@ export default function MemoryGamePage() {
     }
   };
 
-  // check pair
   useEffect(() => {
     if (flipped.length === 2) {
-      localSetMoves((m) => m + 1); // Tambah total_moves
+      localSetMoves((m) => m + 1);
       const [a, b] = flipped;
 
       if (a.pair === b.pair && a.type !== b.type) {
-        // MATCH
         matchAudioRef.current?.play().catch((e) => console.log(e));
-        localSetPoints((p) => p + 25); // Poin bertambah per match
-        setMatched((m) => {
-          return [...m, a.pair];
-        });
-        // Animasi match (tetap sama)
+        localSetPoints((p) => p + 25);
+        setMatched((m) => [...m, a.pair]);
         [a, b].forEach((card) => {
           const el = cardRefs.current[card.id];
           if (el) {
@@ -343,7 +277,6 @@ export default function MemoryGamePage() {
         });
         setTimeout(() => setFlipped([]), 800);
       } else {
-        // NOT MATCH
         setTimeout(() => {
           flipped.forEach((c) => {
             const el = cardRefs.current[c.id];
@@ -361,9 +294,7 @@ export default function MemoryGamePage() {
     }
   }, [flipped]);
 
-  // FUNGSI RESET GAME
   const resetLocalGame = () => {
-    // Hapus animasi GSAP yang mungkin tertinggal
     Object.values(cardRefs.current).forEach((c) => {
       if (c) {
         gsap.to(c, { rotateY: 0, duration: 0.35 });
@@ -375,13 +306,12 @@ export default function MemoryGamePage() {
       }
     });
 
-    // Reset state lokal
-    setCards(shuffleArray(cards)); // Cukup acak ulang kartu yang sudah ada
+    setCards(shuffleArray(cards));
     setMatched([]);
     setFlipped([]);
     localSetMoves(0);
     localSetPoints(0);
-    localSetTime(maxTime); // Set waktu kembali ke maxTime
+    localSetTime(maxTime);
     resetGame();
     setRunning(true);
   };
@@ -397,13 +327,11 @@ export default function MemoryGamePage() {
     );
   }
 
-  // --- RETURN JSX (Perubahan minor di tombol reset dan stat timer) ---
   return (
     <main>
       <RotateDevicePrompt />
 
       <div className="relative min-h-screen">
-        {/* Background & Particles */}
         <div
           className="absolute inset-0 -z-10"
           style={{
@@ -431,9 +359,7 @@ export default function MemoryGamePage() {
           sparkCount={8}
           duration={600}
         >
-          {/* Content */}
           <div className="p-6 max-w-6xl mx-auto relative z-10">
-            {/* Header */}
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
                 <BackButton />
@@ -456,9 +382,7 @@ export default function MemoryGamePage() {
               </button>
             </div>
 
-            {/* Stats - DIPERBAIKI: Timer dipindah ke top-center, diperbesar, dan ditambah progress bar */}
             <div className="flex flex-col items-center gap-4 mb-8">
-              {/* Timer di top-center, lebih besar dan menonjol */}
               <div className="relative w-full bg-pink-100/90 backdrop-blur px-6 py-3 rounded-full shadow-xl border-2 border-pink-300 animate-pulse-slow">
                 <div className="flex justify-center items-center gap-2 text-lg font-bold text-pink-700">
                   <Timer
@@ -470,14 +394,12 @@ export default function MemoryGamePage() {
                   />
                   <span className="tabular-nums text-xl">{time}s</span>
                 </div>
-                {/* Progress Bar untuk Timer - Visual cue waktu tersisa */}
                 <div className="w-full bg-pink-200 rounded-full h-2 mt-2 overflow-hidden">
                   <div
                     className="bg-yellow-400 h-full rounded-full transition-all duration-1000 ease-linear"
                     style={{ width: `${(time / maxTime) * 100}%` }}
                   ></div>
                 </div>
-                {/* Notifikasi jika waktu hampir habis */}
                 {time <= 10 && (
                   <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold animate-bounce">
                     Waktu hampir habis! 🚨
@@ -485,7 +407,6 @@ export default function MemoryGamePage() {
                 )}
               </div>
 
-              {/* Poin dan Gerakan tetap di bawah, lebih kecil untuk balance */}
               <div className="flex items-center justify-center gap-4 flex-wrap">
                 <div className="flex items-center gap-2 bg-white/90 backdrop-blur px-4 py-2 rounded-full text-base font-bold text-gray-700 shadow-md border border-gray-100">
                   <Target className="w-5 h-5 text-purple-500" />
@@ -498,12 +419,11 @@ export default function MemoryGamePage() {
               </div>
             </div>
 
-            {/* Cards */}
             <div
               className={`grid gap-4 md:gap-6 p-2 ${
                 totalPairs === 4
                   ? "grid-cols-4 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-4"
-                  : "grid-cols-4" // Sesuaikan grid jika jumlah kartu berubah
+                  : "grid-cols-4"
               }`}
               style={{ perspective: 1200 }}
             >
@@ -529,7 +449,6 @@ export default function MemoryGamePage() {
                             : "rotateY(0deg)",
                       }}
                     >
-                      {/* Back */}
                       <div
                         className="absolute inset-0 flex items-center justify-center rounded-2xl backface-hidden border-4 border-pink-200/50 shadow-inner"
                         style={{
@@ -542,7 +461,6 @@ export default function MemoryGamePage() {
                           {card.type === "term" ? "Istilah" : "Definisi"}
                         </span>
                       </div>
-                      {/* Front */}
                       <div
                         className="absolute inset-0 flex items-center justify-center rounded-2xl bg-white/95 border-4 border-pink-400 text-pink-800 font-extrabold text-xs md:text-xs p-2 text-center backface-hidden shadow-2xl"
                         style={{ transform: "rotateY(180deg)" }}
@@ -555,10 +473,9 @@ export default function MemoryGamePage() {
               })}
             </div>
 
-            {/* Footer */}
             <div className="text-center my-8 flex flex-col md:flex-row justify-center items-center gap-4">
               <button
-                onClick={resetLocalGame} // Menggunakan fungsi reset yang diperbarui
+                onClick={resetLocalGame}
                 className="flex items-center gap-2 px-4 py-2 rounded-lg bg-pink-500 text-white shadow-xl hover:bg-pink-600 transition font-bold"
               >
                 <RotateCcw className="w-5 h-5" />
