@@ -427,8 +427,7 @@ export default function ResultPage() {
         ? resultData?.points ?? resultData?.score ?? 0
         : resultData?.score ?? resultData?.points ?? 0;
 
-    const shareTitle = `Aku baru saja bermain ${gameType} di RISA. Aku dapat nilai ${score} loh`;
-    const shareText = `Yuk main juga, biar kita bandingin hasilnya!`;
+    const shareText = `Aku baru saja bermain ${gameType} di RISA. Aku dapat nilai ${score} loh! Yuk main juga, biar kita bandingin hasilnya!`;
 
     gsap.to("#share-btn-game", {
       opacity: 0.5,
@@ -439,13 +438,12 @@ export default function ResultPage() {
     try {
       if (navigator.share) {
         await navigator.share({
-          title: shareTitle,
-          text: `${shareText}\n${shareUrl}`,
+          text: `Aku baru saja bermain ${gameType} di RISA. Aku dapat nilai ${score} loh! Yuk main juga, biar kita bandingin hasilnya!`,
           url: shareUrl,
         });
       } else {
         await navigator.clipboard.writeText(
-          `${shareTitle}\n${shareText}\n${shareUrl}`
+          `${shareText}\n${shareUrl}`
         );
         alert("Link hasil sudah disalin. Tempelkan ke chat/medsos kamu!");
       }
@@ -453,7 +451,7 @@ export default function ResultPage() {
       console.error("Gagal membagikan hasil:", e);
       try {
         await navigator.clipboard.writeText(
-          `${shareTitle}\n${shareText}\n${shareUrl}`
+          `${shareText}\n${shareUrl}`
         );
         alert("Link hasil sudah disalin. Tempelkan ke chat/medsos kamu!");
       } catch {
