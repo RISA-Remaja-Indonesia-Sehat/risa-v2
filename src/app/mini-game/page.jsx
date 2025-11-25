@@ -5,12 +5,9 @@ import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
-  Trophy,
   Zap,
   Clock,
-  Gamepad2Icon,
   TrendingUp,
-  Users,
   Target,
   Rocket,
   Loader,
@@ -85,7 +82,7 @@ const GameCardLegend = ({
         </p>
 
         <Link href={`${linkgame}?gameId=${gameId}`} passHref>
-          <button className="w-full bg-yellow-300 hover:bg-yellow-400 text-pink-800 font-bold py-2 px-4 rounded-lg shadow-md transition-all duration-200 flex items-center justify-center text-sm hover:scale-102">
+          <button className="w-full bg-yellow-300 hover:bg-yellow-400 text-pink-800 font-bold py-2 px-4 rounded-lg shadow-md transition-all duration-200 flex items-center justify-center text-sm cursor-pointer">
             <Zap size={16} className="mr-2" /> Mulai Game
           </button>
         </Link>

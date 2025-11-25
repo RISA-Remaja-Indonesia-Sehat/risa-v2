@@ -15,20 +15,17 @@ import DroppableZone from '../../components/games/DroppableZone';
 import { gsap } from 'gsap';
 import BackButton from '../../components/games/BackButton';
 import Link from 'next/link';
+import useFullscreenStore from '../../store/useFullscreenStore';
 
-// --- KONSTANTA ENDPOINT ---
 const DRAG_DROP_ENDPOINT = "https://server-risa.vercel.app/api/drag-n-drop";
-const QUESTION_LIMIT = 5; // Batasan soal yang diambil: 5
+const QUESTION_LIMIT = 5;
 
-// Nilai konstanta
 const PRIMARY_COLOR = '#F89BB1';
 
 if (typeof window !== 'undefined') {
-    // Pastikan gameResult dibersihkan saat memulai game baru
     localStorage.removeItem('gameResult');
 }
 
-// Fungsi Utility: Mengacak Array
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -38,37 +35,35 @@ function shuffleArray(array) {
 }
 
 export default function MitosFaktaGame() {
-    // Ganti mock data statements dengan state kosong
     const [statements, setStatements] = useState([]); 
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     
-    // Total pertanyaan didapat dari statements.length
     const TOTAL_QUESTIONS = statements.length;
 
-    // 1. STATE UNTUK GAME LOGIC
     const [currentIndex, setCurrentIndex] = useState(0);
     const [score, setScore] = useState(0);
-    const [isGameActive, setIsGameActive] = useState(false); // Mulai dalam keadaan false (menunggu data)
+    const [isGameActive, setIsGameActive] = useState(false);
     const answersLog = useRef([]);
     const startTime = useRef(Date.now());
     
-    // 2. STATE UNTUK DND-KIT VISUAL FEEDBACK
     const [activeDragId, setActiveDragId] = useState(null); 
     const [isOverDropzoneId, setIsOverDropzoneId] = useState(null); 
-    const [isFullscreen, setIsFullscreen] = useState(true);
     
-    // Ref Audio (untuk implementasi audio nyata)
+    const { enterFullscreen, exitFullscreen } = useFullscreenStore();
+    
     const bgMusicRef = useRef(null);
     const correctSoundRef = useRef(null);
     const wrongSoundRef = useRef(null);
 
-    // Pastikan tidak error saat statements masih kosong
     const currentStatement = statements[currentIndex]; 
     const progressWidth = TOTAL_QUESTIONS > 0 ? ((currentIndex + 1) / TOTAL_QUESTIONS) * 100 : 0;
 
+    useEffect(() => {
+        enterFullscreen();
+        return () => useFullscreenStore.getState().reset();
+    }, [enterFullscreen]);
 
-    // --- LOGIC: FETCHING DATA, SHUFFLE, dan SET STATE ---
     useEffect(() => {
         const fetchAndPrepareQuestions = async () => {
             setIsLoading(true);
@@ -79,22 +74,18 @@ export default function MitosFaktaGame() {
                 if (response.data.success && Array.isArray(response.data.data)) {
                     let allQuestions = response.data.data;
                     
-                    // 1. Acak Semua Soal
                     const shuffledQuestions = shuffleArray(allQuestions);
-                    
-                    // 2. Ambil hanya 5 Soal (atau kurang jika total soal < 5)
                     const finalQuestions = shuffledQuestions.slice(0, QUESTION_LIMIT);
                     
-                    // 3. Transform data agar 'correct' sesuai format game ('MYTH' -> 'mitos', 'FACT' -> 'fakta')
                     const formattedQuestions = finalQuestions.map(q => ({
                         ...q,
-                        correct: q.correct.toLowerCase(), // Transform: MYTH/FACT menjadi mitos/fakta
-                        id: q.id // Pertahankan ID asli jika diperlukan
+                        correct: q.correct.toLowerCase(),
+                        id: q.id
                     }));
 
                     setStatements(formattedQuestions);
-                    setIsGameActive(true); // Aktifkan game setelah data siap
-                    startTime.current = Date.now(); // Mulai timer game
+                    setIsGameActive(true);
+                    startTime.current = Date.now();
                 } else {
                     throw new Error("Format data tidak valid dari server.");
                 }
@@ -109,39 +100,8 @@ export default function MitosFaktaGame() {
             }
         };
         fetchAndPrepareQuestions();
-    }, []); 
-
-    // --- LOGIC: AUDIO, FULLSCREEN (TIDAK ADA PERUBAHAN) ---
-    useEffect(() => {
-        const nav = document.querySelector("nav");
-        const footer = document.querySelector("footer");
-    
-        const previousNavDisplay = nav?.style.display;
-        const previousFooterDisplay = footer?.style.display;
-    
-        if (nav) nav.style.display = "none";
-        if (footer) footer.style.display = "none";
-    
-        return () => {
-            if (nav) nav.style.display = previousNavDisplay ?? "";
-            if (footer) footer.style.display = previousFooterDisplay ?? "";
-        };
-    }, []);
-    
-    const exitFullscreen = useCallback(() => {
-        if (document.exitFullscreen) {
-            document
-                .exitFullscreen()
-                .then(() => {
-                    setIsFullscreen(false);
-                })
-                .catch((err) => {
-                    console.warn("Exit fullscreen gagal:", err);
-                });
-        }
     }, []);
 
-    // 💡 KONFIGURASI SENSOR (TIDAK ADA PERUBAHAN)
     const sensors = useSensors(
         useSensor(TouchSensor, {
             activationConstraint: { delay: 250, tolerance: 5 }, 
@@ -151,26 +111,18 @@ export default function MitosFaktaGame() {
         })
     );
 
-    // 💡 FUNGSI END GAME (TIDAK ADA PERUBAHAN LOGIC DASAR)
     const endGame = useCallback(() => {
         setIsGameActive(false);
         
         const endTime = Date.now();
         let duration = Math.floor((endTime - startTime.current) / 1000);
 
-        const formatDuration = (seconds) => {
-            const mins = Math.floor(seconds / 60);
-            const secs = seconds % 60;
-            return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-        };
-
-        // Score dihitung per correct answer * 20
         const correctCount = answersLog.current.filter(a => a.isCorrect).length;
         const finalData = {
             score: correctCount * 20, 
             correct: correctCount,
             wrong: answersLog.current.filter(a => !a.isCorrect).length,
-            duration_seconds: 0,
+            duration_seconds: duration,
             gameType: 'DRAG_DROP',
             answers: answersLog.current.map(ans => ({
                 statement: statements.find(s => s.id === ans.questionId)?.text || ans.question,
@@ -181,16 +133,13 @@ export default function MitosFaktaGame() {
 
         localStorage.setItem('gameResult', JSON.stringify(finalData));
 
-        if (isFullscreen) {
-            exitFullscreen();
-        }
-        
-        // Redirect ke result page
-        if (typeof window !== 'undefined') window.location.href = '/mini-game/result'; 
+        setTimeout(async () => {
+            await exitFullscreen();
+            if (typeof window !== 'undefined') window.location.href = '/mini-game/result'; 
+        }, 500);
 
-    }, [isFullscreen, exitFullscreen, statements]); 
+    }, [exitFullscreen, statements]); 
 
-    // 💡 FUNGSI HANDLE ANSWER (SEDANG DISESUAIKAN)
     const handleAnswer = useCallback((choice) => {
         if (!isGameActive || !currentStatement) return;
 
@@ -198,17 +147,15 @@ export default function MitosFaktaGame() {
         const correct = currentQ.correct;
         const isCorrect = choice === correct;
 
-        // 1. Log Jawaban (Update log dengan Question ID)
         answersLog.current.push({
             number: currentIndex + 1,
-            questionId: currentQ.id, // Gunakan ID dari data API
+            questionId: currentQ.id,
             question: currentQ.text,
             userAnswer: choice,
             correctAnswer: correct,
             isCorrect
         });
 
-        // 2. Update Score
         if (isCorrect) {
             setScore(prev => prev + 1);
             correctSoundRef.current?.play(); 
@@ -216,7 +163,6 @@ export default function MitosFaktaGame() {
             wrongSoundRef.current?.play(); 
         }
 
-        // 3. Feedback Visual (GSAP) - Target Card
         const cardEl = document.querySelector('[data-handler-id="statement-card"]'); 
         
         if (cardEl) {
@@ -228,7 +174,6 @@ export default function MitosFaktaGame() {
                 onComplete: () => gsap.set(cardEl, { backgroundColor: "#ffffff" })
             });
 
-            // Small Badge Pop
             const badge = document.createElement('div');
             badge.textContent = isCorrect ? '✓ Benar' : '✗ Salah';
             badge.className = `absolute px-4 py-2 rounded-full text-sm select-none
@@ -238,14 +183,12 @@ export default function MitosFaktaGame() {
             badge.style.top = '8px';
             cardEl.appendChild(badge);
             
-            // Animasi Badge
             gsap.fromTo(badge, { y: -10, opacity: 0, scale: 0.8 }, { y: 0, opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.4)" });
             setTimeout(() => { 
                 gsap.to(badge, { opacity: 0, duration: 0.25, onComplete: () => badge.remove() }); 
             }, 900);
         }
         
-        // 5. Next or End
         setTimeout(() => {
             if (currentIndex + 1 >= TOTAL_QUESTIONS) {
                 endGame(); 
@@ -268,8 +211,6 @@ export default function MitosFaktaGame() {
         }, 900);
     }, [currentIndex, isGameActive, endGame, currentStatement, TOTAL_QUESTIONS]);
 
-
-    // DND-KIT HANDLERS (TIDAK ADA PERUBAHAN)
     const handleDragStart = useCallback(({ active }) => {
         setActiveDragId(active.id); 
     }, []);
@@ -288,8 +229,6 @@ export default function MitosFaktaGame() {
         }
     }, [handleAnswer]);
 
-
-    // --- LOGIC: AUDIO STARTUP (TIDAK ADA PERUBAHAN) ---
     useEffect(() => {
         bgMusicRef.current = new Audio('/audio/backsoundGame.mp3'); 
         bgMusicRef.current.loop = true;
@@ -319,9 +258,8 @@ export default function MitosFaktaGame() {
                 bgMusicRef.current.currentTime = 0;
             }
         };
-    }, []); 
+    }, []);
 
-    // --- RENDER DENGAN HANDLING LOADING/ERROR ---
     if (isLoading) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-pink-50">
@@ -372,7 +310,6 @@ export default function MitosFaktaGame() {
             onDragEnd={handleDragEnd} 
         > 
             <div className="min-h-screen flex items-start justify-center py-12 relative overflow-visible">
-                {/* Full background gradient dan dekorasi */}
                 <div className="absolute inset-0 bg-pink-50 -z-20 min-h-screen" style={{
                     backgroundImage: "url('/image/bg-dragdrop.jpeg')", 
                     backgroundSize: "cover",
@@ -382,14 +319,11 @@ export default function MitosFaktaGame() {
                 <div
                     className="absolute top-10 left-10 w-40 h-40 bg-pink-200 rounded-full opacity-40 blur-3xl -z-10 shadow-[0_20px_60px_rgba(248,155,177,0.4)] animate-pulse">
                 </div>
-                
 
                 <main className="w-full max-w-4xl px-4 relative z-10 
                     bg-white/40 backdrop-blur-md 
                     p-8 rounded-3xl shadow-xl border border-white/50">
-                    {/* Header */}
                     <div className="flex items-center gap-4 mb-6">
-                        
                        <BackButton />
 
                         <div>
@@ -402,7 +336,6 @@ export default function MitosFaktaGame() {
                         </div>
                     </div>
 
-                    {/* Progress Bar */}
                     <div className="mb-6">
                         <div className="flex justify-between mb-2 text-sm">
                             <div id="progressText">Pertanyaan {currentIndex + 1} dari {TOTAL_QUESTIONS}</div>
@@ -416,24 +349,19 @@ export default function MitosFaktaGame() {
                         </div>
                     </div>
 
-                    {/* Card Container */}
                     <div className="mb-8 perspective min-h-[150px]"> 
-                        {isGameActive && currentStatement && ( // Pastikan game aktif dan statement ada
+                        {isGameActive && currentStatement && (
                             <DraggableStatement
                                 key={currentIndex} 
                                 id="statement-card" 
                                 statement={currentStatement.text}
                             />
                         )}
-                        
                     </div>
-                    {/* Render message jika data sudah habis/game belum mulai */}
                     {!isGameActive && !isLoading && TOTAL_QUESTIONS > 0 && (
                         <div className="text-center py-12 text-gray-500 font-medium">Memuat UI Pertanyaan...</div>
                     )}
 
-
-                    {/* Dropzones Container */}
                     <div className="grid grid-cols-2 gap-1 sm:gap-3 md:gap-6 lg:gap-8">
                         <DroppableZone 
                             id="myth" 
