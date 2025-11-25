@@ -1,7 +1,7 @@
 export const GUIDE_DATA = {
-  dialog1: "Hei Bestiee! 👋 Siap-siap buat petualangan gila-gilaan sambil kenalan sama tubuh sendiri? Let's goooo! 🚀",
+  dialog1: "Hei Bestiee! 👋 Senang banget kamu akhirnya hadir di sini ✨",
   
-  dialog2: "Yuk, kita mulai petualangan seru kamu bareng aku! Coba klik tombol 'Coba Sekarang' di bawah ya~ Jangan malu-malu, ini bakal fun banget! 💪✨",
+  dialog2: "Yuk, kita mulai petualangan seru kamu bareng aku! Coba klik tombol 'Coba Sekarang' di bawah ya~ Jangan malu-malu, ini bakal fun banget! 💪",
   
   dialog3: "🔥 Kamu berhasil selesain game-nya! Keren banget sih! Kamu udah mulai paham soal pubertas nih. Semangat terus!",
   
