@@ -5,13 +5,15 @@ import GUIDE_DATA from './guideData';
 
 export default function ArticleFTUE() {
   const [showDialog, setShowDialog] = useState(false);
-  const [highlightElement, setHighlightElement] = useState(null);
+  const [showScrollHint, setShowScrollHint] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     const ftueStep = localStorage.getItem('ftue-step');
     
     if (token && ftueStep === '3') {
+      setShowScrollHint(true);
+      
       const handleScroll = () => {
         const article = document.querySelector('#article');
         if (!article) return;
@@ -21,6 +23,7 @@ export default function ArticleFTUE() {
         
         if (isAtBottom && !showDialog) {
           setShowDialog(true);
+          setShowScrollHint(false);
           window.removeEventListener('scroll', handleScroll);
         }
       };
@@ -46,6 +49,14 @@ export default function ArticleFTUE() {
 
   return (
     <>
+      {showScrollHint && (
+        <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-40 animate-bounce">
+          <div className="bg-pink-500 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg flex items-center gap-2">
+            <span>👇</span> Scroll ke bawah untuk lanjut
+          </div>
+        </div>
+      )}
+      
       {showDialog && (
         <AvatarDialog
           message={GUIDE_DATA.dialog6}
