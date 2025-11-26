@@ -2,55 +2,40 @@
 import { useState, useEffect } from 'react';
 import AvatarDialog from './AvatarDialog';
 import GUIDE_DATA from './guideData';
+import useAuthStore from '@/app/store/useAuthStore';
+import { isDialogCompleted, markDialogComplete } from '@/lib/ftueAPI';
 
 export default function SiklusFTUE() {
   const [showDialog, setShowDialog] = useState(false);
-  const [currentStep, setCurrentStep] = useState(0);
+  const { user, token } = useAuthStore();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const ftueStep = localStorage.getItem('ftue-step');
-    
-    if (token && ftueStep === '4') {
-      setTimeout(() => {
-        setShowDialog(true);
-        setCurrentStep(0);
-      }, 500);
+    if (user?.id && token) {
+      checkAndShowDialog();
     }
-  }, []);
+  }, [user?.id, token]);
 
-  const handleDialogClose = () => {
-    if (currentStep === 0) {
-      setCurrentStep(1);
-    } else {
-      setShowDialog(false);
-      localStorage.setItem('ftue-step', '5');
+  const checkAndShowDialog = async () => {
+    const completed = await isDialogCompleted(token, 5);
+    if (!completed) {
+      setTimeout(() => setShowDialog(true), 500);
     }
   };
 
-  const dialogs = [
-    { message: GUIDE_DATA.dialog7, button: null },
-    { 
-      message: GUIDE_DATA.dialog8, 
-      button: {
-        type: 'link',
-        label: 'Ke Vaksin HPV',
-        href: '/vaksin-hpv',
-        onBeforeNavigate: () => {
-          localStorage.setItem('ftue-step', '5');
-        }
-      }
+  const handleDialogClose = async () => {
+    setShowDialog(false);
+    if (token) {
+      await markDialogComplete(token, 5);
     }
-  ];
+  };
 
   return (
     <>
-      {showDialog && currentStep < dialogs.length && (
+      {showDialog && (
         <AvatarDialog
-          message={dialogs[currentStep].message}
+          message={GUIDE_DATA.dialog5}
           onClose={handleDialogClose}
           show={showDialog}
-          button={dialogs[currentStep].button}
         />
       )}
     </>

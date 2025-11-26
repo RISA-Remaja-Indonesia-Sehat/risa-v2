@@ -7,7 +7,6 @@ export default function AvatarDialog({
   message, 
   onClose, 
   show = true,
-  button = null,
   highlightElement = null 
 }) {
   const [displayedText, setDisplayedText] = useState('');
@@ -51,15 +50,7 @@ export default function AvatarDialog({
 
   if (!show) return null;
 
-  const handleLinkClick = (e) => {
-    e.preventDefault();
-    if (button.onBeforeNavigate) {
-      button.onBeforeNavigate();
-    }
-    setTimeout(() => {
-      window.location.href = button.href;
-    }, 100);
-  };
+
 
   return (
     <>
@@ -106,30 +97,7 @@ export default function AvatarDialog({
               )}
             </p>
 
-            {/* Button if provided */}
-            {button && currentIndex >= message.length && (
-              <div className="mt-4 flex gap-2">
-                {button.type === 'link' ? (
-                  <a
-                    href={button.href}
-                    onClick={handleLinkClick}
-                    className="flex-1 px-4 py-2 bg-gradient-to-r from-pink-400 to-rose-400 text-white font-semibold rounded-lg hover:from-pink-500 hover:to-rose-500 transition-all text-center cursor-pointer"
-                  >
-                    {button.label}
-                  </a>
-                ) : (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      button.onClick?.();
-                    }}
-                    className="flex-1 px-4 py-2 bg-gradient-to-r from-pink-400 to-rose-400 text-white font-semibold rounded-lg hover:from-pink-500 hover:to-rose-500 transition-all"
-                  >
-                    {button.label}
-                  </button>
-                )}
-              </div>
-            )}
+
 
             {/* Bubble Tail */}
             <div className="hidden sm:block absolute left-0 top-1/2 transform -translate-x-3 -translate-y-1/2 w-6 h-6 bg-white border-l-4 border-b-4 border-pink-200 rotate-45"></div>
@@ -137,7 +105,7 @@ export default function AvatarDialog({
         </div>
         
         {/* Tap Hint */}
-        {currentIndex >= message.length && !button && (
+        {currentIndex >= message.length && (
           <p className="absolute bottom-4 sm:bottom-8 text-white text-xs sm:text-sm animate-pulse">
             Tap di mana saja untuk melanjutkan
           </p>

@@ -2,32 +2,38 @@
 import { useState, useEffect } from 'react';
 import AvatarDialog from './AvatarDialog';
 import GUIDE_DATA from './guideData';
+import useAuthStore from '@/app/store/useAuthStore';
+import { isDialogCompleted, markDialogComplete } from '@/lib/ftueAPI';
 
 export default function MissionsFTUE() {
   const [showDialog, setShowDialog] = useState(false);
+  const { user, token } = useAuthStore();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const ftueStep = localStorage.getItem('ftue-step');
-    const ftueComplete = localStorage.getItem('ftue-complete');
-    
-    if (token && ftueStep === '6' && !ftueComplete) {
-      setTimeout(() => {
-        setShowDialog(true);
-      }, 500);
+    if (user?.id && token) {
+      checkAndShowDialog();
     }
-  }, []);
+  }, [user?.id, token]);
 
-  const handleDialogClose = () => {
+  const checkAndShowDialog = async () => {
+    const completed = await isDialogCompleted(token, 4);
+    if (!completed) {
+      setTimeout(() => setShowDialog(true), 500);
+    }
+  };
+
+  const handleDialogClose = async () => {
     setShowDialog(false);
-    localStorage.setItem('ftue-complete', 'true');
+    if (token) {
+      await markDialogComplete(token, 4);
+    }
   };
 
   return (
     <>
       {showDialog && (
         <AvatarDialog
-          message={GUIDE_DATA.dialog11}
+          message={GUIDE_DATA.dialog4}
           onClose={handleDialogClose}
           show={showDialog}
         />

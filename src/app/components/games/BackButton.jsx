@@ -16,7 +16,7 @@ const BackButton = () => {
     <button
       id="backBtn"
       onClick={handleBack} 
-      className="text-pink-400"
+      className="text-pink-400 cursor-pointer"
     >
       <ArrowBigLeft size={36} />
     </button>

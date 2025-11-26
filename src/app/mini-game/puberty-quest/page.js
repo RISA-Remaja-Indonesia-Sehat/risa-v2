@@ -6,7 +6,6 @@ import usePubertyQuestStore from '../../store/usePubertyQuestStore';
 import IntroScreen from '../../components/puberty-quest/IntroScreen';
 import { TTS_SCRIPTS } from '../../components/puberty-quest/quizData';
 import BackButton from '@/app/components/games/BackButton';
-import PubertyQuestFTUE from '../../components/first-time/PubertyQuestFTUE';
 
 const CHAPTERS = [
   { id: 1, title: 'Awal Pubertas', description: 'Kenali tanda-tanda pubertas' },
@@ -25,6 +24,12 @@ export default function PubertyQuestPage() {
     const token = localStorage.getItem('token');
     if (!token) {
       router.push('/login');
+      return;
+    }
+    
+    const hasCompletedPretest = localStorage.getItem('puberty-quest-pretest-score');
+    if (!hasCompletedPretest) {
+      router.push('/mini-game/puberty-quest/pre-test');
       return;
     }
     
@@ -65,6 +70,14 @@ export default function PubertyQuestPage() {
 
   const completedCount = progress.filter(p => p.completed).length;
   const progressPercentage = (completedCount / CHAPTERS.length) * 100;
+  const allChaptersCompleted = completedCount === CHAPTERS.length;
+
+  useEffect(() => {
+    if (allChaptersCompleted && !localStorage.getItem('puberty-quest-posttest-started')) {
+      localStorage.setItem('puberty-quest-posttest-started', 'true');
+      router.push('/mini-game/puberty-quest/post-test');
+    }
+  }, [allChaptersCompleted]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-yellow-100">
@@ -184,8 +197,6 @@ export default function PubertyQuestPage() {
             })}
           </div>
         )}
-
-        {completedCount > 0 && <PubertyQuestFTUE />}
 
         {/* Info Card */}
         <div className="mt-8 bg-pink-100 rounded-2xl p-6 border-2 border-pink-300">

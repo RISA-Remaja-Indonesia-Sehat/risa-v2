@@ -55,7 +55,7 @@ export default function HeroSection() {
           makin paham dan percaya diri.
         </p>
 
-        <div className="w-fit mx-auto mb-12 hero-button opacity-0" data-ftue="try-now">
+        <div className="w-fit mx-auto mb-12 hero-button opacity-0">
           <Link href="/mini-game">
             <CustomButton
               className="px-6 py-3 text-base font-semibold"
