@@ -6,7 +6,8 @@ import MapComponent from '../components/maps/MapComponent';
 import useLocationToast from '../store/useLocationToast';
 import useLocationPermission from '../store/useLocationPermission';
 import useVaccineTypes from '../store/useVaccineTypes';
-import { useEffect } from 'react';
+import useAuthStore from '../store/useAuthStore';
+import { useState, useEffect } from 'react';
 import BookingModal from '../components/ui/BookingModal';
 import ETicket from '../components/ui/ETicket';
 import useBookingData from '../store/useBookingData';
@@ -15,11 +16,17 @@ import FAQ from '../components/ui/FAQ';
 import VaccineInfoModal from '../components/ui/VaccineInfoModal';
 import CustomButton from '../components/ui/CustomButton';
 import VaksinFTUE from '../components/first-time/VaksinFTUE';
+import { Spinner } from '../components/ui/spinner';
+import Link from 'next/link';
 
 export default function Home() {
+  const { isLoading, setIsLoading } = useState(true);
   const { showToast, setShowToast } = useLocationToast();
   const { locationPermission, setLocationPermission } = useLocationPermission();
   const { vaccineTypes, fetchVaccineTypes } = useVaccineTypes();
+  const { user } = useAuthStore();
+  const [hasVaccineSavings, setHasVaccineSavings] = useState(false);
+  const [checkingStatus, setCheckingStatus] = useState(true);
   const currentBookingId = useBookingData(state => state.currentBookingId);
   const { 
     showVaccineInfo, 
@@ -35,15 +42,41 @@ export default function Home() {
   } = useModalState();
 
   useEffect(() => {
-  const fetchData = async () => {
-    try {
-      await fetchVaccineTypes();
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };  
+    const fetchData = async () => {
+      try {
+        await fetchVaccineTypes();
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };  
     fetchData();
   }, [fetchVaccineTypes]);
+
+  useEffect(() => {
+    const checkVaccineSavingsStatus = async () => {
+      if (!user?.id) {
+        setCheckingStatus(false);
+        return;
+      }
+
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/vaccine-savings/check-status`, {
+          headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          setHasVaccineSavings(data.hasVaccineSavings);
+        }
+      } catch (error) {
+        console.error('Error checking vaccine savings status:', error);
+      } finally {
+        setCheckingStatus(false);
+      }
+    };
+
+    checkVaccineSavingsStatus();
+  }, [user?.id]);
 
   const handleFindLocation = () => {
     setShowToast(true);
@@ -57,8 +90,6 @@ export default function Home() {
   const handleLocationDecline = () => {
     setShowToast(false);
   };
-
-
 
   const handleBookingSubmit = async (formData) => {
     const { submitBooking } = useBookingData.getState();
@@ -76,8 +107,6 @@ export default function Home() {
     }
   };
 
-
-
   return (
     <div className="min-h-screen">
       <VaksinFTUE />
@@ -89,67 +118,68 @@ export default function Home() {
       />
       
       {/* Hero Section */}
- <section className="bg-gradient-to-br from-pink-50 via-white to-rose-50 py-20 px-4">
-  <div className="max-w-6xl mx-auto">
-    <div className="grid md:grid-cols-2 justify-center items-center gap-10">
+      <section className="bg-gradient-to-br from-pink-50 via-white to-rose-50 py-20 px-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-2 justify-center items-center gap-10">
 
-      {/* LEFT SIDE */}
-      <div>
-        <h1 className="text-3xl md:text-4xl font-bold text-[#2A1E1A] leading-tight mb-6">
-          Investasi Masa Depanmu Dimulai Hari Ini
-        </h1>
+            {/* LEFT SIDE */}
+            <div>
+              <h1 className="text-3xl md:text-4xl font-bold text-[#2A1E1A] leading-tight mb-6">
+                Investasi Masa Depanmu Dimulai Hari Ini
+              </h1>
 
-        <p className="md:text-lg text-gray-700 mb-6 leading-relaxed">
-          Kanker serviks dapat dicegah. Dengan menabung <span className="text-pink-600 font-semibold">Rp 10.000</span> setiap hari, kamu bisa mendapatkan vaksin HPV sebagai perlindungan penting untuk kesehatan reproduksimu.
-        </p>
+              <p className="md:text-lg text-gray-700 mb-6 leading-relaxed">
+                Kanker serviks dapat dicegah. Dengan menabung <span className="text-pink-600 font-semibold">Rp 10.000</span> setiap hari, kamu bisa mendapatkan vaksin HPV sebagai perlindungan penting untuk kesehatan reproduksimu.
+              </p>
 
-        <p className="text-sm text-gray-600 mb-8 italic">
-          Merawat diri bukan hanya dari luar, tetapi juga dari dalam. Ini langkah preventif untuk masa depan yang lebih sehat.
-        </p>
+              <p className="text-sm text-gray-600 mb-8 italic">
+                Merawat diri bukan hanya dari luar, tetapi juga dari dalam. Ini langkah preventif untuk masa depan yang lebih sehat.
+              </p>
 
-        <div className="flex flex-col sm:flex-row gap-4 mb-8 w-fit">
-          <CustomButton 
-            title="Mulai Nabung"
-            className="px-5 py-3 md:px-7 md:text-lg font-semibold"
-          />
-        </div>
+              {!checkingStatus && (
+                <Link href={hasVaccineSavings ? "/vaksin-hpv/savings/dashboard" : "/vaksin-hpv/savings"} className="flex flex-col sm:flex-row gap-4 mb-8 w-fit">
+                  <CustomButton 
+                    title={hasVaccineSavings ? "Lihat Tabungan" : "Mulai Nabung"}
+                    className="px-5 py-3 md:px-7 md:text-lg font-semibold"
+                  />
+                </Link>
+              )}
 
-        {/* SOCIAL PROOF */}
-        <div className="flex items-center gap-4">
-          <div className="flex -space-x-2">
-            <div className="w-10 h-10 rounded-full border-2 border-white bg-cover bg-center" 
-            style={{backgroundImage: 'url(https://cdn.stocksnap.io/img-thumbs/960w/woman-smartphone_MLEPUKHYUU.jpg)'}}></div>
-            <div className="w-10 h-10 rounded-full border-2 border-white bg-cover bg-center" 
-            style={{backgroundImage: 'url(https://www.shutterstock.com/shutterstock/photos/2341582245/display_1500/stock-photo-beautiful-young-asian-woman-pointing-finger-to-her-teeth-on-isolated-pink-background-facial-and-2341582245.jpg)'}}></div>
-            <div className="w-10 h-10 rounded-full border-2 border-white bg-cover bg-center" 
-            style={{backgroundImage: 'url(https://www.shutterstock.com/shutterstock/photos/2038337828/display_1500/stock-photo-pink-background-portrait-of-a-young-asian-woman-with-pigtails-2038337828.jpg)'}}></div>
+              {/* SOCIAL PROOF */}
+              <div className="flex items-center gap-4">
+                <div className="flex -space-x-2">
+                  <div className="w-10 h-10 rounded-full border-2 border-white bg-cover bg-center" 
+                  style={{backgroundImage: 'url(https://cdn.stocksnap.io/img-thumbs/960w/woman-smartphone_MLEPUKHYUU.jpg)'}}></div>
+                  <div className="w-10 h-10 rounded-full border-2 border-white bg-cover bg-center" 
+                  style={{backgroundImage: 'url(https://www.shutterstock.com/shutterstock/photos/2341582245/display_1500/stock-photo-beautiful-young-asian-woman-pointing-finger-to-her-teeth-on-isolated-pink-background-facial-and-2341582245.jpg)'}}></div>
+                  <div className="w-10 h-10 rounded-full border-2 border-white bg-cover bg-center" 
+                  style={{backgroundImage: 'url(https://www.shutterstock.com/shutterstock/photos/2038337828/display_1500/stock-photo-pink-background-portrait-of-a-young-asian-woman-with-pigtails-2038337828.jpg)'}}></div>
+                </div>
+
+                <p className="text-sm text-gray-600">
+                  <strong>2.500+</strong> remaja sudah mulai nabung bulan ini
+                </p>
+              </div>
+            </div>
+
+            {/* RIGHT IMAGE */}
+            <div className="relative">
+              <Image
+                src="/image/vaksin-hpv.png"
+                alt="Vaksin HPV"
+                width={1000}
+                height={800}
+                className="drop-shadow-lg animate-float"
+              />
+
+              {/* Small Badge */}
+              <div className="absolute -top-6 right-2 bg-pink-600 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
+                Program kesehatan remaja
+              </div>
+            </div>
           </div>
-
-          <p className="text-sm text-gray-600">
-            <strong>2.500+</strong> remaja sudah mulai nabung bulan ini
-          </p>
         </div>
-      </div>
-
-      {/* RIGHT IMAGE */}
-      <div className="relative">
-        <Image
-          src="/image/vaksin-hpv.png"
-          alt="Vaksin HPV"
-          width={1000}
-          height={800}
-          className="drop-shadow-lg animate-float"
-        />
-
-        {/* Small Badge */}
-        <div className="absolute -top-6 right-2 bg-pink-600 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
-          Program kesehatan remaja
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
+      </section>
 
       {/* Partnership Section */}
       <section className="py-16 px-4 bg-white">
@@ -176,7 +206,11 @@ export default function Home() {
       <section className="py-16 px-4 bg-white">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold text-[#382b22] text-center mb-12">Jenis Vaksin HPV dari Prodia</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          {isLoading ? (
+            <Spinner />
+          )
+          : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {vaccineTypes.map((vaccine) => (
               <div key={vaccine.id} className="bg-gradient-to-br from-pink-50 to-rose-50 rounded-xl p-6 border-2 border-pink-200 hover:shadow-lg transition-shadow relative">
                 
@@ -184,7 +218,7 @@ export default function Home() {
                 
                 {/* Price */}
                 <div className="mb-3">
-                    <p className="text-lg text-gray-400 line-through">{vaccine.price}</p>           
+                    <p className="text-lg font-bold text-pink-600">{vaccine.price}</p>           
                 </div>
                 
                 <p className="text-gray-600 text-sm mb-4">{vaccine.description}</p>
@@ -197,8 +231,8 @@ export default function Home() {
                   Pilih Paket
                 </button>
               </div>
-            ))}
-          </div>
+            ))}</div>
+          )}
         </div>
       </section>
 
@@ -206,8 +240,6 @@ export default function Home() {
 
       {/* Location Finder Section */}
       <section className="py-16 px-4 bg-gradient-to-br from-pink-50 via-white to-rose-50 relative">
-        {/* Decorative elements */}
-        
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12 relative">
             <span className="inline-block animate-bounce mb-4">📍</span>
