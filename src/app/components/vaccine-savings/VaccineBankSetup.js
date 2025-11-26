@@ -87,7 +87,7 @@ export default function VaccineBankSetup({ onNext }) {
                 </p>
                 <ol className="list-decimal list-inside space-y-2 ml-2">
                   <li>Download aplikasi BCA Mobile atau kunjungi kantor BCA terdekat</li>
-                  <li>Pilih produk "BluTeens" untuk remaja</li>
+                  <li>Pilih produk &quot;BluTeens&quot; untuk remaja</li>
                   <li>Siapkan KTP/Kartu Pelajar dan izin orang tua</li>
                   <li>Selesaikan proses verifikasi</li>
                   <li>Catat nomor rekening kamu</li>
