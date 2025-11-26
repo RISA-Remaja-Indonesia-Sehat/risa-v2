@@ -29,6 +29,8 @@ export default function VaksinFTUE() {
     }
   };
 
+  if (!user?.id || !token) return null;
+
   return (
     <>
       {showDialog && (

@@ -29,6 +29,8 @@ export default function LandingPageFTUE() {
     }
   };
 
+  if (!user?.id || !token) return null;
+
   return (
     <>
       {showDialog && (

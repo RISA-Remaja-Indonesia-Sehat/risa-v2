@@ -29,6 +29,8 @@ export default function MiniGameFTUE() {
     }
   };
 
+  if (!user?.id || !token) return null;
+
   return (
     <>
       {showDialog && (
