@@ -111,10 +111,22 @@ export default function PinkProwessLeaderboard() {
 
   if (loading) {
     return (
-      <div className="min-h-[500px] flex items-center justify-center p-8">
-        <p className="text-xl font-semibold text-pink-500 flex items-center gap-2 animate-pulse">
-          <Loader2 className="w-6 h-6 animate-spin" /> Memuat Papan Skor...
-        </p>
+      <div className="p-2 md:p-4 bg-gradient-to-br from-pink-50 to-rose-100 rounded-2xl shadow-2xl shadow-pink-300/50 w-full lg:w-4xl mx-auto min-h-[500px] overflow-hidden">
+        <div className="space-y-3 p-2">
+          {Array.from({ length: 10 }).map((_, idx) => (
+            <div key={idx} className="flex items-center gap-3 p-3 bg-white rounded-lg animate-pulse">
+              <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
+              <div className="flex-1 space-y-2">
+                <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                <div className="h-3 bg-gray-100 rounded w-1/2"></div>
+              </div>
+              <div className="w-12 h-6 bg-gray-200 rounded"></div>
+            </div>
+          ))}
+        </div>
+        <div className="text-center mt-6 pt-4 border-t border-pink-200">
+          <div className="h-6 bg-gray-200 rounded w-1/2 mx-auto animate-pulse"></div>
+        </div>
       </div>
     );
   }

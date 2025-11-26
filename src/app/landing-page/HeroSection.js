@@ -46,20 +46,21 @@ export default function HeroSection() {
   return (
     <section ref={heroRef} className="container my-4 mx-auto" id="hero">
       <div className="p-4">
-        <h1 className="text-3xl md:text-4xl text-center font-bold mb-4 md:mb-6 hero-title opacity-0">
+        <h1 className="text-4xl md:text-5xl text-center font-bold mb-4 md:mb-6 hero-title opacity-0 text-gray-900 leading-tight">
           Berani Tahu, Berani Lindungi Diri
         </h1>
-        <p className="text-center text-gray-600 leading-6 mb-8 max-w-2xl mx-auto hero-text opacity-0">
+        <p className="text-center text-gray-700 leading-relaxed mb-8 max-w-2xl mx-auto hero-text opacity-0 text-lg">
           Belajar tentang pubertas, cinta, dan kesehatan reproduksi lewat games
           seru. AI RISA bakal kasih rekomendasi artikel edukatif yang bikin kamu
           makin paham dan percaya diri.
         </p>
 
-        <div className="w-fit mx-auto mb-12 hero-button opacity-0" data-ftue="try-now">
+        <div className="w-fit mx-auto mb-12 hero-button opacity-0">
           <Link href="/mini-game">
             <CustomButton
-              className="px-6 py-3 text-base font-semibold"
+              className="px-8 py-4 text-base font-semibold"
               title="Coba Sekarang"
+              aria-label="Mulai bermain mini-game RISA"
             />
           </Link>
         </div>
@@ -69,7 +70,7 @@ export default function HeroSection() {
             src="/image/hero-image.png"
             width={600}
             height={400}
-            alt="Hero"
+            alt="Ilustrasi remaja perempuan belajar tentang kesehatan reproduksi dengan RISA"
             className="hero-image opacity-0 max-w-full h-auto"
             priority={true}
           />

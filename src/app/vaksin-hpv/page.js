@@ -89,43 +89,67 @@ export default function Home() {
       />
       
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-pink-50 via-white to-rose-50 py-20 px-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-2 justify-center items-center">
-            <div>
-              <h1 className="text-3xl md:text-4xl font-bold text-[#382b22] mb-6">
-                Lindungi Masa Depanmu dengan <span className="text-pink-600">Vaksin HPV</span>
-              </h1>
-              <p className="md:text-lg text-gray-700 mb-8">
-                Bergabunglah dengan <strong>ribuan remaja cerdas</strong> yang sudah melindungi diri dari kanker serviks. 
-                Vaksinasi HPV adalah investasi terbaik untuk kesehatan reproduksimu di masa depan!
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 mb-8 w-fit">
-                <CustomButton title="Daftar Vaksin Sekarang" className="px-4 py-2 md:px-6 md:py-3 md:text-lg" />
-              </div>
-              <div className="flex items-center gap-4">
-                <div className="flex -space-x-2">
-                  <div className="w-10 h-10 rounded-full border-2 border-white bg-cover bg-center" style={{backgroundImage: 'url(https://cdn.stocksnap.io/img-thumbs/960w/woman-smartphone_MLEPUKHYUU.jpg)'}}></div>
-                  <div className="w-10 h-10 rounded-full border-2 border-white bg-cover bg-center" style={{backgroundImage: 'url(https://www.shutterstock.com/shutterstock/photos/2341582245/display_1500/stock-photo-beautiful-young-asian-woman-pointing-finger-to-her-teeth-on-isolated-pink-background-facial-and-2341582245.jpg)'}}></div>
-                  <div className="w-10 h-10 rounded-full border-2 border-white bg-cover bg-center" style={{backgroundImage: 'url(https://www.shutterstock.com/shutterstock/photos/2038337828/display_1500/stock-photo-pink-background-portrait-of-a-young-asian-woman-with-pigtails-2038337828.jpg)'}}></div>
-                </div>
-                <p className="text-sm text-gray-600">
-                  <strong>2,500+</strong> remaja sudah terlindungi bulan ini
-                </p>
-              </div>
-            </div>
-            <div>
-              <Image 
-                src="/image/vaksin-hpv.png" 
-                alt="Vaksin HPV" 
-                width={1000} 
-                height={800}
-                priority={false}
-              />
-            </div>
-          </div>
+ <section className="bg-gradient-to-br from-pink-50 via-white to-rose-50 py-20 px-4">
+  <div className="max-w-6xl mx-auto">
+    <div className="grid md:grid-cols-2 justify-center items-center gap-10">
+
+      {/* LEFT SIDE */}
+      <div>
+        <h1 className="text-3xl md:text-4xl font-bold text-[#2A1E1A] leading-tight mb-6">
+          Investasi Masa Depanmu Dimulai Hari Ini
+        </h1>
+
+        <p className="md:text-lg text-gray-700 mb-6 leading-relaxed">
+          Kanker serviks dapat dicegah. Dengan menabung <span className="text-pink-600 font-semibold">Rp 10.000</span> setiap hari, kamu bisa mendapatkan vaksin HPV sebagai perlindungan penting untuk kesehatan reproduksimu.
+        </p>
+
+        <p className="text-sm text-gray-600 mb-8 italic">
+          Merawat diri bukan hanya dari luar, tetapi juga dari dalam. Ini langkah preventif untuk masa depan yang lebih sehat.
+        </p>
+
+        <div className="flex flex-col sm:flex-row gap-4 mb-8 w-fit">
+          <CustomButton 
+            title="Mulai Nabung"
+            className="px-5 py-3 md:px-7 md:text-lg font-semibold"
+          />
         </div>
-      </section>
+
+        {/* SOCIAL PROOF */}
+        <div className="flex items-center gap-4">
+          <div className="flex -space-x-2">
+            <div className="w-10 h-10 rounded-full border-2 border-white bg-cover bg-center" 
+            style={{backgroundImage: 'url(https://cdn.stocksnap.io/img-thumbs/960w/woman-smartphone_MLEPUKHYUU.jpg)'}}></div>
+            <div className="w-10 h-10 rounded-full border-2 border-white bg-cover bg-center" 
+            style={{backgroundImage: 'url(https://www.shutterstock.com/shutterstock/photos/2341582245/display_1500/stock-photo-beautiful-young-asian-woman-pointing-finger-to-her-teeth-on-isolated-pink-background-facial-and-2341582245.jpg)'}}></div>
+            <div className="w-10 h-10 rounded-full border-2 border-white bg-cover bg-center" 
+            style={{backgroundImage: 'url(https://www.shutterstock.com/shutterstock/photos/2038337828/display_1500/stock-photo-pink-background-portrait-of-a-young-asian-woman-with-pigtails-2038337828.jpg)'}}></div>
+          </div>
+
+          <p className="text-sm text-gray-600">
+            <strong>2.500+</strong> remaja sudah mulai nabung bulan ini
+          </p>
+        </div>
+      </div>
+
+      {/* RIGHT IMAGE */}
+      <div className="relative">
+        <Image
+          src="/image/vaksin-hpv.png"
+          alt="Vaksin HPV"
+          width={1000}
+          height={800}
+          className="drop-shadow-lg animate-float"
+        />
+
+        {/* Small Badge */}
+        <div className="absolute -top-6 right-2 bg-pink-600 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
+          Program kesehatan remaja
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 
       {/* Partnership Section */}
       <section className="py-16 px-4 bg-white">
@@ -155,26 +179,12 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {vaccineTypes.map((vaccine) => (
               <div key={vaccine.id} className="bg-gradient-to-br from-pink-50 to-rose-50 rounded-xl p-6 border-2 border-pink-200 hover:shadow-lg transition-shadow relative">
-                {/* Discount Badge */}
-                <div className="absolute top-4 right-4 bg-pink-500 text-white px-3 py-1 rounded-full text-sm font-bold">
-                  20% OFF
-                </div>
                 
                 <h3 className="text-xl font-bold text-[#382b22] mb-3 pr-16">{vaccine.name}</h3>
                 
-                {/* Price with Discount */}
+                {/* Price */}
                 <div className="mb-3">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-lg text-gray-400 line-through">{vaccine.price}</span>
-                    <span className="bg-pink-100 text-pink-600 px-2 py-1 rounded text-xs font-medium">Hemat 20%</span>
-                  </div>
-                  <div className="text-2xl font-bold text-pink-600">
-                    {vaccine.price.includes('Rp') 
-                      ? `Rp ${Math.floor(parseInt(vaccine.price.replace(/[^0-9]/g, '')) * 0.8).toLocaleString('id-ID')}`
-                      : vaccine.price
-                    }
-                  </div>
-                  <p className="text-xs text-pink-500 font-medium mt-1">💰 Harga Spesial RISA</p>
+                    <p className="text-lg text-gray-400 line-through">{vaccine.price}</p>           
                 </div>
                 
                 <p className="text-gray-600 text-sm mb-4">{vaccine.description}</p>

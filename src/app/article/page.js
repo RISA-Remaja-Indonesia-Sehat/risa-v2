@@ -1,10 +1,12 @@
 import { Suspense } from 'react';
 import ArticleCard from "../components/articles/ArticleCard";
 import ArticleCardSkeleton from "../components/articles/ArticleCardSkeleton";
+import ArticleFTUE from "../components/first-time/ArticleFTUE";
 
 export default function ArticlePage() {
   return (
     <>
+      <ArticleFTUE />
       <section className="bg-gradient-to-br from-pink-50 to-purple-50 py-16">
           <div className="container mx-auto px-6 text-center">
               <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
