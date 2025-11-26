@@ -39,6 +39,8 @@ const getGameId = (gameType) => {
     case "DRAG_DROP":
     case "mitosfakta":
       return 1;
+    case "CROSSWORD":
+      return 3;
     default:
       return 0;
   }
@@ -275,33 +277,32 @@ export default function ResultPage() {
       return;
     }
 
-    if (
-      !scorePosted &&
-      data &&
-      DYNAMIC_USER_ID &&
-      data.gameType !== "CROSSWORD"
-    ) {
-      postScoreToAPI(data, DYNAMIC_USER_ID)
-        .then(() => {
-          trackGame(addStickers, () => {
-            setShowAnimation(true),
-              updateStickersToServer,
-              gsap.to("#score-container", {
-                scale: 1.1,
-                duration: 0.5,
-                yoyo: true,
-                repeat: 1,
-              });
-          });
-        })
-        .catch((error) => {
-          console.error("Gagal kirim skor atau track misi:", error);
-        });
-      setScorePosted(true);
-    } else if (!scorePosted && data && !DYNAMIC_USER_ID) {
-      console.warn("User belum login/ID tidak ada. Skor tidak dikirim ke API.");
-      setScorePosted(true);
-    }
+    // if (
+    //   !scorePosted &&
+    //   data &&
+    //   DYNAMIC_USER_ID
+    // ) {
+    //   postScoreToAPI(data, DYNAMIC_USER_ID)
+    //     .then(() => {
+    //       trackGame(addStickers, () => {
+    //         setShowAnimation(true),
+    //           updateStickersToServer,
+    //           gsap.to("#score-container", {
+    //             scale: 1.1,
+    //             duration: 0.5,
+    //             yoyo: true,
+    //             repeat: 1,
+    //           });
+    //       });
+    //     })
+    //     .catch((error) => {
+    //       console.error("Gagal kirim skor atau track misi:", error);
+    //     });
+    //   setScorePosted(true);
+    // } else if (!scorePosted && data && !DYNAMIC_USER_ID) {
+    //   console.warn("User belum login/ID tidak ada. Skor tidak dikirim ke API.");
+    //   setScorePosted(true);
+    // }
 
     const isAiGameType =
       data &&
@@ -416,6 +417,22 @@ export default function ResultPage() {
     updateStickersToServer,
     aiRequestSent,
   ]);
+
+  useEffect(() => {
+  if (!scorePosted && resultData && user?.id) {
+    postScoreToAPI(resultData, user.id)
+      .then(() => {
+        trackGame(addStickers, () => {
+          setShowAnimation(true);
+          updateStickersToServer();
+        });
+      })
+      .catch((error) => {
+        console.error("Gagal kirim skor:", error);
+      });
+    setScorePosted(true);
+  }
+}, [resultData, user?.id, scorePosted, trackGame, addStickers, updateStickersToServer]);
 
   // --- SHARE: Web Share API (fallback clipboard) ---
   const handleShareResult = useCallback(async () => {

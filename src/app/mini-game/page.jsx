@@ -22,6 +22,7 @@ import CrosswordIcon from "../../../public/image/crossword.png";
 import axios from "axios";
 import PinkProwessLeaderboard from "../components/games/PinkProwessLeaderboard";
 import PubertyQuestCard from "../components/puberty-quest/PubertyQuestCard";
+import MiniGameFTUE from "../components/first-time/MiniGameFTUE";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -268,6 +269,7 @@ export default function Home() {
 
   return (
     <div className="bg-gradient-to-br from-pink-100 via-white to-yellow-100 min-h-screen">
+      <MiniGameFTUE />
       <section className="w-full py-8 px-2 lg:px-16 flex flex-col lg:gap-6 lg:flex-row sm:items-center sm:justify-center">
         <div className="p-2 space-y-2 lg:space-y-6">
           <h1

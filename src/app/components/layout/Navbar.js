@@ -55,9 +55,9 @@ export default function Navbar() {
       <ul className="hidden md:flex gap-6 text-gray-700 font-medium text-center text-sm lg:text-base items-center">
         <li><Link href="/mini-game" className="hover:text-pink-500">Mini Games</Link></li>
         <li><Link href="/article" className="hover:text-pink-500">Artikel</Link></li>
-        <li><Link href="/missions" data-ftue="missions-nav" className="hover:text-pink-500">Misi Harian</Link></li>
-        <li><Link href="/siklusku" data-ftue="siklusku-nav" className="hover:text-pink-500">Siklusku</Link></li>
-        <li><Link href="/vaksin-hpv" data-ftue="vaksin-nav" className="hover:text-pink-500">Vaksin HPV</Link></li>
+        <li><Link href="/missions" className="hover:text-pink-500">Misi Harian</Link></li>
+        <li><Link href="/siklusku" className="hover:text-pink-500">Siklusku</Link></li>
+        <li><Link href="/vaksin-hpv" className="hover:text-pink-500">Vaksin HPV</Link></li>
       </ul>
 
       {/** Right Section */}
@@ -142,9 +142,9 @@ export default function Navbar() {
         
         <Link href="/mini-game" className="hover:text-pink-500" onClick={closeMobileMenu}>Mini Games</Link>
         <Link href="/article" className="hover:text-pink-500" onClick={closeMobileMenu}>Artikel</Link>
-        <Link href="/missions" data-ftue="missions-nav" className="hover:text-pink-500" onClick={closeMobileMenu}>Misi Harian</Link>
-        <Link href="/siklusku" data-ftue="siklusku-nav" className="hover:text-pink-500" onClick={closeMobileMenu}>Siklusku</Link>
-        <Link href="/vaksin-hpv" data-ftue="vaksin-nav" className="hover:text-pink-500" onClick={closeMobileMenu}>Vaksin HPV</Link>
+        <Link href="/missions" className="hover:text-pink-500" onClick={closeMobileMenu}>Misi Harian</Link>
+        <Link href="/siklusku" className="hover:text-pink-500" onClick={closeMobileMenu}>Siklusku</Link>
+        <Link href="/vaksin-hpv" className="hover:text-pink-500" onClick={closeMobileMenu}>Vaksin HPV</Link>
       </div>
     </nav>
   )

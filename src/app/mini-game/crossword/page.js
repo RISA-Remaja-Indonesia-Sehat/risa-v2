@@ -94,32 +94,28 @@ export default function CrosswordPage() {
     });
 
     try {
-      const response = await fetch(
+      // Validate answers
+      const validateResponse = await fetch(
         "https://server-risa.vercel.app/api/crossword/submit",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            user_id: user?.id,
-            answers,
-            duration_seconds: parseInt(duration),
-          }),
+          body: JSON.stringify({ answers }),
         }
       );
 
-      const data = await response.json();
+      const validateData = await validateResponse.json();
 
-      if (data.success) {
+      if (validateData.success) {
         localStorage.setItem(
           "gameResult",
           JSON.stringify({
             gameType: "CROSSWORD",
-            score: data.data.score,
-            correct: data.data.correct,
-            total: data.data.total,
-            answers: data.data.answers,
+            score: validateData.data.score,
+            correct: validateData.data.correct,
+            total: validateData.data.total,
+            answers: validateData.data.answers,
             duration_seconds: duration,
-            pointsAwarded: data.data.pointsAwarded,
           })
         );
 

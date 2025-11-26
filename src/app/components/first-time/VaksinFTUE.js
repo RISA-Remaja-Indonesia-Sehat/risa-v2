@@ -2,55 +2,42 @@
 import { useState, useEffect } from 'react';
 import AvatarDialog from './AvatarDialog';
 import GUIDE_DATA from './guideData';
+import useAuthStore from '@/app/store/useAuthStore';
+import { isDialogCompleted, markDialogComplete } from '@/lib/ftueAPI';
 
 export default function VaksinFTUE() {
   const [showDialog, setShowDialog] = useState(false);
-  const [currentStep, setCurrentStep] = useState(0);
+  const { user, token } = useAuthStore();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const ftueStep = localStorage.getItem('ftue-step');
-    
-    if (token && ftueStep === '5') {
-      setTimeout(() => {
-        setShowDialog(true);
-        setCurrentStep(0);
-      }, 500);
+    if (user?.id && token) {
+      checkAndShowDialog();
     }
-  }, []);
+  }, [user?.id, token]);
 
-  const handleDialogClose = () => {
-    if (currentStep === 0) {
-      setCurrentStep(1);
-    } else {
-      setShowDialog(false);
-      localStorage.setItem('ftue-step', '6');
+  const checkAndShowDialog = async () => {
+    const completed = await isDialogCompleted(token, 6);
+    if (!completed) {
+      setTimeout(() => setShowDialog(true), 500);
     }
   };
 
-  const dialogs = [
-    { message: GUIDE_DATA.dialog9, button: null },
-    { 
-      message: GUIDE_DATA.dialog10, 
-      button: {
-        type: 'link',
-        label: 'Ke Misi Harian',
-        href: '/missions',
-        onBeforeNavigate: () => {
-          localStorage.setItem('ftue-step', '6');
-        }
-      }
+  const handleDialogClose = async () => {
+    setShowDialog(false);
+    if (token) {
+      await markDialogComplete(token, 6);
     }
-  ];
+  };
+
+  if (!user?.id || !token) return null;
 
   return (
     <>
-      {showDialog && currentStep < dialogs.length && (
+      {showDialog && (
         <AvatarDialog
-          message={dialogs[currentStep].message}
+          message={GUIDE_DATA.dialog6}
           onClose={handleDialogClose}
           show={showDialog}
-          button={dialogs[currentStep].button}
         />
       )}
     </>

@@ -48,7 +48,7 @@ export default function PubertyQuestCard() {
             Perjalanan seru mengenal tubuhmu! Selesaikan 5 chapter menarik dan pelajari tentang pubertas dengan cara yang fun dan interaktif.
           </p>
 
-          <button className="w-full bg-yellow-300 hover:bg-yellow-400 text-pink-800 font-bold py-2 px-4 rounded-lg shadow-md transition-all duration-200 flex items-center justify-center text-sm hover:scale-102">
+          <button className="w-full bg-yellow-300 hover:bg-yellow-400 text-pink-800 font-bold py-2 px-4 rounded-lg shadow-md transition-all duration-200 flex items-center justify-center text-sm cursor-pointer">
             <Rocket size={16} className="mr-2" /> Mulai Petualangan
           </button>
         </div>

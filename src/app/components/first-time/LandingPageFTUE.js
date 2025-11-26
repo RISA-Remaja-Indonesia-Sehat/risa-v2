@@ -5,7 +5,7 @@ import GUIDE_DATA from './guideData';
 import useAuthStore from '@/app/store/useAuthStore';
 import { isDialogCompleted, markDialogComplete } from '@/lib/ftueAPI';
 
-export default function SiklusFTUE() {
+export default function LandingPageFTUE() {
   const [showDialog, setShowDialog] = useState(false);
   const { user, token } = useAuthStore();
 
@@ -16,7 +16,7 @@ export default function SiklusFTUE() {
   }, [user?.id, token]);
 
   const checkAndShowDialog = async () => {
-    const completed = await isDialogCompleted(token, 5);
+    const completed = await isDialogCompleted(token, 1);
     if (!completed) {
       setTimeout(() => setShowDialog(true), 500);
     }
@@ -25,7 +25,7 @@ export default function SiklusFTUE() {
   const handleDialogClose = async () => {
     setShowDialog(false);
     if (token) {
-      await markDialogComplete(token, 5);
+      await markDialogComplete(token, 1);
     }
   };
 
@@ -35,7 +35,7 @@ export default function SiklusFTUE() {
     <>
       {showDialog && (
         <AvatarDialog
-          message={GUIDE_DATA.dialog5}
+          message={GUIDE_DATA.dialog1}
           onClose={handleDialogClose}
           show={showDialog}
         />
