@@ -1,6 +1,7 @@
 import Image from "next/image";
 import HeroSection from "./landing-page/HeroSection";
 import OurStaff from "./landing-page/OurStaff";
+import EvidencePanel from "./landing-page/EvidencePanel";
 import FeatureBannerCarousel from "./components/FeatureBannerCarousel";
 import LandingPageFTUE from "./components/first-time/LandingPageFTUE";
 
@@ -50,6 +51,9 @@ export default function Home() {
 
       {/** Feature Banner Carousel */}
       <FeatureBannerCarousel />
+
+      {/** Evidence Panel */}
+      <EvidencePanel />
 
       <OurStaff />
 
