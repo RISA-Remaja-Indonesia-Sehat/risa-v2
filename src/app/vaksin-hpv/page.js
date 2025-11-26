@@ -129,7 +129,7 @@ export default function Home() {
               </h1>
 
               <p className="md:text-lg text-gray-700 mb-6 leading-relaxed">
-                Kanker serviks dapat dicegah. Dengan menabung <span className="text-pink-600 font-semibold">Rp 10.000</span> setiap hari, kamu bisa mendapatkan vaksin HPV sebagai perlindungan penting untuk kesehatan reproduksimu.
+                Kanker serviks dapat dicegah. Dengan menabung mulai dari <span className="text-pink-600 font-semibold">Rp 10.000</span> setiap hari, kamu bisa mendapatkan vaksin HPV sebagai perlindungan penting untuk kesehatan reproduksimu.
               </p>
 
               <p className="text-sm text-gray-600 mb-8 italic">

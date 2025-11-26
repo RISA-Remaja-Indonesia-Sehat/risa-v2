@@ -11,11 +11,23 @@ export default function VaccineIntakeForm({ onNext }) {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    const newValue = type === 'checkbox' ? checked : value;
+
+    let newValue;
+    if (type === 'checkbox') {
+      newValue = checked;
+    } else if (type === 'radio') {
+      // coerce radio values to numbers when appropriate so strict equality works
+      const n = Number(value);
+      newValue = Number.isNaN(n) ? value : n;
+    } else if (type === 'number') {
+      newValue = value === '' ? '' : Number(value);
+    } else {
+      newValue = value;
+    }
 
     if (name === 'age') {
-      const age = parseInt(value);
-      if (age < 9 && value !== '') {
+      const age = Number(newValue);
+      if (!Number.isNaN(age) && age < 9 && newValue !== '') {
         setAgeAlert('HPV vaccine recommended starting age 9.');
       } else {
         setAgeAlert('');
@@ -139,14 +151,14 @@ export default function VaccineIntakeForm({ onNext }) {
               <label className="block text-sm font-semibold text-gray-800 mb-3">Sudah pernah vaksin HPV?</label>
               <div className="space-y-2">
                 {[0, 1, 2].map((dose) => (
-                  <label key={dose} className={`flex items-center gap-3 cursor-pointer p-3 rounded-lg border-2 transition-all ${savingsData.previous_doses === dose ? 'border-blue-500 bg-blue-50' : 'border-gray-200 bg-white'}`}>
+                  <label key={dose} className={`flex items-center gap-3 cursor-pointer transition-all ${savingsData.previous_doses === dose ? 'bg-transparent' : 'border-gray-200 bg-white'}`}>
                     <input
                       type="radio"
                       name="previous_doses"
                       value={dose}
                       checked={savingsData.previous_doses === dose}
                       onChange={handleChange}
-                      className="w-4 h-4 accent-blue-500"
+                      className="w-4 h-4"
                     />
                     <span className="text-gray-700">
                       {dose === 0 ? 'Belum pernah' : `Sudah ${dose} dosis`}
