@@ -174,13 +174,13 @@ export default function ETicket({ show, onClose, bookingId }) {
                 <p style={{color: '#6b7280', margin: '0 0 4px 0'}}>Gender</p>
                 <p style={{fontWeight: 'bold', color: '#382b22', margin: '0'}}>{bookingData?.gender}</p>
               </div>
-              <div>
-                <p style={{color: '#6b7280', margin: '0 0 4px 0'}}>No. HP</p>
-                <p style={{fontWeight: 'bold', color: '#382b22', margin: '0'}}>{bookingData?.phone}</p>
-              </div>
+                <div>
+                  <p style={{color: '#6b7280', margin: '0 0 4px 0'}}>No. HP</p>
+                  <p style={{fontWeight: 'bold', color: '#382b22', margin: '0'}}>{bookingData?.parent_phone || '-'}</p>
+                </div>
               <div>
                 <p style={{color: '#6b7280', margin: '0 0 4px 0'}}>Vaksin</p>
-                <p style={{fontWeight: 'bold', color: '#382b22', margin: '0'}}>{bookingData?.vaccine?.name}</p>
+                <p style={{fontWeight: 'bold', color: '#382b22', margin: '0'}}>{bookingData?.vaccine?.name || '-'}</p>
               </div>
             </div>
             
@@ -188,17 +188,17 @@ export default function ETicket({ show, onClose, bookingId }) {
               <div style={{display: 'flex', marginBottom: '8px'}}>
                 <div>
                   <p style={{color: '#6b7280', margin: '0 0 4px 0'}}>Lab Tujuan</p>
-                  <p style={{fontWeight: 'bold', color: '#382b22', margin: '0'}}>{bookingData?.lab?.name}</p>
+                  <p style={{fontWeight: 'bold', color: '#382b22', margin: '0'}}>{bookingData?.lab?.name || '-'}</p>
                 </div>
               </div>
               <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px'}}>
                 <div>
                   <p style={{color: '#6b7280', margin: '0 0 4px 0'}}>Tanggal</p>
-                  <p style={{fontWeight: 'bold', color: '#382b22', margin: '0'}}>{new Date(bookingData?.date_time).toLocaleDateString('id-ID', { timeZone: 'Asia/Jakarta' })}</p>
+                  <p style={{fontWeight: 'bold', color: '#382b22', margin: '0'}}>{bookingData?.date_time ? new Date(bookingData.date_time).toLocaleDateString('id-ID', { timeZone: 'Asia/Jakarta' }) : '-'}</p>
                 </div>
                 <div>
                   <p style={{color: '#6b7280', margin: '0 0 4px 0'}}>Jam</p>
-                  <p style={{fontWeight: 'bold', color: '#382b22', margin: '0'}}>{new Date(bookingData?.date_time).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jakarta' })} WIB</p>
+                  <p style={{fontWeight: 'bold', color: '#382b22', margin: '0'}}>{bookingData?.date_time ? `${new Date(bookingData.date_time).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jakarta' })} WIB` : '-'}</p>
                 </div>
               </div>
             </div>
