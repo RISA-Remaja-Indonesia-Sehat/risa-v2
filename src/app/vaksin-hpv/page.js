@@ -9,6 +9,7 @@ import useVaccineTypes from '../store/useVaccineTypes';
 import useAuthStore from '../store/useAuthStore';
 import { useState, useEffect } from 'react';
 import BookingModal from '../components/ui/BookingModal';
+import Swal from 'sweetalert2';
 import ETicket from '../components/ui/ETicket';
 import useBookingData from '../store/useBookingData';
 import useModalState from '../store/useModalState';
@@ -103,12 +104,23 @@ export default function Home() {
     if (result.success) {
       const { currentBookingId: newBookingId } = useBookingData.getState();
       console.log('Current booking ID:', newBookingId);
-      console.log('Before showTicketAfterBooking - showTicket:', showTicket);
+      // Inform user that confirmation will come via email/WhatsApp, then show ticket
+      await Swal.fire({
+        title: 'Sukses',
+        html: 'Tunggu konfirmasi melalui email atau WhatsApp sebelum hari H vaksinasi.',
+        icon: 'success',
+        confirmButtonColor: '#ec4899'
+      });
       showTicketAfterBooking();
-      console.log('After showTicketAfterBooking - showTicket should be true');
     } else {
-      alert(`Error: ${result.error}`);
+      await Swal.fire({
+        title: 'Error',
+        text: result.error || 'Terjadi kesalahan',
+        icon: 'error',
+        confirmButtonColor: '#ec4899'
+      });
     }
+    return result;
   };
 
   return (

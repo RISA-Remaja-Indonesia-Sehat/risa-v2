@@ -38,30 +38,57 @@ const useBookingData = create((set) => ({
     const dateTimeString = `${formData.tanggal}T${formData.jam}:00+07:00`;
     console.log('DateTime string:', dateTimeString);
     
-    // Map frontend data to backend schema
-    const backendData = {
-      id: Math.random().toString(36).substr(2, 9).toUpperCase(),
-      nik: formData.nik,
-      user_name: formData.nama,
-      phone: formData.phone,
-      age: parseInt(formData.usia),
-      gender: formData.gender,
-      lab_name: formData.lab,
-      vaccine_name: formData.vaccineType,
-      date_time: dateTimeString
-    };
-    
-    console.log('Sending booking data:', JSON.stringify(backendData, null, 2));
-    
+    // If a file is present, use FormData and send multipart to the booking endpoint.
+    let response;
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/booking`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(backendData)
-      });
+      if (formData.recommendationFile) {
+        const fd = new FormData();
+        fd.append('recommendation', formData.recommendationFile);
+        fd.append('nik', formData.nik || '');
+        fd.append('user_name', formData.nama || '');
+        fd.append('parent_email', formData.parent_email || '');
+        fd.append('parent_phone', formData.parent_phone || '');
+        fd.append('age', String(parseInt(formData.usia || 0)));
+        fd.append('gender', formData.gender || '');
+        fd.append('lab_name', formData.lab || '');
+        fd.append('vaccine_name', formData.vaccineType || '');
+        fd.append('date_time', dateTimeString);
+
+        response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/booking`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`
+            // NOTE: do NOT set Content-Type when sending FormData; browser will set boundary
+          },
+          body: fd
+        });
+      } else {
+        // Map frontend data to backend schema (JSON)
+        const backendData = {
+          id: Math.random().toString(36).substr(2, 9).toUpperCase(),
+          nik: formData.nik,
+          user_name: formData.nama,
+          parent_email: formData.parent_email || null,
+          parent_phone: formData.parent_phone || null,
+          recommendationUrl: formData.recommendationUrl || null,
+          age: parseInt(formData.usia),
+          gender: formData.gender,
+          lab_name: formData.lab,
+          vaccine_name: formData.vaccineType,
+          date_time: dateTimeString
+        };
+
+        console.log('Sending booking data:', JSON.stringify(backendData, null, 2));
+
+        response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/booking`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(backendData)
+        });
+      }
       
       console.log('Response status:', response.status);
       
@@ -139,7 +166,6 @@ const useBookingData = create((set) => ({
       nama: '',
       usia: '',
       gender: '',
-      phone: '',
       lab: '',
       tanggal: '',
       jam: '',
