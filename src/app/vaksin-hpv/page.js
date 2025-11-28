@@ -27,6 +27,8 @@ export default function Home() {
   const { user } = useAuthStore();
   const [hasVaccineSavings, setHasVaccineSavings] = useState(false);
   const [checkingStatus, setCheckingStatus] = useState(true);
+  const [savingsIsComplete, setSavingsIsComplete] = useState(false);
+  const [savingsNextStep, setSavingsNextStep] = useState(1);
   const currentBookingId = useBookingData(state => state.currentBookingId);
   const { 
     showVaccineInfo, 
@@ -67,6 +69,8 @@ export default function Home() {
         if (response.ok) {
           const data = await response.json();
           setHasVaccineSavings(data.hasVaccineSavings);
+          setSavingsIsComplete(!!data.isComplete);
+          if (data.nextStep) setSavingsNextStep(data.nextStep);
         }
       } catch (error) {
         console.error('Error checking vaccine savings status:', error);
@@ -137,9 +141,24 @@ export default function Home() {
               </p>
 
               {!checkingStatus && (
-                <Link href={hasVaccineSavings ? "/vaksin-hpv/savings/dashboard" : "/vaksin-hpv/savings"} className="flex flex-col sm:flex-row gap-4 mb-8 w-fit">
-                  <CustomButton 
-                    title={hasVaccineSavings ? "Lihat Tabungan" : "Mulai Nabung"}
+                <Link
+                  href={
+                    hasVaccineSavings
+                      ? savingsIsComplete
+                        ? '/vaksin-hpv/savings/dashboard'
+                        : '/vaksin-hpv/savings'
+                      : '/vaksin-hpv/savings'
+                  }
+                  className="flex flex-col sm:flex-row gap-4 mb-8 w-fit"
+                >
+                  <CustomButton
+                    title={
+                      hasVaccineSavings
+                        ? savingsIsComplete
+                          ? 'Lihat Tabungan'
+                          : 'Lanjutkan Tabungan'
+                        : 'Mulai Nabung'
+                    }
                     className="px-5 py-3 md:px-7 md:text-lg font-semibold"
                   />
                 </Link>

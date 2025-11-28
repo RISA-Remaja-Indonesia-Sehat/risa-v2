@@ -8,7 +8,7 @@ import useVaccineSavingsStore from '../../../store/useVaccineSavingsStore';
 import VaccineScheduling from '../../../components/vaccine-savings/VaccineScheduling';
 
 export default function VaccineSavingsDashboardPage() {
-  const { savingsData, setSavingsData, addDeposit, setCurrentStep } = useVaccineSavingsStore();
+  const { savingsData, setSavingsData, setCurrentStep } = useVaccineSavingsStore();
   const [depositAmount, setDepositAmount] = useState('');
   const [showConfetti, setShowConfetti] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
@@ -32,10 +32,15 @@ export default function VaccineSavingsDashboardPage() {
         const data = await response.json();
         if (response.ok && data.success) {
           setSavingsData({
-            vaccine_price: data.data.target,
+            vaccine_price: data.data.target || data.data.vaccinePrice,
             total_saved: data.data.totalSaved,
             daily_savings_target: data.data.dailySavingsTarget || 50000,
             deposits: data.data.deposits || [],
+            full_name: data.data.fullName || '',
+            age: data.data.age || '',
+            gender: data.data.gender || '',
+            parent_phone: data.data.parentPhone || '',
+            vaccine_type: data.data.vaccineType || '',
           });
         }
       } catch (error) {
@@ -102,10 +107,14 @@ export default function VaccineSavingsDashboardPage() {
 
         const data = await response.json();
         if (response.ok && data.success) {
+          // server returns the updated totalSaved; update store with authoritative value
           setSavingsData({
             total_saved: data.totalSaved,
           });
-          addDeposit(amount);
+          // don't call addDeposit here because it also increments total_saved locally,
+          // which would double-count the deposit (server already applied it).
+          // If you want to show a local deposit entry in the deposits list,
+          // consider returning the new deposit from the API and updating deposits from that response.
           setDepositAmount('');
         }
       } catch (error) {
@@ -179,7 +188,7 @@ export default function VaccineSavingsDashboardPage() {
                 <p className="text-4xl font-bold text-pink-600">{Math.round(progress)}%</p>
               </div>
 
-              {!isCompleted && daysRemaining > 0 && (
+              {!isCompleted && savingsData.total_saved > 0 && daysRemaining > 0 && (
                 <div className="mt-6 p-4 bg-gradient-to-r from-pink-50 to-yellow-50 rounded-lg text-center">
                   <p className="text-lg font-bold text-pink-600">⏰ {daysRemaining} hari lagi</p>
                   <span className="text-sm text-gray-700 mt-1">kamu bisa booking vaksin HPV!</span>
@@ -234,8 +243,8 @@ export default function VaccineSavingsDashboardPage() {
                         onChange={(e) => setDepositAmount(e.target.value)}
                         className="w-full pl-12 pr-4 py-3 border-2 border-pink-200 rounded-lg focus:outline-none focus:border-pink-500"
                         placeholder="Masukkan nominal"
-                        min="1000"
-                        step="1000"
+                        min="10000"
+                        step="10000"
                       />
                     </div>
                     <button

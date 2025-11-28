@@ -2,6 +2,7 @@
 
 import { useRef, useMemo } from 'react';
 import html2canvas from 'html2canvas';
+import { Download } from 'lucide-react';
 
 export default function VaccineTicket({ show, onClose, vaccinationData }) {
   const ticketRef = useRef();
@@ -88,7 +89,7 @@ export default function VaccineTicket({ show, onClose, vaccinationData }) {
           fontFamily: 'Arial, sans-serif'
         }}>
           <div style={{textAlign: 'center', marginBottom: '24px'}}>
-            <span style={{fontSize: '36px', display: 'inline-block', marginBottom: '16px'}}>💉</span>
+            <span style={{fontSize: '36px', display: 'inline-block', marginBottom: '16px'}}>🎫</span>
             <h3 style={{fontSize: '20px', fontWeight: 'bold', color: '#ec4899', margin: '0'}}>Tiket Vaksin HPV</h3>
             <p style={{color: '#6b7280', marginTop: '8px', margin: '8px 0 0 0'}}>Jadwal Vaksinasi Kamu</p>
           </div>
@@ -176,7 +177,8 @@ export default function VaccineTicket({ show, onClose, vaccinationData }) {
                 gap: '8px'
               }}
             >
-              📥 Unduh Tiket
+              <Download className="w-4 h-4" />
+              Unduh Tiket
             </button>
           <button
             onClick={onClose}
