@@ -13,7 +13,7 @@ export default function BookingModal({
 }) {
   const { labs, fetchLabs } = useLabsLocation();
   const { vaccineTypes } = useVaccineTypes();
-  const { bookingData, updateBookingField, submitBooking } = useBookingData();
+  const { bookingData, updateBookingField } = useBookingData();
   const [selectedFile, setSelectedFile] = useState(null);
   const [fileError, setFileError] = useState("");
   const [errors, setErrors] = useState({});
@@ -56,14 +56,14 @@ export default function BookingModal({
       const user = userData ? JSON.parse(userData) : null;
       const finalData = {
         ...bookingData,
-        nama: user?.name || bookingData.nama,
+        nama: bookingData.nama,
         parent_email: bookingData.parent_email || "",
         parent_phone: bookingData.phone || bookingData.parent_phone || "",
         parental_consent: parentalConsent ? true : false,
         recommendationFile: selectedFile || null,
       };
 
-      // Wait for parent handler (which calls submitBooking) to finish so we can
+      // Wait for parent handler) to finish so we can
       // keep the button disabled during network activity.
       const result = await onSubmit(finalData);
 

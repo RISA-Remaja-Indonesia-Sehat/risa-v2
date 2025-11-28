@@ -53,7 +53,7 @@ export default function ETicket({ show, onClose, bookingId }) {
       });
       
       const link = document.createElement('a');
-      link.download = `e-ticket-vaksin-hpv-${bookingData?.user?.name || bookingData?.user_name}.jpg`;
+      link.download = `e-ticket-vaksin-hpv-${bookingData?.user_name || 'user'}.jpg`;
       link.href = canvas.toDataURL('image/jpeg', 0.9);
       link.click();
     } catch (error) {
@@ -164,7 +164,7 @@ export default function ETicket({ show, onClose, bookingId }) {
               </div>
               <div>
                 <p style={{color: '#6b7280', margin: '0 0 4px 0'}}>Nama</p>
-                <p style={{fontWeight: 'bold', color: '#382b22', margin: '0'}}>{bookingData?.user?.name || bookingData?.user_name}</p>
+                <p style={{fontWeight: 'bold', color: '#382b22', margin: '0'}}>{bookingData?.user_name || '-'}</p>
               </div>
               <div>
                 <p style={{color: '#6b7280', margin: '0 0 4px 0'}}>Usia</p>
