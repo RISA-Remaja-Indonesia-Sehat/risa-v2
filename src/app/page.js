@@ -11,8 +11,26 @@ export default function Home() {
       <LandingPageFTUE />
       <HeroSection />
 
+      {/** Sponsor & Partner */}
+      <section className="container mt-4 mb-1 mx-auto">
+        <div className="flex justify-center items-center">
+          <div className="p-2">
+            <Image src="/image/Laboratorium_Klinik_Prodia.png" width={300} height={200} className="w-30 h-20 object-contain" alt="Laboratorium Prodia" />
+          </div>
+          <div className="p-2">
+            <Image src="/image/Laurier.png" width={300} height={200} className="w-30 h-20 object-contain" alt="Laurier" />
+          </div>
+          <div className="p-2">
+            <Image src="/image/bca.png" width={300} height={200} className="w-30 h-20 object-contain" alt="BCA" />
+          </div>
+          <div className="p-2 mx-4">
+            <Image src="/image/bkkbn.png" width={300} height={200} className="w-30 h-20 object-contain" alt="BKKBN" />
+          </div>
+        </div>
+      </section>
+
       {/** Features */}
-      <section className="my-8 mx-auto">
+      <section className="mb-8 mx-auto">
         <div className="bg-gradient-to-r from-pink-50 to-pink-100 py-8 px-4">
           <div className="container mx-auto">
             <div className="grid grid-cols-2 lg:grid-cols-2 text-center gap-8 max-w-4xl mx-auto">
@@ -57,23 +75,6 @@ export default function Home() {
 
       <OurStaff />
 
-      {/** Sponsor & Partner */}
-      <section className="container my-16 mx-auto">
-        <div className="mb-1">
-          <h4 className="font-semibold text-center text-2xl">Sponsor & Partner</h4>
-        </div>
-
-        <div className="flex flex-wrap justify-center items-center gap-8">
-          <div className="flex flex-col items-center p-4">
-            <Image src="/image/Laboratorium_Klinik_Prodia.png" width={120} height={80} className="w-30 h-20 object-contain mb-2" alt="Laboratorium Prodia" />
-            <span className="text-center text-sm text-gray-600 font-medium">PT Prodia Widyahusada Tbk</span>
-          </div>
-          <div className="flex flex-col items-center p-4">
-            <Image src="/image/Laurier.png" width={120} height={80} className="w-30 h-20 object-contain mb-2" alt="Laurier" />
-            <span className="text-center text-sm text-gray-600 font-medium">PT Kao Indonesia</span>
-          </div>
-        </div>
-      </section>
     </>
   );
 }

@@ -67,7 +67,7 @@ export default function VaccineBankSetup({ onNext }) {
               <div className="flex items-start justify-between mb-4">
                 <div>
                   <h3 className="font-bold text-lg text-gray-900">📱 Buka Rekening BluTeens / BCA</h3>
-                  <p className="text-sm text-gray-600 mt-1">Khusus untuk remaja usia 9-17 tahun</p>
+                  <p className="text-sm text-gray-600 mt-1">Khusus untuk remaja usia di bawah 18 tahun</p>
                 </div>
                 <button
                   onClick={handleBankSetupComplete}

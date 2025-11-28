@@ -28,7 +28,7 @@ export default function VaccineIntakeForm({ onNext }) {
     if (name === 'age') {
       const age = Number(newValue);
       if (!Number.isNaN(age) && age < 9 && newValue !== '') {
-        setAgeAlert('HPV vaccine recommended starting age 9.');
+        setAgeAlert('Usia minimal 9 tahun');
       } else {
         setAgeAlert('');
       }

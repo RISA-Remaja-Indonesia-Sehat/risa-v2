@@ -99,7 +99,6 @@ export default function VaccineScheduling({ onComplete }) {
         <div className="max-w-2xl mx-auto">
           <div className="bg-white rounded-2xl shadow-lg p-8">
             <h1 className="text-3xl font-bold text-gray-900 mb-2">Jadwal Vaksinasi</h1>
-            <p className="text-gray-600 mb-8">Langkah 6: Tentukan Jadwal Vaksin Kamu</p>
 
             {!scheduled ? (
               <div className="space-y-8">
@@ -200,7 +199,7 @@ export default function VaccineScheduling({ onComplete }) {
 
                   <div className="mt-6 p-4 bg-blue-50 rounded-lg">
                     <p className="text-sm text-blue-800">
-                      ✉️ Email konfirmasi telah dikirim ke orang tua kamu. Surat rekomendasi dokter juga sudah disiapkan.
+                      ✉️ Tunggu konfirmasi melalui email atau WhatsApp sebelum hari H vaksinasi.
                     </p>
                   </div>
                 </div>
@@ -209,7 +208,7 @@ export default function VaccineScheduling({ onComplete }) {
                   onClick={() => setShowTicket(true)}
                   className="w-full bg-gradient-to-r from-yellow-400 to-yellow-500 text-gray-900 font-bold py-3 rounded-lg hover:from-yellow-500 hover:to-yellow-600 transition-all flex items-center justify-center gap-2"
                 >
-                  🎫 Lihat Tiket Vaksin
+                  Lihat Tiket Vaksin
                 </button>
 
                 <button
