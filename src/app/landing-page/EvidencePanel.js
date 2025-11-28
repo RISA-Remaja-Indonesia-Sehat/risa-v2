@@ -89,33 +89,6 @@ export default function EvidencePanel() {
         ))}
       </div>
 
-      <div className="bg-white rounded-lg border border-pink-200 p-8">
-        <h3 className="font-semibold text-xl text-gray-800 mb-6">Metodologi Riset</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="flex gap-4">
-            <div className="text-2xl">🔬</div>
-            <div>
-              <h4 className="font-semibold text-gray-800 mb-2">UX Testing</h4>
-              <p className="text-sm text-gray-600">Pengujian dengan 50+ remaja perempuan untuk validasi UX dan fitur-fitur utama</p>
-            </div>
-          </div>
-          <div className="flex gap-4">
-            <div className="text-2xl">📚</div>
-            <div>
-              <h4 className="font-semibold text-gray-800 mb-2">Studi Literatur</h4>
-              <p className="text-sm text-gray-600">Berbasis penelitian lokal tentang kebutuhan edukasi kesehatan reproduksi remaja Indonesia</p>
-            </div>
-          </div>
-          <div className="flex gap-4">
-            <div className="text-2xl">🎯</div>
-            <div>
-              <h4 className="font-semibold text-gray-800 mb-2">Pilot Program</h4>
-              <p className="text-sm text-gray-600">Program 8 minggu dengan 200+ pengguna untuk mengukur dampak pembelajaran dan engagement</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <div className="mt-8 bg-yellow-50 rounded-lg p-6 border-l-4 border-yellow-500">
         <p className="text-sm text-gray-700">
           <span className="font-semibold">⚠️ Penting:</span> Data di atas adalah <span className="font-semibold text-yellow-700">dummy/perkiraan</span> untuk demonstrasi. Ganti dengan data riil dari hasil survei, UX testing, dan pilot program Anda. Studi lengkap akan tersedia untuk peneliti dan stakeholder kesehatan.

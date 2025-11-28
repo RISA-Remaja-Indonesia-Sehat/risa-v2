@@ -6,6 +6,8 @@ import useVaccineSavingsStore from '../../store/useVaccineSavingsStore';
 export default function VaccineConsentScreen({ onNext }) {
   const { savingsData, setSavingsData } = useVaccineSavingsStore();
   const [consentChecked, setConsentChecked] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [fileError, setFileError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const handleConsent = () => {
@@ -15,19 +17,25 @@ export default function VaccineConsentScreen({ onNext }) {
 
   const handleNext = async () => {
     if (!consentChecked) return;
+    if (!selectedFile) {
+      setFileError('Mohon unggah surat rekomendasi dokter terlebih dahulu.');
+      return;
+    }
 
     setIsLoading(true);
     try {
       const token = localStorage.getItem('token');
+      const formData = new FormData();
+      formData.append('recommendation', selectedFile);
+
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/api/vaccine-savings/consent`,
         {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
           },
-          body: JSON.stringify({}),
+          body: formData,
         }
       );
 
@@ -35,6 +43,9 @@ export default function VaccineConsentScreen({ onNext }) {
       if (!response.ok) {
         throw new Error(data.error || 'Gagal menyimpan persetujuan');
       }
+
+      // save returned recommendation URL to store
+      setSavingsData({ consent_acknowledged: true, doctor_recommendation_url: data.recommendationUrl });
 
       onNext();
     } catch (error) {
@@ -61,17 +72,45 @@ export default function VaccineConsentScreen({ onNext }) {
               </li>
               <li className="flex gap-3">
                 <span className="font-bold">2.</span>
-                <span>Orang tua/wali harus memberikan izin tertulis</span>
+                <span>Orang tua/wali wajib memberikan persetujuan sebelum proses vaksinasi dilanjutkan. Kami akan mengirimkan syarat dan ketentuan serta surat rekomendasi pembukaan rekening ke email orang tua/wali.</span>
               </li>
               <li className="flex gap-3">
                 <span className="font-bold">3.</span>
-                <span>Kami akan mengirimkan surat rekomendasi dokter ke email orang tua</span>
+                <span>Orang tua/wali perlu membaca informasi yang dikirim melalui email, lalu memberikan persetujuan melalui tautan (link) yang tersedia di email tersebut sebelum layanan dapat diproses.</span>
               </li>
               <li className="flex gap-3">
                 <span className="font-bold">4.</span>
                 <span>Jadwal vaksin akan disesuaikan dengan ketersediaan klinik</span>
               </li>
             </ul>
+          </div>
+
+          <div className="mb-5">
+            <label className="block text-sm font-semibold text-gray-800 mb-2">Masukan surat rekomendasi dokter</label>
+            <div className="border-2 border-dashed border-pink-200 rounded-lg p-4 bg-pink-50">
+              <input
+                id="recommendation"
+                type="file"
+                accept="application/pdf,image/*"
+                onChange={(e) => {
+                  setFileError('');
+                  const f = e.target.files && e.target.files[0];
+                  if (f) {
+                    if (f.size > 10 * 1024 * 1024) {
+                      setFileError('File terlalu besar (maks 10 MB)');
+                      setSelectedFile(null);
+                    } else {
+                      setSelectedFile(f);
+                    }
+                  }
+                }}
+                className="w-full"
+              />
+              <p className="text-sm text-gray-600 mt-2">
+                {selectedFile ? `Dipilih: ${selectedFile.name}` : 'Klik atau seret file (PDF atau gambar), maksimal 10 MB.'}
+              </p>
+              {fileError && <p className="text-red-500 text-sm mt-2">{fileError}</p>}
+            </div>
           </div>
 
           <div className="space-y-6">

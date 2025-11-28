@@ -5,8 +5,10 @@ import { useRouter } from 'next/navigation';
 import useVaccineSavingsStore from '../../store/useVaccineSavingsStore';
 
 const VACCINE_PRICES = {
-  HPV9_2DOSE: 1500000,
-  HPV9_3DOSE: 2250000,
+  HPV4_2DOSE: 2912120,
+  HPV4_3DOSE: 4321710,
+  HPV9_2DOSE: 5358000,
+  HPV9_3DOSE: 7951500,
 };
 
 export default function VaccineSavingsTarget({ onNext }) {
@@ -20,6 +22,9 @@ export default function VaccineSavingsTarget({ onNext }) {
   const [isLoading, setIsLoading] = useState(false);
 
   const vaccinePrice = VACCINE_PRICES[vaccineType];
+
+  // suggested minimum daily amount to meet target within 365 days
+  const suggestedDailyFor1Year = Math.max(10000, Math.ceil(vaccinePrice / 365));
 
   const handleVaccineChange = (type) => {
     setVaccineType(type);
@@ -110,39 +115,41 @@ export default function VaccineSavingsTarget({ onNext }) {
                 Pilih Jenis Vaksin HPV
               </label>
               <div className="space-y-3">
-                {Object.entries(VACCINE_PRICES).map(([type, price]) => (
-                  <label
-                    key={type}
-                    className={`flex items-center gap-4 p-4 border-2 rounded-lg cursor-pointer transition-all ${
-                      vaccineType === type
-                        ? 'border-pink-500 bg-pink-50'
-                        : 'border-gray-200 hover:border-pink-300'
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      name="vaccine_type"
-                      value={type}
-                      checked={vaccineType === type}
-                      onChange={() => handleVaccineChange(type)}
-                      className="w-5 h-5"
-                    />
-                    <div className="flex-1">
-                      <p className="font-semibold text-gray-900">
-                        {type === 'HPV9_2DOSE' ? 'HPV9 (2 Dosis)' : 'HPV9 (3 Dosis)'}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        Untuk usia {type === 'HPV9_2DOSE' ? '9-14 tahun' : '15+ tahun'}
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-bold text-pink-600">
-                        Rp {price.toLocaleString('id-ID')}
-                      </p>
-                      <p className="text-xs text-gray-500">Total harga</p>
-                    </div>
-                  </label>
-                ))}
+                {Object.entries(VACCINE_PRICES).map(([type, price]) => {
+                  // derive readable label and age range from key
+                  const is2Dose = type.endsWith('_2DOSE');
+                  const brand = type.startsWith('HPV9') ? 'HPV9' : type.startsWith('HPV4') ? 'HPV4' : type;
+                  const label = `${brand} (${is2Dose ? '2 Dosis' : '3 Dosis'})`;
+                  const ageRange = is2Dose ? '9-14 tahun' : '15+ tahun';
+
+                  return (
+                    <label
+                      key={type}
+                      className={`flex items-center gap-4 p-4 border-2 rounded-lg cursor-pointer transition-all ${
+                        vaccineType === type
+                          ? 'border-pink-500 bg-pink-50'
+                          : 'border-gray-200 hover:border-pink-300'
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="vaccine_type"
+                        value={type}
+                        checked={vaccineType === type}
+                        onChange={() => handleVaccineChange(type)}
+                        className="w-5 h-5"
+                      />
+                      <div className="flex-1">
+                        <p className="font-semibold text-gray-900">{label}</p>
+                        <p className="text-sm text-gray-600">Untuk usia {ageRange}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-bold text-pink-600">Rp {price.toLocaleString('id-ID')}</p>
+                        <p className="text-xs text-gray-500">Total harga</p>
+                      </div>
+                    </label>
+                  );
+                })}
               </div>
             </div>
 
@@ -200,9 +207,14 @@ export default function VaccineSavingsTarget({ onNext }) {
                   <div className="mt-4 flex gap-3 p-4 bg-yellow-100 rounded-lg">
                     <AlertCircle className="w-5 h-5 text-yellow-700 flex-shrink-0 mt-0.5" />
                     <div>
-                      <p className="font-semibold text-yellow-900">⚠️ Durasi Terlalu Lama</p>
+                      <p className="font-semibold text-yellow-900">Durasi Terlalu Lama</p>
                       <p className="text-sm text-yellow-800 mt-1">
                         Untuk menjaga keamanan dan efektivitas vaksin, tabungan tidak boleh melewati 1 tahun. Naikkan nominal tabunganmu ya!
+                      </p>
+                      <p className="text-sm text-yellow-800 mt-2">
+                        Saran: supaya target tercapai dalam 1 tahun, tabung minimal
+                        <span className="font-semibold text-yellow-900"> Rp {suggestedDailyFor1Year.toLocaleString('id-ID')}</span>
+                        {' '}per hari.
                       </p>
                     </div>
                   </div>
