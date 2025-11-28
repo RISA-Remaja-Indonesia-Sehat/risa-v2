@@ -32,10 +32,15 @@ export default function VaccineSavingsDashboardPage() {
         const data = await response.json();
         if (response.ok && data.success) {
           setSavingsData({
-            vaccine_price: data.data.target,
+            vaccine_price: data.data.target || data.data.vaccinePrice,
             total_saved: data.data.totalSaved,
             daily_savings_target: data.data.dailySavingsTarget || 50000,
             deposits: data.data.deposits || [],
+            full_name: data.data.fullName || '',
+            age: data.data.age || '',
+            gender: data.data.gender || '',
+            parent_phone: data.data.parentPhone || '',
+            vaccine_type: data.data.vaccineType || '',
           });
         }
       } catch (error) {
