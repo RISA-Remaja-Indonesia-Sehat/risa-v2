@@ -54,21 +54,21 @@ export default function OurStaff() {
             <Image src="/image/andin.jpg" width={192} height={192} className="w-full h-full object-cover" alt="Andin - Ahli Kesehatan Reproduksi" />
             </div>
             <h5 className="font-semibold text-xl text-gray-800 mb-2">Andin</h5>
-            <p className="text-gray-600 text-sm">Ahli Kesehatan Reproduksi</p>
+            <p className="text-gray-600 text-sm">Developer</p>
         </div>
         <div className="text-center staff-card cursor-pointer">
             <div className="relative overflow-hidden rounded-full w-48 h-48 mx-auto mb-4 shadow-lg">
             <Image src="/image/Ashila.png" width={192} height={192} className="w-full h-full object-cover" alt="Ashila - Konselor Remaja" />
             </div>
             <h5 className="font-semibold text-xl text-gray-800 mb-2">Ashila</h5>
-            <p className="text-gray-600 text-sm">Konselor Remaja</p>
+            <p className="text-gray-600 text-sm">Developer</p>
         </div>
         <div className="text-center staff-card cursor-pointer">
             <div className="relative overflow-hidden rounded-full w-48 h-48 mx-auto mb-4 shadow-lg">
             <Image src="/image/Helena.png" width={192} height={192} className="w-full h-full object-cover" alt="Helena - Edukator Kesehatan" />
             </div>
             <h5 className="font-semibold text-xl text-gray-800 mb-2">Helena</h5>
-            <p className="text-gray-600 text-sm">Edukator Kesehatan</p>
+            <p className="text-gray-600 text-sm">Developer</p>
         </div>
         </div>
     </section>

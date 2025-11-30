@@ -21,7 +21,7 @@ import { Spinner } from '../components/ui/spinner';
 import Link from 'next/link';
 
 export default function Home() {
-  const { isLoading, setIsLoading } = useState(true);
+  const [ isLoading, setIsLoading ] = useState(true);
   const { showToast, setShowToast } = useLocationToast();
   const { locationPermission, setLocationPermission } = useLocationPermission();
   const { vaccineTypes, fetchVaccineTypes } = useVaccineTypes();
@@ -48,6 +48,7 @@ export default function Home() {
     const fetchData = async () => {
       try {
         await fetchVaccineTypes();
+        setIsLoading(false);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -238,7 +239,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold text-[#382b22] text-center mb-12">Jenis Vaksin HPV dari Prodia</h2>
           {isLoading ? (
-            <Spinner />
+            <Spinner className="size-6 text-pink-500 mx-auto my-3" />
           )
           : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">

@@ -70,7 +70,7 @@ export default function VaccineInfoModal({ show, onClose, onBooking, selectedVac
             <ul className="text-sm text-gray-700 space-y-2">
               <li className="flex items-start gap-2">
                 <span className="text-yellow-600 mt-1">•</span>
-                <span>Wajib membawa KTP/kartu identitas asli</span>
+                <span>Wajib membawa KTP/KIA/kartu identitas asli</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-yellow-600 mt-1">•</span>
@@ -94,16 +94,16 @@ export default function VaccineInfoModal({ show, onClose, onBooking, selectedVac
 
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-6 sm:mt-8">
           <button 
-            onClick={onClose}
-            className="w-full py-3 sm:py-4 bg-white text-pink-600 rounded-full font-semibold border-2 border-pink-300 hover:bg-pink-50 hover:border-pink-400 transition-all duration-300 text-sm sm:text-base"
-          >
-            Batal
-          </button>
-          <button 
             onClick={onBooking}
             className="w-full py-3 sm:py-4 bg-pink-500 text-white rounded-full font-semibold hover:shadow-lg hover:from-pink-600 hover:to-purple-600 transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2 text-sm sm:text-base"
           >
             Buat Janji Sekarang
+          </button>
+          <button 
+            onClick={onClose}
+            className="w-full py-3 sm:py-4 bg-white text-pink-600 rounded-full font-semibold border-2 border-pink-300 hover:bg-pink-50 hover:border-pink-400 transition-all duration-300 text-sm sm:text-base"
+          >
+            Batal
           </button>
         </div>
       </div>
