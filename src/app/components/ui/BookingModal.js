@@ -175,7 +175,7 @@ export default function BookingModal({
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Nomor WhatsApp Orang Tua
+              Nomor WhatsApp Aktif
             </label>
             <input
               name="parent_phone"
@@ -334,13 +334,6 @@ export default function BookingModal({
 
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-6 sm:mt-8">
             <button
-              type="button"
-              onClick={onClose}
-              className="w-full py-3 bg-white text-pink-600 rounded-full font-semibold border-2 border-pink-300 hover:bg-pink-50 hover:border-pink-400 transition-all duration-300 text-sm sm:text-base"
-            >
-              Batal
-            </button>
-            <button
               type="submit"
               disabled={isSubmitting}
               className={`w-full py-3 ${
@@ -348,6 +341,13 @@ export default function BookingModal({
               } text-white rounded-full font-semibold hover:shadow-lg hover:from-pink-600 hover:to-purple-600 transform hover:scale-105 transition-all duration-300 text-sm sm:text-base`}
             >
               {isSubmitting ? "Memproses..." : "Booking"}
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              className="w-full py-3 bg-white text-pink-600 rounded-full font-semibold border-2 border-pink-300 hover:bg-pink-50 hover:border-pink-400 transition-all duration-300 text-sm sm:text-base"
+            >
+              Batal
             </button>
           </div>
         </form>
