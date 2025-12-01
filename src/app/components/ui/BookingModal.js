@@ -162,6 +162,7 @@ export default function BookingModal({
               Email Orang Tua
             </label>
             <input
+              required
               name="parent_email"
               type="email"
               onChange={(e) =>
@@ -179,6 +180,7 @@ export default function BookingModal({
             </label>
             <input
               name="parent_phone"
+              required
               type="tel"
               pattern="[0-9]{10,15}"
               onChange={(e) =>
@@ -284,6 +286,7 @@ export default function BookingModal({
                 id="recommendation"
                 type="file"
                 accept="application/pdf,image/*"
+                required
                 onChange={(e) => {
                   setFileError("");
                   const f = e.target.files && e.target.files[0];
