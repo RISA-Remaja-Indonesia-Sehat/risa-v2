@@ -60,7 +60,7 @@ export default async function ArticlePage({ params }) {
             src={imageUrl}
             width={500}
             height={500}
-            priority={true}
+            loading="lazy"
             className="w-full lg:w-4xl mb-4"
             alt={imageAlt}
           />
@@ -82,6 +82,11 @@ export default async function ArticlePage({ params }) {
             <div dangerouslySetInnerHTML={{ __html: content }} />
           </div>
 
+          <div className="p-6 mt-4 flex items-center gap-4">
+            <p className="text-gray-800">Diverifikasi oleh</p>
+            <Image src='/image/bkkbn.png' width={80} height={40} alt="BKKBN" loading="lazy"/>
+          </div>
+
           <div className="p-6">
             <ShareButton title={title} articleId={id} />
           </div>
@@ -97,6 +102,7 @@ export default async function ArticlePage({ params }) {
               height={300}
               alt="Game Item"
               className="mb-4"
+              loading="lazy"
             />
 
             <Link
@@ -119,11 +125,10 @@ export default async function ArticlePage({ params }) {
 
       <section className="container my-12 pt-12 border-1 border-transparent border-t-gray-200 mx-auto px-4">
         <h3 className="text-xl font-semibold text-gray-800 mb-4">
-          💬 Bagikan Pengalamanmu
+          💬 Share Pengalamanmu
         </h3>
         <p className="text-gray-600 mb-6">
-          Ceritakan apa yang sudah kamu pelajari atau hal yang masih ingin kamu
-          tahu
+          Ceritain apa yang udah kamu pelajari atau yang masih pengen kamu tahu
         </p>
 
         <CommentForm />
