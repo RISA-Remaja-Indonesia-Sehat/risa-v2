@@ -133,7 +133,7 @@ export default function Home() {
     <div className="min-h-screen">
       <VaksinFTUE />
       <Toast
-        message="Kami memerlukan akses lokasi untuk menunjukkan laboratorium Prodia terdekat dari lokasi Anda. Ini akan membantu Anda menemukan tempat vaksinasi HPV yang paling mudah dijangkau."
+        message="Boleh akses lokasimu? Biar kami bisa tunjukin lab Prodia terdekat buat vaksinasi HPV. Gampang deh!"
         show={showToast}
         onAccept={handleLocationAccept}
         onDecline={handleLocationDecline}
@@ -150,15 +150,13 @@ export default function Home() {
               </h1>
 
               <p className="md:text-lg text-gray-700 mb-6 leading-relaxed">
-                Kanker serviks dapat dicegah. Dengan menabung mulai dari{" "}
-                <span className="text-pink-600 font-semibold">Rp 10.000</span>{" "}
-                setiap hari, kamu bisa mendapatkan vaksin HPV sebagai
-                perlindungan penting untuk kesehatan reproduksimu.
+                Kanker serviks bisa dicegah! Nabung mulai dari{" "}
+                <span className="text-pink-600 font-semibold">Rp 10.000/hari</span>{" "}
+                aja, kamu udah bisa dapetin vaksin HPV buat lindungi diri.
               </p>
 
               <p className="text-sm text-gray-600 mb-8 italic">
-                Merawat diri bukan hanya dari luar, tetapi juga dari dalam. Ini
-                langkah preventif untuk masa depan yang lebih sehat.
+                Jaga kesehatan dari sekarang. Investasi terbaik buat masa depanmu! ✨
               </p>
 
               {!checkingStatus && (
@@ -224,7 +222,8 @@ export default function Home() {
                 alt="Vaksin HPV"
                 width={1000}
                 height={800}
-                className="drop-shadow-lg animate-float"
+                className="drop-shadow-lg"
+                loading="lazy"
               />
 
               {/* Small Badge */}
@@ -249,13 +248,11 @@ export default function Home() {
               width={300}
               height={120}
               className="drop-shadow-sm drop-shadow-slate-400"
-              priority={false}
+              loading="lazy"
             />
           </div>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            Dipercaya oleh laboratorium terkemuka di Indonesia dengan standar
-            internasional dan pengalaman lebih dari 50 tahun dalam pelayanan
-            kesehatan.
+            Lab terpercaya dengan standar internasional dan pengalaman 50+ tahun.
           </p>
         </div>
       </section>
@@ -306,7 +303,7 @@ export default function Home() {
         </div>
         <div className="text-center mt-8">
           <p className="text-gray-600 mb-4">
-            Butuh konsultasi untuk memilih jenis vaksin yang tepat?
+            Bingung pilih vaksin yang mana? Yuk konsultasi dulu!
           </p>
           <Link
             href="/vaksin-hpv/konsultasi"
@@ -328,8 +325,7 @@ export default function Home() {
               Temukan Lab Prodia Terdekat
             </h2>
             <p className="text-gray-600 mb-6 sm:mb-8 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed px-4">
-              Cari lokasi laboratorium Prodia di sekitar kamu untuk vaksinasi
-              HPV yang mudah dan nyaman.
+              Cari lab Prodia terdekat buat vaksinasi HPV. Gampang dan nyaman!
             </p>
             {!locationPermission && (
               <div onClick={handleFindLocation}>
@@ -354,21 +350,21 @@ export default function Home() {
                 <ul className="text-xs sm:text-sm text-gray-700 space-y-2 sm:space-y-3">
                   <li className="flex items-center gap-2">
                     <span className="text-pink-500">👆</span>
-                    Klik marker pada peta untuk melihat detail lokasi lab
+                    Klik marker buat lihat detail lokasi
                   </li>
                   <li className="flex items-center gap-2">
                     <span className="text-pink-500">📞</span>
-                    Hubungi lab untuk membuat janji & konsultasi
+                    Hubungi lab buat bikin janji
                   </li>
                   <li className="flex items-center gap-2">
                     <span className="text-pink-500">🪪</span>
-                    Jangan lupa bawa kartu identitas saat kunjungan
+                    Jangan lupa bawa KTP ya!
                   </li>
                 </ul>
                 <div className="mt-4 sm:mt-6 bg-pink-50 rounded-xl p-3 sm:p-4">
                   <p className="text-xs sm:text-sm text-pink-600 font-medium flex items-center gap-2 flex-wrap">
-                    <span>📸</span> Bagikan pengalamanmu! Post foto dengan
-                    #VaksinBareng, tag @risaofficial, dan dapatkan 10 stiker
+                    <span>📸</span> Share pengalamanmu! Post dengan
+                    #VaksinBareng, tag @risaofficial, dapetin 10 stiker
                     digital! <span className="animate-bounce">✨</span>
                   </p>
                 </div>

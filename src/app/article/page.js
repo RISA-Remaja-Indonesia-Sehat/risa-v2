@@ -22,7 +22,7 @@ export default function ArticlePage() {
         <div className="mb-8">
             <h2 className="text-2xl font-bold text-gray-800 mb-2 flex items-center">
                 <span className="text-3xl mr-3">✨</span>
-                Yang Baru-Baru Ini Ada di Halaman Utama
+                Yang Populer
             </h2>
             <div className="w-20 h-1 bg-pink-500 rounded"></div>
         </div>
