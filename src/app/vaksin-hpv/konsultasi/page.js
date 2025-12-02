@@ -8,13 +8,13 @@ export default function KonsultasiDokterPage() {
     {
       id: 1,
       sender: "doctor",
-      text: "Halo! Saya dr. Dina Erasvina, Sp.OG, M.Kes. Senang bisa membantu kamu hari ini! 😊",
+      text: "Hai! Aku dr. Dina 👋 Senang bisa bantu kamu hari ini!",
       time: "10:00",
     },
     {
       id: 2,
       sender: "doctor",
-      text: "Saya siap membantu kamu memilih jenis vaksin HPV yang tepat sesuai usia dan kebutuhanmu.",
+      text: "Yuk kita cari tahu vaksin HPV yang cocok buat kamu!",
       time: "10:00",
     },
   ]);
@@ -22,10 +22,10 @@ export default function KonsultasiDokterPage() {
   const [showRecommendation, setShowRecommendation] = useState(false);
 
   const quickReplies = [
-    "Vaksin HPV untuk usia berapa?",
-    "Berapa dosis yang dibutuhkan?",
-    "Apakah vaksin HPV aman?",
-    "Efek samping vaksin HPV?",
+    "Usia berapa bisa vaksin?",
+    "Butuh berapa dosis?",
+    "Aman nggak sih?",
+    "Ada efek sampingnya?",
   ];
 
   useEffect(() => {
@@ -86,20 +86,20 @@ export default function KonsultasiDokterPage() {
     const lowerText = userText.toLowerCase();
 
     if (lowerText.includes("usia") || lowerText.includes("umur")) {
-      return "Vaksin HPV direkomendasikan untuk anak perempuan dan laki-laki mulai usia 9 tahun. Paling efektif diberikan sebelum aktif secara seksual, idealnya usia 9-14 tahun.";
+      return "Vaksin HPV bisa dimulai dari usia 9 tahun. Paling bagus kalau dilakukan sebelum usia 14 tahun ya! 💉";
     } else if (lowerText.includes("dosis")) {
-      return "Untuk usia 9-14 tahun: 2 dosis dengan jarak 6-12 bulan. Untuk usia 15 tahun ke atas: 3 dosis (bulan ke-0, 1-2, dan 6).";
+      return "Kalau usia 9-14 tahun cukup 2 dosis (jarak 6-12 bulan). Kalau 15 tahun ke atas butuh 3 dosis. Gampang kok! ✨";
     } else if (lowerText.includes("aman")) {
-      return "Ya, vaksin HPV sangat aman! Sudah digunakan di lebih dari 100 negara dan terbukti efektif mencegah kanker serviks hingga 90%. Efek samping umumnya ringan seperti nyeri di area suntikan.";
+      return "Aman banget! Udah dipake di 100+ negara dan terbukti cegah kanker serviks sampai 90%. Efek sampingnya ringan aja kok 😊";
     } else if (lowerText.includes("efek samping")) {
-      return "Efek samping umumnya ringan: nyeri/kemerahan di area suntikan, pusing ringan, atau demam ringan. Biasanya hilang dalam 1-2 hari.";
+      return "Biasanya cuma nyeri di area suntikan, pusing atau demam ringan. Hilang sendiri dalam 1-2 hari. Tenang aja! 💪";
     } else if (
       lowerText.includes("rekomendasi") ||
       lowerText.includes("surat")
     ) {
-      return "Baik, saya akan berikan surat rekomendasi dokter untuk kamu. Surat ini bisa kamu lampirkan saat pendaftaran.";
+      return "Oke! Aku buatin surat rekomendasi buat kamu. Tinggal lampirkan saat pendaftaran ya! 📄";
     } else {
-      return "Terima kasih atas pertanyaannya! Untuk informasi lebih detail, saya sarankan kamu membaca surat rekomendasi yang saya berikan. Jika ada pertanyaan lain, jangan ragu untuk bertanya ya! 😊";
+      return "Makasih udah tanya! Ada yang mau ditanyain lagi? Aku siap bantu! 😊";
     }
   };
 
@@ -176,11 +176,10 @@ export default function KonsultasiDokterPage() {
                   <CheckCircle2 className="w-6 h-6 text-pink-600 flex-shrink-0 mt-1" />
                   <div className="flex-1">
                     <h3 className="font-bold text-gray-900 mb-2">
-                      📄 Surat Rekomendasi Dokter
+                      📄 Surat Rekomendasi
                     </h3>
                     <p className="text-sm text-gray-700 mb-3">
-                      Surat rekomendasi untuk vaksinasi HPV sudah siap! Silakan
-                      download dan bawa saat kunjungan ke klinik.
+                      Surat rekomendasimu udah siap! Download dan lampirkan saat pendaftaran ya.
                     </p>
                     <button
                       onClick={handleDownloadRecommendation}
@@ -238,7 +237,7 @@ export default function KonsultasiDokterPage() {
             </button>
           </div>
           <p className="text-xs text-gray-500 text-center mt-2">
-            💡 Tip: Ketik &quot;rekomendasi&quot; untuk mendapatkan surat dokter
+            💡 Ketik &quot;rekomendasi&quot; buat dapetin surat dokter
           </p>
         </div>
       </div>
